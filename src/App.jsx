@@ -1,0 +1,72 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Marketing from './pages/Marketing.jsx';
+import Customer from './pages/Customer.jsx';
+import CustomerEmpty from './pages/CustomerEmpty.jsx';
+import CustomerLoading from './pages/CustomerLoading.jsx';
+import Salon from './pages/Salon.jsx';
+import SalonEmpty from './pages/SalonEmpty.jsx';
+import Pricing from './pages/Pricing.jsx';
+import OnboardingCustomer from './pages/OnboardingCustomer.jsx';
+import OnboardingSalon from './pages/OnboardingSalon.jsx';
+import IOS from './pages/IOS.jsx';
+import MarketingA from './pages/MarketingA.jsx';
+import MarketingC from './pages/MarketingC.jsx';
+import SalonDetail from './pages/SalonDetail.jsx';
+import InboxList from './pages/InboxList.jsx';
+import ConversationPage from './pages/ConversationPage.jsx';
+import CheckoutPage from './pages/CheckoutPage.jsx';
+import Explore from './pages/Explore.jsx';
+import Saved from './pages/Saved.jsx';
+import Editorial from './pages/Editorial.jsx';
+import Article from './pages/Article.jsx';
+import SalonBids from './pages/SalonBids.jsx';
+import SalonCalendar from './pages/SalonCalendar.jsx';
+import SalonClients from './pages/SalonClients.jsx';
+import SalonEarnings from './pages/SalonEarnings.jsx';
+import Bookings from './pages/Bookings.jsx';
+import ReviewPage from './pages/ReviewPage.jsx';
+import CustomerSettings from './pages/CustomerSettings.jsx';
+import SalonSettings from './pages/SalonSettings.jsx';
+import NotificationsPage from './pages/NotificationsPage.jsx';
+import Me from './pages/Me.jsx';
+import SignUp from './pages/SignUp.jsx';
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Marketing />} />
+        <Route path="/quotes" element={<Customer />} />
+        <Route path="/quotes/empty" element={<CustomerEmpty />} />
+        <Route path="/quotes/waiting" element={<CustomerLoading />} />
+        <Route path="/salon" element={<Salon />} />
+        <Route path="/salon/empty" element={<SalonEmpty />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/onboarding/customer" element={<OnboardingCustomer />} />
+        <Route path="/onboarding/salon" element={<OnboardingSalon />} />
+        <Route path="/ios" element={<IOS />} />
+        <Route path="/marketing/a" element={<MarketingA />} />
+        <Route path="/marketing/c" element={<MarketingC />} />
+        <Route path="/salon/:id" element={<SalonDetail />} />
+        <Route path="/inbox" element={<InboxList />} />
+        <Route path="/inbox/:id" element={<ConversationPage /> } />
+        <Route path="/checkout/:id" element={<CheckoutPage />} />
+        <Route path="/explore" element={<Explore />} />
+        <Route path="/saved" element={<Saved />} />
+        <Route path="/editorial" element={<Editorial />} />
+        <Route path="/editorial/:id" element={<Article />} />
+        <Route path="/salon/bids" element={<SalonBids />} />
+        <Route path="/salon/calendar" element={<SalonCalendar />} />
+        <Route path="/salon/clients" element={<SalonClients />} />
+        <Route path="/salon/earnings" element={<SalonEarnings />} />
+        <Route path="/bookings" element={<Bookings />} />
+        <Route path="/review/:id" element={<ReviewPage />} />
+        <Route path="/settings" element={<CustomerSettings />} />
+        <Route path="/salon/settings" element={<SalonSettings />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/me" element={<Me />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}

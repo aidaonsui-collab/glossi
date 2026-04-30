@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Glossi — Beauty, negotiated.</title>
+<meta name="description" content="Post a request, name your price. Local salons compete for your booking — best offer wins.">
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1A1714">
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+
+<!-- iOS install: full-screen, status bar style, home-screen icon -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Glossi">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
+  body {
+    background: #FAF7F2; font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; color: #1A1714;
+    /* Safe-area insets so installed PWA + Capacitor shells don't clip under the notch / home indicator. */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  /* Disable the iOS double-tap-to-zoom + "tap highlight" flash so installed-app feel is closer to native. */
+  body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  @keyframes glossiPulse { 0%{opacity:1} 70%{opacity:0.4} 100%{opacity:1} }
+  @keyframes glossiShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  @keyframes glossiTicker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  @keyframes glossiToastIn { from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
+  @keyframes glossiModalIn { from{opacity:0; transform:translateY(20px) scale(0.98)} to{opacity:1; transform:translateY(0) scale(1)} }
+  @keyframes glossiBackdropIn { from{opacity:0} to{opacity:1} }
+  @keyframes glossiSlideIn { from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)} }
+  button:active, a:active { transform: translateY(0.5px); }
+  button:not(:disabled), a { transition: transform 0.08s ease, opacity 0.12s ease, background 0.12s ease; }
+  button:hover:not(:disabled), a:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

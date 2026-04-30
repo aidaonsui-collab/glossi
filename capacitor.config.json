@@ -1,0 +1,12 @@
+{
+  "appId": "com.glossi.app",
+  "appName": "Glossi",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "always",
+    "scheme": "Glossi"
+  },
+  "server": {
+    "iosScheme": "glossi"
+  }
+}
