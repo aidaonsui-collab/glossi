@@ -8,6 +8,8 @@ import { useBookings } from '../store.jsx';
 import { Stars } from '../ios/atoms.jsx';
 import { BIDS } from '../ios/data.js';
 import BookingActions from '../components/BookingActions.jsx';
+import { useSupabaseBookings } from '../lib/quotes.js';
+import { isSupabaseConfigured } from '../lib/supabase.js';
 
 const FALLBACK = [
   { id: 'h1', salonId: 'b2', salonName: 'Studio Onyx', mood: 3, service: 'Lash · Hybrid', total: 135, rating: 4, createdAt: new Date('2026-02-21').getTime(), slot: 'Fri · Feb 21' },
@@ -19,20 +21,63 @@ function fmt(ts) {
   return new Date(ts).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
+// Map a Supabase bookings row → the shape BookingRow expects. Mood is a
+// stable hash of the business id so the same salon always shows the
+// same placeholder photo across the list.
+function fromSupabase(row) {
+  const slugSeed = row.businesses?.slug || row.business_id || '';
+  const mood = [...slugSeed].reduce((a, c) => a + c.charCodeAt(0), 0) % 6;
+  const services = row.quote_bids?.quote_requests?.service_slugs || [];
+  const service = services.length
+    ? services.map(s => s.replace('-', ' & ')).join(', ')
+    : 'Appointment';
+  const ts = row.scheduled_at ? new Date(row.scheduled_at).getTime() : new Date(row.created_at).getTime();
+  const isPast = row.status === 'completed' || row.status === 'no_show'
+    || (row.status === 'confirmed' && ts < Date.now());
+  return {
+    id: row.id,
+    salonId: row.businesses?.slug,
+    salonName: row.businesses?.name || '—',
+    mood,
+    service,
+    total: (row.price_cents || 0) / 100,
+    slot: row.scheduled_at ? fmt(row.scheduled_at) : null,
+    createdAt: new Date(row.created_at).getTime(),
+    status: row.status === 'cancelled' ? 'cancelled' : (isPast ? 'past' : 'upcoming'),
+  };
+}
+
 export default function Bookings() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
-  const { bookings } = useBookings();
+  const { bookings: localBookings } = useBookings();
+  const { bookings: supaBookings, loading: supaLoading } = useSupabaseBookings();
   const [actionFor, setActionFor] = useState(null);
-  const merged = [...bookings, ...FALLBACK];
+
+  // When Supabase is configured, the source of truth is the bookings
+  // table — the localStorage list and the demo FALLBACK array are
+  // ignored so a real customer doesn't see Studio Onyx / Brisa demos
+  // mixed in with their actual appointments. The localStorage path
+  // remains for the no-backend dev fallback.
+  const merged = isSupabaseConfigured
+    ? supaBookings.map(fromSupabase)
+    : [...localBookings, ...FALLBACK];
+
   const upcoming = merged.filter(b => b.status === 'upcoming');
   const past = merged.filter(b => b.status !== 'upcoming');
+  const empty = isSupabaseConfigured && !supaLoading && merged.length === 0;
 
   return (
     <CustomerLayout active="bookings" mobileTitle="Bookings">
       <div style={{ padding: isPhone ? '20px 18px 32px' : '34px 40px 48px', maxWidth: 880 }}>
         <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>BOOKINGS</div>
         <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>Your appointments.</h1>
+
+        {empty && (
+          <div style={{ marginTop: 28, padding: 22, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5, lineHeight: 1.55 }}>
+            No bookings yet. Accept a bid on one of your requests and it'll show up here.
+          </div>
+        )}
 
         {upcoming.length > 0 && (
           <>
@@ -45,10 +90,14 @@ export default function Bookings() {
           </>
         )}
 
-        <div style={{ marginTop: 28, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>PAST · {past.length}</div>
-        <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {past.map(b => <BookingRow key={b.id} b={b} navigate={navigate} />)}
-        </div>
+        {past.length > 0 && (
+          <>
+            <div style={{ marginTop: 28, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>PAST · {past.length}</div>
+            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {past.map(b => <BookingRow key={b.id} b={b} navigate={navigate} />)}
+            </div>
+          </>
+        )}
 
         {actionFor && (
           <BookingActions booking={actionFor} onClose={() => setActionFor(null)} />

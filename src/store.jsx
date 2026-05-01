@@ -71,23 +71,48 @@ export function AuthProvider({ children }) {
   const [supaUser, setSupaUser] = useState(null);
   const [loading, setLoading] = useState(isSupabaseConfigured);
 
-  // Subscribe to Supabase auth state — runs once when configured
+  // Subscribe to Supabase auth state — runs once when configured.
+  //
+  // CRITICAL: supabase-js docs warn that calling any awaitable Supabase
+  // API (.from().select(), .rpc(), getUser(), etc.) from inside the
+  // onAuthStateChange callback can deadlock against the auth client's
+  // own getSession() lock. We hit this in production: salon logins
+  // (email+password, which fires a real auth event) made every page
+  // hang because the profile fetch inside hydrate() blocked on a
+  // session lock that onAuthStateChange itself was holding.
+  //
+  // Fix: set the user from the JWT synchronously, then defer the
+  // profile fetch with setTimeout(0) so it runs OUTSIDE the auth
+  // callback's stack frame.
   useEffect(() => {
     if (!isSupabaseConfigured) return;
     let cancelled = false;
 
-    const hydrate = async session => {
-      if (!session?.user) { if (!cancelled) { setSupaUser(null); setLoading(false); } return; }
+    const fetchProfile = async session => {
+      if (cancelled) return;
       const { data: profile } = await supabase
         .from('profiles')
         .select('full_name, home_zip, avatar_url, is_business, preferred_lang')
         .eq('id', session.user.id)
         .maybeSingle();
-      if (!cancelled) { setSupaUser(buildProfile(session.user, profile)); setLoading(false); }
+      if (!cancelled) setSupaUser(buildProfile(session.user, profile));
     };
 
-    supabase.auth.getSession().then(({ data }) => hydrate(data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => hydrate(session));
+    const handle = session => {
+      if (cancelled) return;
+      if (!session?.user) { setSupaUser(null); setLoading(false); return; }
+      // Show the user immediately from the JWT — don't block on the
+      // profile fetch. buildProfile gracefully handles a null profile
+      // by falling back to user_metadata (set at signup).
+      setSupaUser(buildProfile(session.user, null));
+      setLoading(false);
+      // Defer the enrichment query so it runs outside the auth
+      // event's stack — avoids the supabase-js deadlock.
+      setTimeout(() => { fetchProfile(session); }, 0);
+    };
+
+    supabase.auth.getSession().then(({ data }) => handle(data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => handle(session));
     return () => { cancelled = true; sub.subscription.unsubscribe(); };
   }, []);
 

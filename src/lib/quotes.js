@@ -243,9 +243,12 @@ export function useSupabaseBookings() {
   const refresh = useCallback(async () => {
     if (!isSupabaseConfigured) { setLoading(false); return; }
     setLoading(true);
+    // Join bid → request so the row carries service_slugs (the original
+    // request) — Bookings.jsx needs this to render "Color, Nails" etc.
+    // RLS gates everything via bookings_customer_read on the parent row.
     const { data } = await supabase
       .from('bookings')
-      .select('id, scheduled_at, duration_min, price_cents, deposit_cents, status, created_at, business_id, businesses(name, slug, city, hero_image_url)')
+      .select('id, scheduled_at, duration_min, price_cents, deposit_cents, status, created_at, business_id, businesses(name, slug, city, hero_image_url), quote_bids(quote_requests(service_slugs))')
       .order('scheduled_at', { ascending: false });
     setBookings(data || []);
     setLoading(false);
