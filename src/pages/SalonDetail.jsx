@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import CustomerLayout from '../components/CustomerLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { BIDS } from '../ios/data.js';
 import SalonProfile from '../components/SalonProfile.jsx';
+import Offer from '../ios/screens/Offer.jsx';
 import { useToast } from '../components/Toast.jsx';
 
 export default function SalonDetail() {
@@ -10,6 +12,7 @@ export default function SalonDetail() {
   const navigate = useNavigate();
   const toast = useToast();
   const bid = BIDS.find(b => b.id === id);
+  const [offerOpen, setOfferOpen] = useState(false);
 
   if (!bid) {
     return (
@@ -24,14 +27,24 @@ export default function SalonDetail() {
 
   return (
     <CustomerLayout mobileTitle={bid.name}>
-      <div style={{ maxWidth: 760 }}>
+      <div style={{ position: 'relative', maxWidth: 760 }}>
         <SalonProfile
           p={p} type={type} lang="en" surface="web" bid={bid}
           onBack={() => navigate(-1)}
           onMessage={b => navigate(`/inbox/${b.id}`)}
-          onMakeOffer={b => toast(`Make offer to ${b.name} — coming soon.`)}
+          onMakeOffer={() => setOfferOpen(true)}
           onBook={b => navigate(`/checkout/${b.id}`)}
         />
+        {offerOpen && (
+          <Offer
+            p={p} type={type} lang="en" salon={bid}
+            onClose={() => setOfferOpen(false)}
+            onSend={({ price }) => {
+              toast(`Offer sent to ${bid.name} — $${price}.`, { tone: 'success' });
+              setOfferOpen(false);
+            }}
+          />
+        )}
       </div>
     </CustomerLayout>
   );

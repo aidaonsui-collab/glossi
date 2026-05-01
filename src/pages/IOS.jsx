@@ -71,6 +71,10 @@ export default function IOS() {
     else if (k === 'payment') setScreen('payment');
     else if (k === 'notifications') setScreen('notifications');
     else if (k === 'signout') toast(lang === 'en' ? 'Signed out.' : 'Cerrado sesión.');
+    else if (k === 'help') {
+      window.open('/help', '_blank', 'noopener');
+      toast(lang === 'en' ? 'Opening help center…' : 'Abriendo ayuda…');
+    }
     else toast(`${k} — coming soon.`);
   };
 
@@ -82,6 +86,55 @@ export default function IOS() {
     setScreen('profile');
   };
   const openThread = id => { setThreadId(id); setScreen('conversation'); };
+
+  const downloadICS = bid => {
+    if (!bid) return;
+    const slot = bid.slot_en || 'Today';
+    const m = slot.match(/(\d{1,2}):?(\d{2})?\s*(AM|PM|am|pm)/);
+    let hour = 14, minute = 0;
+    if (m) {
+      hour = parseInt(m[1], 10);
+      minute = m[2] ? parseInt(m[2], 10) : 0;
+      if (/pm/i.test(m[3]) && hour < 12) hour += 12;
+      if (/am/i.test(m[3]) && hour === 12) hour = 0;
+    }
+    const start = new Date();
+    if (/tomorrow|mañana/i.test(slot)) start.setDate(start.getDate() + 1);
+    else if (/sat/i.test(slot)) start.setDate(start.getDate() + ((6 - start.getDay() + 7) % 7 || 7));
+    else if (/sun/i.test(slot)) start.setDate(start.getDate() + ((7 - start.getDay()) % 7 || 7));
+    start.setHours(hour, minute, 0, 0);
+    const end = new Date(start.getTime() + 3 * 3600 * 1000);
+    const fmt = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Glossi//Booking//EN',
+      'BEGIN:VEVENT',
+      `UID:glossi-${bid.id}-${Date.now()}@glossi.app`,
+      `DTSTAMP:${fmt(new Date())}`,
+      `DTSTART:${fmt(start)}`,
+      `DTEND:${fmt(end)}`,
+      `SUMMARY:${bid.name} · Glossi booking`,
+      `LOCATION:${bid.neighborhood}, TX`,
+      `DESCRIPTION:Booking confirmed via Glossi. Stylist: ${bid.artist || 'TBD'}.`,
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].join('\r\n');
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `glossi-${bid.name.replace(/\s+/g, '-').toLowerCase()}.ics`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const openDirections = bid => {
+    if (!bid) return;
+    const q = encodeURIComponent(`${bid.name} ${bid.neighborhood} TX`);
+    // Apple Maps on iOS, Google Maps elsewhere — use a universal URL that handles both.
+    const url = `https://maps.apple.com/?q=${q}`;
+    window.open(url, '_blank', 'noopener');
+  };
 
   const renderCustomer = () => {
     if (showWelcome) return <Welcome p={p} type={type} lang={lang} onComplete={() => { setShowWelcome(false); toast(lang === 'en' ? 'Welcome to Glossi.' : 'Bienvenida a Glossi.', { tone: 'success' }); }} onSkip={() => setShowWelcome(false)} />;
@@ -98,10 +151,10 @@ export default function IOS() {
       toast(lang === 'en' ? `Charged $${r.total.toFixed(2)} · booked.` : `Cobrado $${r.total.toFixed(2)} · reservado.`, { tone: 'success' });
       setScreen('booked');
     }} />;
-    if (screen === 'booked') return <Booked p={p} type={type} lang={lang} bid={picked} receipt={receipt} onBack={() => { setScreen('home'); setTab('home'); }} onAddCal={() => toast(lang === 'en' ? 'Added to your calendar.' : 'Agregado al calendario.', { tone: 'success' })} onDirections={() => toast(lang === 'en' ? 'Opening directions…' : 'Abriendo cómo llegar…')} />;
+    if (screen === 'booked') return <Booked p={p} type={type} lang={lang} bid={picked} receipt={receipt} onBack={() => { setScreen('home'); setTab('home'); }} onAddCal={() => { downloadICS(picked); toast(lang === 'en' ? 'Calendar event downloaded.' : 'Evento descargado.', { tone: 'success' }); }} onDirections={() => { openDirections(picked); toast(lang === 'en' ? 'Opening Maps…' : 'Abriendo Maps…'); }} />;
     if (screen === 'guide') return <Guide p={p} type={type} lang={lang} guideIndex={guideIndex} onBack={() => { setScreen('home'); setTab('home'); }} />;
     if (screen === 'saved') return <Saved p={p} type={type} lang={lang} onBack={() => setScreen('me')} />;
-    if (screen === 'history') return <History p={p} type={type} lang={lang} onBack={() => setScreen('me')} onReview={b => { setReviewBooking(b); setScreen('review'); }} />;
+    if (screen === 'history') return <History p={p} type={type} lang={lang} onBack={() => setScreen('me')} onReview={b => { setReviewBooking(b); setScreen('review'); }} onRebook={b => { if (b.salonId) openProfile(b.salonId); }} />;
     if (screen === 'review') return <Review surface="ios" booking={reviewBooking} onBack={() => setScreen('history')} onSubmitted={() => setScreen('history')} />;
     if (screen === 'payment') return <Payment p={p} type={type} lang={lang} onBack={() => setScreen('me')} />;
     if (screen === 'notifications') return <Notifications p={p} type={type} lang={lang} onBack={() => setScreen('me')} />;

@@ -28,7 +28,7 @@ export default function Marketing() {
           <button onClick={() => scrollTo(salonRef)} style={navBtn}>For salons</button>
           <Link to="/pricing" style={navBtn}>Pricing</Link>
           <Link to="/ios" style={navBtn}>iOS preview</Link>
-          <button onClick={() => toast('Glossi is live in 4 Texas cities — more coming soon.')} style={navBtn}>Cities</button>
+          <Link to="/cities" style={navBtn}>Cities</Link>
         </div>
       )}
       {user ? (
@@ -179,9 +179,9 @@ export default function Marketing() {
       <div style={{ padding: isPhone ? '24px 18px' : '40px 64px', borderTop: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
         <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: p.inkMuted }}>GLOSSI · 2026</div>
         <div style={{ fontSize: 11.5, color: p.inkMuted, display: 'flex', gap: 18 }}>
-          <button onClick={() => toast('Privacy policy — coming soon.')} style={footerBtn}>Privacy</button>
-          <button onClick={() => toast('Terms of service — coming soon.')} style={footerBtn}>Terms</button>
-          <button onClick={() => toast('Help center — coming soon.')} style={footerBtn}>Help</button>
+          <Link to="/privacy" style={{ ...footerBtn, textDecoration: 'none' }}>Privacy</Link>
+          <Link to="/terms" style={{ ...footerBtn, textDecoration: 'none' }}>Terms</Link>
+          <Link to="/help" style={{ ...footerBtn, textDecoration: 'none' }}>Help</Link>
         </div>
       </div>
     </div>

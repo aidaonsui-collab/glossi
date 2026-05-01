@@ -3,6 +3,7 @@ import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
+import Modal from '../components/Modal.jsx';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const HOURS = ['9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM'];
@@ -24,6 +25,16 @@ export default function SalonCalendar() {
   const toast = useToast();
   const [weekOffset, setWeekOffset] = useState(0);
   const [selected, setSelected] = useState(null);
+  const [messageOpen, setMessageOpen] = useState(false);
+  const [draft, setDraft] = useState('');
+
+  const sendMessage = () => {
+    if (!draft.trim()) { toast('Type a message first.', { tone: 'warn' }); return; }
+    toast(`Message sent to ${selected.client}.`, { tone: 'success' });
+    setMessageOpen(false);
+    setDraft('');
+    setSelected(null);
+  };
 
   const totalBookings = APPTS.length;
   const totalRevenue = APPTS.reduce((sum, a) => sum + a.price, 0);
@@ -138,11 +149,27 @@ export default function SalonCalendar() {
               <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, marginTop: 4 }}>{selected.client} · {selected.service}</div>
             </div>
             <div style={{ fontFamily: type.mono, fontSize: 24, fontWeight: 600 }}>${selected.price}</div>
-            <button onClick={() => { toast(`Messaged ${selected.client}.`, { tone: 'success' }); setSelected(null); }} style={{ background: 'rgba(255,255,255,0.1)', border: 0, padding: '10px 18px', borderRadius: 99, color: p.bg, cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'inherit' }}>Message</button>
+            <button onClick={() => { setDraft(`Hi ${selected.client.split(' ')[0]} — `); setMessageOpen(true); }} style={{ background: 'rgba(255,255,255,0.1)', border: 0, padding: '10px 18px', borderRadius: 99, color: p.bg, cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'inherit' }}>Message</button>
             <button onClick={() => setSelected(null)} style={{ background: p.accent, color: p.ink, border: 0, padding: '10px 18px', borderRadius: 99, cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'inherit' }}>Close</button>
           </div>
         )}
       </div>
+
+      <Modal open={messageOpen} onClose={() => { setMessageOpen(false); setDraft(''); }} eyebrow="MESSAGE CLIENT" title={selected?.client || ''} footer={
+        <>
+          <button onClick={() => { setMessageOpen(false); setDraft(''); }} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+          <button onClick={sendMessage} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Send</button>
+        </>
+      }>
+        {selected && (
+          <div>
+            <div style={{ padding: '10px 12px', background: p.bg, borderRadius: 10, fontSize: 12, color: p.inkSoft, marginBottom: 12 }}>
+              {DAYS[selected.day]} · {HOURS[selected.start]} · {selected.service}
+            </div>
+            <textarea value={draft} onChange={e => setDraft(e.target.value)} autoFocus rows={5} placeholder="Confirmation, slot change, what to bring…" style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.body, fontSize: 14, color: p.ink, lineHeight: 1.5, resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
+          </div>
+        )}
+      </Modal>
     </SalonLayout>
   );
 }

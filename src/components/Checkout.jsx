@@ -1,16 +1,22 @@
 import { useState } from 'react';
 import { IOSStatusBar } from '../ios/IOSFrame.jsx';
 import SalonPhoto from './SalonPhoto.jsx';
+import Modal from './Modal.jsx';
+import { useToast } from './Toast.jsx';
 
 const TIP_OPTIONS = [15, 18, 20];
 
 export default function Checkout({ p, type, lang, surface, bid, onBack, onConfirm }) {
+  const toast = useToast();
   const [tipPct, setTipPct] = useState(18);
   const [customTip, setCustomTip] = useState('');
   const [paymentId, setPaymentId] = useState('visa');
   const [promo, setPromo] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showAddCard, setShowAddCard] = useState(false);
+  const [newCard, setNewCard] = useState({ name: '', number: '', exp: '', cvc: '' });
+  const [savedNewCard, setSavedNewCard] = useState(null);
 
   if (!bid) return null;
 
@@ -28,7 +34,24 @@ export default function Checkout({ p, type, lang, surface, bid, onBack, onConfir
 
   const applyPromo = () => {
     if (!promo) return;
-    if (promo.toUpperCase() === 'GLOSSI10') setPromoApplied(true);
+    if (promo.trim().toUpperCase() === 'GLOSSI10') {
+      setPromoApplied(true);
+      toast(lang === 'en' ? 'GLOSSI10 applied · 10% off subtotal.' : 'GLOSSI10 aplicado · 10% de descuento.', { tone: 'success' });
+    } else {
+      toast(lang === 'en' ? `"${promo.trim().toUpperCase()}" isn't a valid promo code.` : `Código no válido.`, { tone: 'warn' });
+    }
+  };
+
+  const submitNewCard = () => {
+    const last4 = newCard.number.replace(/\s/g, '').slice(-4);
+    if (newCard.number.replace(/\s/g, '').length < 12) { toast(lang === 'en' ? 'Card number looks too short.' : 'Número incompleto.', { tone: 'warn' }); return; }
+    if (!/^\d{2}\/\d{2}$/.test(newCard.exp)) { toast(lang === 'en' ? 'Use MM/YY for expiry.' : 'Usa MM/AA.', { tone: 'warn' }); return; }
+    if (newCard.cvc.length < 3) { toast(lang === 'en' ? 'CVC needs 3+ digits.' : 'CVC mínimo 3 dígitos.', { tone: 'warn' }); return; }
+    setSavedNewCard({ last4, exp: newCard.exp });
+    setPaymentId('add');
+    toast(lang === 'en' ? `Card •••• ${last4} ready.` : `Tarjeta •••• ${last4} lista.`, { tone: 'success' });
+    setShowAddCard(false);
+    setNewCard({ name: '', number: '', exp: '', cvc: '' });
   };
 
   const submit = () => {
@@ -162,21 +185,29 @@ export default function Checkout({ p, type, lang, surface, bid, onBack, onConfir
             {[
               { id: 'visa', l: 'Visa •••• 4729', sub: lang === 'en' ? 'Expires 09/27' : 'Vence 09/27', icon: 'card' },
               { id: 'apple', l: 'Apple Pay', sub: lang === 'en' ? 'Touch ID required' : 'Touch ID requerido', icon: 'apple' },
-              { id: 'add', l: lang === 'en' ? 'Add new card' : 'Añadir tarjeta', sub: '', icon: 'plus' },
+              savedNewCard
+                ? { id: 'add', l: `•••• ${savedNewCard.last4}`, sub: lang === 'en' ? `Expires ${savedNewCard.exp} · tap to replace` : `Vence ${savedNewCard.exp} · toca para cambiar`, icon: 'card' }
+                : { id: 'add', l: lang === 'en' ? 'Add new card' : 'Añadir tarjeta', sub: '', icon: 'plus' },
             ].map(opt => {
               const sel = opt.id === paymentId;
+              const handleClick = () => {
+                if (opt.id === 'add' && !savedNewCard) { setShowAddCard(true); return; }
+                if (opt.id === 'add' && savedNewCard) { setPaymentId('add'); setShowAddCard(true); return; }
+                setPaymentId(opt.id);
+              };
               return (
-                <button key={opt.id} onClick={() => setPaymentId(opt.id)} style={{
+                <button key={opt.id} onClick={handleClick} style={{
                   padding: '14px', borderRadius: 12, cursor: 'pointer',
                   background: p.surface,
                   border: `0.5px solid ${sel ? p.ink : p.line}`,
                   boxShadow: sel ? `inset 0 0 0 1px ${p.ink}` : 'none',
                   display: 'flex', alignItems: 'center', gap: 12, fontFamily: 'inherit', textAlign: 'left',
                 }}>
-                  <div style={{ width: 40, height: 28, borderRadius: 6, background: opt.id === 'visa' ? 'linear-gradient(135deg, #1A1614 0%, #3A2A24 100%)' : opt.id === 'apple' ? '#000' : p.bg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontSize: 10, fontStyle: 'italic', fontWeight: 700, border: opt.id === 'add' ? `0.5px dashed ${p.inkMuted}` : 0 }}>
+                  <div style={{ width: 40, height: 28, borderRadius: 6, background: opt.id === 'visa' || (opt.id === 'add' && savedNewCard) ? 'linear-gradient(135deg, #1A1614 0%, #3A2A24 100%)' : opt.id === 'apple' ? '#000' : p.bg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontSize: 10, fontStyle: 'italic', fontWeight: 700, border: opt.id === 'add' && !savedNewCard ? `0.5px dashed ${p.inkMuted}` : 0 }}>
                     {opt.id === 'visa' && 'VISA'}
                     {opt.id === 'apple' && <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" /></svg>}
-                    {opt.id === 'add' && <span style={{ color: p.inkMuted, fontSize: 18, fontStyle: 'normal' }}>+</span>}
+                    {opt.id === 'add' && !savedNewCard && <span style={{ color: p.inkMuted, fontSize: 18, fontStyle: 'normal' }}>+</span>}
+                    {opt.id === 'add' && savedNewCard && 'CARD'}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontFamily: type.body, fontSize: 14, fontWeight: 600, color: p.ink }}>{opt.l}</div>
@@ -239,7 +270,7 @@ export default function Checkout({ p, type, lang, surface, bid, onBack, onConfir
             </span>
             {!submitting && (
               <span style={{ fontFamily: type.mono, fontSize: 11, opacity: 0.7, fontWeight: 500 }}>
-                {paymentId === 'apple' ? 'Apple Pay' : paymentId === 'visa' ? 'Visa •••• 4729' : (lang === 'en' ? 'New card' : 'Nueva tarjeta')}
+                {paymentId === 'apple' ? 'Apple Pay' : paymentId === 'visa' ? 'Visa •••• 4729' : savedNewCard ? `•••• ${savedNewCard.last4}` : (lang === 'en' ? 'New card' : 'Nueva tarjeta')}
               </span>
             )}
           </span>
@@ -251,6 +282,61 @@ export default function Checkout({ p, type, lang, surface, bid, onBack, onConfir
           🔒 {lang === 'en' ? 'PAYMENTS PROCESSED BY STRIPE' : 'PAGOS PROCESADOS POR STRIPE'}
         </div>
       </div>
+
+      <Modal open={showAddCard} onClose={() => setShowAddCard(false)} title={lang === 'en' ? 'Add a card' : 'Añadir tarjeta'} eyebrow={lang === 'en' ? 'PAYMENT' : 'PAGO'}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>{lang === 'en' ? 'CARDHOLDER' : 'TITULAR'}</span>
+              <input value={newCard.name} onChange={e => setNewCard({ ...newCard, name: e.target.value })} placeholder={lang === 'en' ? 'Name on card' : 'Nombre en la tarjeta'} style={{ padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.body, fontSize: 14, color: p.ink, outline: 'none' }} />
+            </label>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>{lang === 'en' ? 'CARD NUMBER' : 'NÚMERO'}</span>
+              <input
+                value={newCard.number}
+                onChange={e => {
+                  const digits = e.target.value.replace(/\D/g, '').slice(0, 16);
+                  const grouped = digits.replace(/(.{4})/g, '$1 ').trim();
+                  setNewCard({ ...newCard, number: grouped });
+                }}
+                inputMode="numeric"
+                placeholder="1234 5678 9012 3456"
+                style={{ padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.mono, fontSize: 14, color: p.ink, outline: 'none', letterSpacing: '0.04em' }}
+              />
+            </label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>{lang === 'en' ? 'EXP MM/YY' : 'VENCE MM/AA'}</span>
+                <input
+                  value={newCard.exp}
+                  onChange={e => {
+                    const d = e.target.value.replace(/\D/g, '').slice(0, 4);
+                    const formatted = d.length >= 3 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
+                    setNewCard({ ...newCard, exp: formatted });
+                  }}
+                  inputMode="numeric"
+                  placeholder="09/27"
+                  style={{ padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.mono, fontSize: 14, color: p.ink, outline: 'none' }}
+                />
+              </label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>CVC</span>
+                <input
+                  value={newCard.cvc}
+                  onChange={e => setNewCard({ ...newCard, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) })}
+                  inputMode="numeric"
+                  placeholder="123"
+                  style={{ padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.mono, fontSize: 14, color: p.ink, outline: 'none' }}
+                />
+              </label>
+            </div>
+            <button onClick={submitNewCard} style={{ marginTop: 4, padding: '14px', borderRadius: 12, border: 0, background: p.ink, color: p.bg, fontFamily: type.body, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              {lang === 'en' ? 'Save card' : 'Guardar tarjeta'}
+            </button>
+            <div style={{ fontSize: 11, color: p.inkMuted, textAlign: 'center', lineHeight: 1.4 }}>
+              {lang === 'en' ? '🔒 We never store your full card number. Tokenized via Stripe.' : '🔒 Nunca guardamos el número completo. Tokenizado vía Stripe.'}
+            </div>
+          </div>
+        </Modal>
     </div>
   );
 }

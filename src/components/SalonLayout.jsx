@@ -96,7 +96,7 @@ export default function SalonLayout({ active, children, mobileTitle }) {
         </div>
         {user && menuOpen && (
           <div style={{ position: 'fixed', top: 60, right: 14, width: 200, background: p.surface, borderRadius: 12, border: `0.5px solid ${p.line}`, padding: 6, boxShadow: '0 12px 32px rgba(0,0,0,0.10)', zIndex: 50 }}>
-            <button onClick={() => { setMenuOpen(false); toast('Salon profile — coming soon.'); }} style={salonMenuItem}>Salon profile</button>
+            <button onClick={() => { setMenuOpen(false); navigate('/salon/settings'); }} style={salonMenuItem}>Salon profile</button>
             <button onClick={onSignOut} style={{ ...salonMenuItem, color: p.accent }}>Sign out</button>
           </div>
         )}

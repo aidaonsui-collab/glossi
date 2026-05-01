@@ -99,7 +99,7 @@ export default function Salon() {
         );
       })}
       <div style={{ flex: 1 }} />
-      <button onClick={() => toast('Salon profile — coming soon.')} style={{ padding: '14px 12px', borderRadius: 12, background: p.bg, border: `0.5px solid ${p.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
+      <button onClick={() => navigate('/salon/settings')} style={{ padding: '14px 12px', borderRadius: 12, background: p.bg, border: `0.5px solid ${p.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, borderRadius: 99, background: 'linear-gradient(135deg,#C28A6B,#8B4F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 13, fontWeight: 700 }}>MR</div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -114,12 +114,12 @@ export default function Salon() {
   const stats = (
     <div style={{ display: 'grid', gridTemplateColumns: isPhone ? 'repeat(2,1fr)' : 'repeat(4, 1fr)', gap: isPhone ? 8 : 12 }}>
       {[
-        { k: 'Open requests', v: String(requests.length), c: p.accent, sub: `${requests.filter(r => r.urgent).length} ASAP` },
-        { k: 'Won today', v: '3', c: p.success, sub: '$284 total' },
-        { k: 'Win rate', v: '34%', c: p.ink, sub: '+4% vs last wk' },
-        { k: 'Avg. response', v: '9 min', c: p.ink, sub: 'Top 12% local' },
+        { k: 'Open requests', v: String(requests.length), c: p.accent, sub: `${requests.filter(r => r.urgent).length} ASAP`, to: '/salon' },
+        { k: 'Won today', v: '3', c: p.success, sub: '$284 total', to: '/salon/bids' },
+        { k: 'Win rate', v: '34%', c: p.ink, sub: '+4% vs last wk', to: '/salon/bids' },
+        { k: 'Avg. response', v: '9 min', c: p.ink, sub: 'Top 12% local', to: '/salon/earnings' },
       ].map((s, i) => (
-        <button key={i} onClick={() => toast(`${s.k}: ${s.v} — ${s.sub}`)} style={{ padding: isPhone ? '14px' : '18px', background: p.surface, borderRadius: 14, border: `0.5px solid ${p.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
+        <button key={i} onClick={() => navigate(s.to)} style={{ padding: isPhone ? '14px' : '18px', background: p.surface, borderRadius: 14, border: `0.5px solid ${p.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>{s.k.toUpperCase()}</div>
           <div style={{ fontFamily: type.mono, fontSize: isPhone ? 28 : 36, fontWeight: 600, color: s.c, letterSpacing: '-0.025em', marginTop: 4, lineHeight: 1 }}>{s.v}</div>
           <div style={{ fontSize: 11, color: p.inkSoft, marginTop: 6 }}>{s.sub}</div>
@@ -272,7 +272,7 @@ export default function Salon() {
           <Link to="/" style={{ fontFamily: type.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.22em', color: p.ink, textDecoration: 'none' }}>GLOSSI</Link>
           <div style={{ fontSize: 10, color: p.accent, fontWeight: 700, letterSpacing: '0.18em' }}>FOR SALONS</div>
           <div style={{ flex: 1 }} />
-          <button onClick={() => toast('Salon profile — coming soon.')} style={{ width: 34, height: 34, borderRadius: 99, background: 'linear-gradient(135deg,#C28A6B,#8B4F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, border: 0, cursor: 'pointer', fontFamily: 'inherit' }}>MR</button>
+          <button onClick={() => navigate('/salon/settings')} style={{ width: 34, height: 34, borderRadius: 99, background: 'linear-gradient(135deg,#C28A6B,#8B4F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, border: 0, cursor: 'pointer', fontFamily: 'inherit' }}>MR</button>
         </div>
         {main}
         {respondModal}

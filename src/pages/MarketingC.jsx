@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import SignInModal from '../components/SignInModal.jsx';
 import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
@@ -6,6 +8,7 @@ import { useToast } from '../components/Toast.jsx';
 export default function MarketingC() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
+  const [signInOpen, setSignInOpen] = useState(false);
   const toast = useToast();
 
   const Nav = () => (
@@ -20,7 +23,8 @@ export default function MarketingC() {
           <Link to="/ios" style={navLink}>iOS preview</Link>
         </div>
       )}
-      <button onClick={() => toast('Sign in coming soon.')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Sign in</button>
+      <button onClick={() => setSignInOpen(true)} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Sign in</button>
+      <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
     </div>
   );
 
@@ -54,21 +58,21 @@ export default function MarketingC() {
           <div style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, letterSpacing: '0.14em' }}>04 STORIES</div>
         </div>
         <div style={{ display: 'grid', gap: isPhone ? 14 : 24, gridTemplateColumns: isPhone ? '1fr' : '1.4fr 1fr 1fr' }}>
-          <button onClick={() => toast('Feature article — coming soon.')} style={{ cursor: 'pointer', background: 'transparent', border: 0, padding: 0, textAlign: 'left', fontFamily: 'inherit', color: p.ink }}>
+          <Link to="/editorial/2" style={{ cursor: 'pointer', background: 'transparent', border: 0, padding: 0, textAlign: 'left', fontFamily: 'inherit', color: p.ink, textDecoration: 'none' }}>
             <div style={{ aspectRatio: '4/3', borderRadius: 14, overflow: 'hidden', backgroundImage: `url(${PHOTOS[7]})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
             <div style={{ marginTop: 12, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.accent }}>FEATURE · 8 MIN</div>
             <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 28 : 38, fontWeight: type.displayWeight, letterSpacing: '-0.02em', lineHeight: 1, marginTop: 6, textWrap: 'balance' }}>What a balayage actually costs to make.</div>
             <div style={{ marginTop: 8, fontSize: isPhone ? 13 : 14, color: p.inkSoft, lineHeight: 1.5 }}>We followed Maria's morning at Casa de Belleza. Foils, toner, blowout — and the math that makes a $92 booking work.</div>
-          </button>
+          </Link>
           {[
-            { k: 'GUIDE · 6 MIN', t: 'How to brief a colorist (without a Pinterest board).', m: 5 },
-            { k: 'INTERVIEW · 4 MIN', t: 'The barber who fired Instagram.', m: 4 },
+            { k: 'GUIDE · 6 MIN', t: 'How to brief a colorist (without a Pinterest board).', m: 5, idx: 0 },
+            { k: 'INTERVIEW · 4 MIN', t: 'The barber who fired Instagram.', m: 4, idx: 1 },
           ].map((g, i) => (
-            <button key={i} onClick={() => toast(`${g.t.replace(/\.$/, '')} — coming soon.`)} style={{ cursor: 'pointer', background: 'transparent', border: 0, padding: 0, textAlign: 'left', fontFamily: 'inherit', color: p.ink }}>
+            <Link key={i} to={`/editorial/${g.idx}`} style={{ cursor: 'pointer', background: 'transparent', border: 0, padding: 0, textAlign: 'left', fontFamily: 'inherit', color: p.ink, textDecoration: 'none' }}>
               <div style={{ aspectRatio: '4/3', borderRadius: 14, overflow: 'hidden', backgroundImage: `url(${PHOTOS[g.m]})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
               <div style={{ marginTop: 12, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.accent }}>{g.k}</div>
               <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 22 : 24, fontWeight: type.displayWeight, letterSpacing: '-0.015em', lineHeight: 1.05, marginTop: 6, textWrap: 'balance' }}>{g.t}</div>
-            </button>
+            </Link>
           ))}
         </div>
       </div>

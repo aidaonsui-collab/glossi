@@ -4,6 +4,7 @@ import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
 import { Stars } from '../ios/atoms.jsx';
+import Modal from '../components/Modal.jsx';
 
 const CLIENTS = [
   { name: 'Sofia M.', initials: 'SM', visits: 6, lastVisit: 'Today', spent: 540, top: 'Color & balayage', rating: 5, since: 'Jan 2025', notes: 'Loves caramel tones. No purple hues.' },
@@ -26,6 +27,15 @@ export default function SalonClients() {
   const toast = useToast();
   const [q, setQ] = useState('');
   const [sort, setSort] = useState('recent');
+  const [messageTo, setMessageTo] = useState(null);
+  const [draft, setDraft] = useState('');
+
+  const sendMessage = () => {
+    if (!draft.trim()) { toast('Type a message first.', { tone: 'warn' }); return; }
+    toast(`Message sent to ${messageTo.name}.`, { tone: 'success' });
+    setMessageTo(null);
+    setDraft('');
+  };
 
   const list = useMemo(() => {
     let arr = CLIENTS;
@@ -106,7 +116,7 @@ export default function SalonClients() {
                 <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>LAST</div>
                 <div style={{ fontSize: 12.5, fontWeight: 600, color: p.ink, marginTop: 1 }}>{c.lastVisit}</div>
               </div>
-              <button onClick={() => toast(`Messaged ${c.name}.`, { tone: 'success' })} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, cursor: 'pointer', fontSize: 12, fontWeight: 600, color: p.ink, fontFamily: 'inherit' }}>Message</button>
+              <button onClick={() => { setMessageTo(c); setDraft(`Hi ${c.name.split(' ')[0]} — `); }} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, cursor: 'pointer', fontSize: 12, fontWeight: 600, color: p.ink, fontFamily: 'inherit' }}>Message</button>
             </div>
           ))}
           {list.length === 0 && (
@@ -114,6 +124,29 @@ export default function SalonClients() {
           )}
         </div>
       </div>
+
+      <Modal open={!!messageTo} onClose={() => { setMessageTo(null); setDraft(''); }} eyebrow="MESSAGE CLIENT" title={messageTo?.name || ''} footer={
+        <>
+          <button onClick={() => { setMessageTo(null); setDraft(''); }} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+          <button onClick={sendMessage} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Send</button>
+        </>
+      }>
+        {messageTo && (
+          <div>
+            <div style={{ padding: '10px 12px', background: p.bg, borderRadius: 10, fontSize: 12, color: p.inkSoft, marginBottom: 12 }}>
+              Last visit: {messageTo.lastVisit} · {messageTo.visits} visits · {messageTo.top}
+            </div>
+            <textarea
+              value={draft}
+              onChange={e => setDraft(e.target.value)}
+              autoFocus
+              rows={5}
+              placeholder="Quick note, slot offer, or follow-up…"
+              style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.body, fontSize: 14, color: p.ink, lineHeight: 1.5, resize: 'vertical', outline: 'none', boxSizing: 'border-box' }}
+            />
+          </div>
+        )}
+      </Modal>
     </SalonLayout>
   );
 }

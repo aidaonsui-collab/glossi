@@ -17,7 +17,7 @@ export const BIDS = [
   {
     id: 'b1', lat: 26.1948, lon: -98.1836, name: 'Casa de Belleza', neighborhood: 'Pharr', distance: 0.8,
     rating: 4.9, reviews: 312, price: 95, originalPrice: 135,
-    responseMin: 4, badges: ['licensed', 'top'], mood: 0,
+    responseMin: 4, badges: ['licensed', 'top'], mood: 0, categories: ['hair'],
     note_en: 'We can fit you in today at 4pm. Includes wash + blow dry.',
     note_es: '¡Tenemos espacio hoy a las 4pm! Incluye lavado y secado.',
     artist: 'Marisol R.', years: 12, lang: 'EN/ES',
@@ -26,7 +26,7 @@ export const BIDS = [
   {
     id: 'b2', lat: 26.2034, lon: -98.2300, name: 'Studio Onyx', neighborhood: 'McAllen', distance: 2.1,
     rating: 4.8, reviews: 189, price: 145, originalPrice: 180,
-    responseMin: 11, badges: ['licensed'], mood: 3,
+    responseMin: 11, badges: ['licensed'], mood: 3, categories: ['hair', 'lashes'],
     note_en: 'Premium products, private chairs. First-time client gets a free deep condition.',
     note_es: 'Productos premium, sillas privadas. Cliente nuevo recibe tratamiento gratis.',
     artist: 'Diego A.', years: 8, lang: 'EN',
@@ -35,7 +35,7 @@ export const BIDS = [
   {
     id: 'b3', lat: 26.3017, lon: -98.1633, name: 'La Reina Salon', neighborhood: 'Edinburg', distance: 1.4,
     rating: 5.0, reviews: 87, price: 78, originalPrice: 110,
-    responseMin: 2, badges: ['new', 'top'], mood: 5,
+    responseMin: 2, badges: ['new', 'top'], mood: 5, categories: ['hair', 'nails'],
     note_en: 'New on Glossi! 30% off this week to introduce ourselves to neighbors.',
     note_es: '¡Nuevas en Glossi! 30% de descuento esta semana.',
     artist: 'Luz G.', years: 6, lang: 'EN/ES',
@@ -44,7 +44,7 @@ export const BIDS = [
   {
     id: 'b4', lat: 26.2159, lon: -98.3253, name: 'The Beauty Loft', neighborhood: 'Mission', distance: 3.7,
     rating: 4.7, reviews: 421, price: 165, originalPrice: 195,
-    responseMin: 24, badges: ['licensed', 'verified'], mood: 1,
+    responseMin: 24, badges: ['licensed', 'verified'], mood: 1, categories: ['hair', 'skin'],
     note_en: 'Senior stylist with 15+ years color experience. Loyalty rewards available.',
     note_es: 'Estilista senior con 15+ años en color.',
     artist: 'Ana V.', years: 17, lang: 'EN/ES',
@@ -53,7 +53,7 @@ export const BIDS = [
   {
     id: 'b5', lat: 26.1595, lon: -97.9908, name: 'Brisa Hair Bar', neighborhood: 'Weslaco', distance: 5.2,
     rating: 4.6, reviews: 142, price: 110, originalPrice: 140,
-    responseMin: 38, badges: ['verified'], mood: 4,
+    responseMin: 38, badges: ['verified'], mood: 4, categories: ['hair', 'barber'],
     note_en: 'Bilingual stylists. Free parking. Walk-ins on weekdays.',
     note_es: 'Estilistas bilingües. Estacionamiento gratis.',
     artist: 'Carmen P.', years: 9, lang: 'EN/ES',

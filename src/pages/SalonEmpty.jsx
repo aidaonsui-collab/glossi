@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
@@ -8,6 +8,7 @@ import { useToast } from '../components/Toast.jsx';
 export default function SalonEmpty() {
   const isPhone = useNarrow();
   const toast = useToast();
+  const navigate = useNavigate();
   const [showManual, setShowManual] = useState(false);
   const [showAvail, setShowAvail] = useState(false);
   const [client, setClient] = useState('');
@@ -35,11 +36,11 @@ export default function SalonEmpty() {
       <div style={{ marginTop: isPhone ? 20 : 32, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>WHILE YOU WAIT</div>
       <div style={{ marginTop: 10, display: 'grid', gridTemplateColumns: isPhone ? '1fr' : 'repeat(3,1fr)', gap: 10 }}>
         {[
-          { k: 'Profile completeness', v: '88%', d: 'Add 2 service photos to hit 100%' },
-          { k: 'Response medal', v: 'Top 12%', d: 'Stay under 10 min to keep it' },
-          { k: 'This week', v: '$1,284', d: '7 bookings · 3 reviews left' },
+          { k: 'Profile completeness', v: '88%', d: 'Add 2 service photos to hit 100%', to: '/salon/settings' },
+          { k: 'Response medal', v: 'Top 12%', d: 'Stay under 10 min to keep it', to: '/salon/earnings' },
+          { k: 'This week', v: '$1,284', d: '7 bookings · 3 reviews left', to: '/salon/earnings' },
         ].map((s, i) => (
-          <button key={i} onClick={() => toast(`${s.k}: ${s.v} — ${s.d}`)} style={{ padding: '18px', borderRadius: 14, background: p.surface, border: `0.5px solid ${p.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', color: p.ink }}>
+          <button key={i} onClick={() => navigate(s.to)} style={{ padding: '18px', borderRadius: 14, background: p.surface, border: `0.5px solid ${p.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', color: p.ink }}>
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>{s.k.toUpperCase()}</div>
             <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 32, fontWeight: type.displayWeight, marginTop: 4, letterSpacing: '-0.02em', lineHeight: 1 }}>{s.v}</div>
             <div style={{ marginTop: 6, fontSize: 12, color: p.inkSoft }}>{s.d}</div>

@@ -20,6 +20,20 @@ export default function SalonEarnings() {
   const isPhone = useNarrow();
   const toast = useToast();
   const [showBank, setShowBank] = useState(false);
+  const [showInstant, setShowInstant] = useState(false);
+
+  const exportCSV = () => {
+    const rows = [['Date', 'Amount', 'Bookings', 'Method', 'Status']];
+    PAYOUTS.forEach(r => rows.push([r.date, r.amount.toFixed(2), String(r.count), r.method, r.status]));
+    const csv = rows.map(r => r.map(c => /[",\n]/.test(c) ? `"${c.replace(/"/g, '""')}"` : c).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `glossi-payouts-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast(`${PAYOUTS.length} payouts exported.`, { tone: 'success' });
+  };
 
   const pendingPayout = 384.20;
   const lifetime = PAYOUTS.reduce((s, x) => s + x.amount, 0) + pendingPayout;
@@ -44,7 +58,7 @@ export default function SalonEarnings() {
               <div style={{ fontFamily: type.mono, fontSize: 14, fontWeight: 600, marginTop: 4 }}>Chase •••• 3829</div>
             </div>
             <button onClick={() => setShowBank(true)} style={{ background: p.accent, color: p.ink, border: 0, padding: '12px 18px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Change account</button>
-            <button onClick={() => toast('Instant payout requested · arrives in 30 min for a 1% fee.', { tone: 'success' })} style={{ background: 'transparent', color: p.bg, border: '0.5px solid rgba(255,255,255,0.2)', padding: '12px 18px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Instant payout · 1% fee</button>
+            <button onClick={() => setShowInstant(true)} style={{ background: 'transparent', color: p.bg, border: '0.5px solid rgba(255,255,255,0.2)', padding: '12px 18px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Instant payout · 1% fee</button>
           </div>
         </div>
 
@@ -102,7 +116,7 @@ export default function SalonEarnings() {
         <div style={{ marginTop: 22 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 12 }}>
             <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>PAYOUT HISTORY</div>
-            <button onClick={() => toast('CSV export — coming soon.')} style={{ background: 'transparent', border: 0, color: p.accent, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Export CSV →</button>
+            <button onClick={exportCSV} style={{ background: 'transparent', border: 0, color: p.accent, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Export CSV →</button>
           </div>
           <div style={{ background: p.surface, borderRadius: 14, border: `0.5px solid ${p.line}`, overflow: 'hidden' }}>
             {PAYOUTS.map((row, i) => (
@@ -137,6 +151,29 @@ export default function SalonEarnings() {
             <div style={{ width: 32, height: 22, background: '#117EB3', borderRadius: 4, color: '#fff', fontFamily: type.display, fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>CHASE</div>
             <div style={{ fontFamily: type.mono, fontSize: 14, fontWeight: 600 }}>•••• 3829</div>
           </div>
+        </div>
+      </Modal>
+
+      <Modal open={showInstant} onClose={() => setShowInstant(false)} eyebrow="INSTANT PAYOUT" title={`Send $${pendingPayout.toFixed(2)} now?`} footer={
+        <>
+          <button onClick={() => setShowInstant(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+          <button onClick={() => { toast(`$${(pendingPayout * 0.99).toFixed(2)} on the way to Chase ••3829.`, { tone: 'success' }); setShowInstant(false); }} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Confirm · ${(pendingPayout * 0.99).toFixed(2)}</button>
+        </>
+      }>
+        <div style={{ fontSize: 13.5, color: p.inkSoft, lineHeight: 1.55 }}>
+          Skip the wait — Glossi sends your pending balance to your bank in under 30 minutes for a 1% fee.
+        </div>
+        <div style={{ marginTop: 14, padding: '14px 16px', background: p.bg, borderRadius: 12, border: `0.5px solid ${p.line}`, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {[
+            { k: 'Pending', v: `$${pendingPayout.toFixed(2)}` },
+            { k: 'Instant fee · 1%', v: `−$${(pendingPayout * 0.01).toFixed(2)}`, c: p.accent },
+            { k: 'You receive', v: `$${(pendingPayout * 0.99).toFixed(2)}`, big: true },
+          ].map((r, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <span style={{ fontSize: r.big ? 13 : 12, color: r.big ? p.ink : p.inkSoft, fontWeight: r.big ? 700 : 500 }}>{r.k}</span>
+              <span style={{ fontFamily: type.mono, fontSize: r.big ? 18 : 13, fontWeight: 600, color: r.c || p.ink }}>{r.v}</span>
+            </div>
+          ))}
         </div>
       </Modal>
     </SalonLayout>

@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomerLayout from '../components/CustomerLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
 import Modal from '../components/Modal.jsx';
-import { useAuth, useCustomerProfile, useLang } from '../store.jsx';
+import { useAuth, useBookings, useCustomerProfile, useLang } from '../store.jsx';
 
 const NOTIFICATION_LABELS = {
   bids: { l: 'New bids on my requests', d: 'Real-time push when salons respond' },
@@ -23,9 +23,60 @@ export default function CustomerSettings() {
   const { profile, update, updateNotifications } = useCustomerProfile();
   const { lang, setLang } = useLang();
 
+  const { bookings } = useBookings();
   const [draft, setDraft] = useState(profile);
   const [showDelete, setShowDelete] = useState(false);
   const [confirmText, setConfirmText] = useState('');
+  const [showCard, setShowCard] = useState(false);
+  const [card, setCard] = useState({ name: '', number: '', exp: '', cvc: '' });
+  const photoInputRef = useRef(null);
+  const [avatarPhoto, setAvatarPhoto] = useState(null);
+
+  const onPhotoPick = e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAvatarPhoto(reader.result);
+      toast('Avatar updated. Save to keep it.', { tone: 'success' });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const submitCard = () => {
+    const last4 = card.number.replace(/\s/g, '').slice(-4);
+    if (card.number.replace(/\s/g, '').length < 12) { toast('Card number looks too short.', { tone: 'warn' }); return; }
+    if (!/^\d{2}\/\d{2}$/.test(card.exp)) { toast('Use MM/YY for expiry.', { tone: 'warn' }); return; }
+    if (card.cvc.length < 3) { toast('CVC needs 3+ digits.', { tone: 'warn' }); return; }
+    toast(`Card on file replaced — •••• ${last4}.`, { tone: 'success' });
+    setShowCard(false);
+    setCard({ name: '', number: '', exp: '', cvc: '' });
+  };
+
+  const downloadReceipts = () => {
+    const rows = [['Date', 'Salon', 'Service', 'Subtotal', 'Tip', 'Tax', 'Total', 'Status']];
+    bookings.forEach(b => {
+      rows.push([
+        new Date(b.createdAt).toISOString().slice(0, 10),
+        b.salonName || '',
+        b.service || '',
+        (b.subtotal ?? '').toString(),
+        (b.tipAmt ?? '').toString(),
+        (b.tax ?? '').toString(),
+        (b.total ?? '').toString(),
+        b.status || '',
+      ]);
+    });
+    const csv = rows.map(r => r.map(c => /[",\n]/.test(c) ? `"${c.replace(/"/g, '""')}"` : c).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `glossi-receipts-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast(`Downloaded ${bookings.length} booking${bookings.length === 1 ? '' : 's'}.`, { tone: 'success' });
+  };
 
   const dirty = JSON.stringify(draft) !== JSON.stringify(profile);
 
@@ -75,12 +126,13 @@ export default function CustomerSettings() {
 
         {/* Account header */}
         <div style={{ marginTop: 22, padding: '20px', background: p.surface, borderRadius: 16, border: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 60, height: 60, borderRadius: 99, background: user?.avatar || 'linear-gradient(135deg,#E8B7A8,#B8893E)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 22, fontWeight: 700 }}>{user?.initials || draft.name.split(' ').map(s => s[0]).slice(0, 2).join('')}</div>
+          <div style={{ width: 60, height: 60, borderRadius: 99, background: avatarPhoto ? `url(${avatarPhoto}) center/cover` : (user?.avatar || 'linear-gradient(135deg,#E8B7A8,#B8893E)'), display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 22, fontWeight: 700 }}>{!avatarPhoto && (user?.initials || draft.name.split(' ').map(s => s[0]).slice(0, 2).join(''))}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.015em' }}>{draft.name}</div>
             <div style={{ fontSize: 12.5, color: p.inkMuted, marginTop: 2 }}>{draft.email} · {draft.city}</div>
           </div>
-          <button onClick={() => toast('Avatar upload — coming soon.')} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Change photo</button>
+          <button onClick={() => photoInputRef.current?.click()} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Change photo</button>
+          <input ref={photoInputRef} type="file" accept="image/*" onChange={onPhotoPick} style={{ display: 'none' }} />
         </div>
 
         <Section title="Personal info" eyebrow="01 · CONTACT">
@@ -142,11 +194,11 @@ export default function CustomerSettings() {
               <span style={{ fontFamily: type.mono, fontSize: 14, fontWeight: 600 }}>•••• 4729</span>
               <span style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted }}>Exp 09/27</span>
               <div style={{ flex: 1 }} />
-              <button onClick={() => toast('Replace card — coming soon.')} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Replace</button>
+              <button onClick={() => setShowCard(true)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Replace</button>
             </div>
           </Field>
           <Field label="Receipts" last>
-            <button onClick={() => toast('Receipt history — coming soon.')} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Download all (CSV)</button>
+            <button onClick={downloadReceipts} disabled={bookings.length === 0} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: bookings.length ? 'pointer' : 'not-allowed', fontFamily: 'inherit', opacity: bookings.length ? 1 : 0.5 }}>Download all (CSV)</button>
           </Field>
         </Section>
 
@@ -182,6 +234,60 @@ export default function CustomerSettings() {
             Deleting your account removes your bookings, saved salons, reviews, and contact info from this device. To confirm, type <span style={{ fontFamily: type.mono, fontWeight: 700, color: p.ink }}>DELETE</span> below.
           </div>
           <input value={confirmText} onChange={e => setConfirmText(e.target.value)} placeholder="DELETE" style={{ ...input, marginTop: 14, fontFamily: type.mono, letterSpacing: '0.16em' }} />
+        </Modal>
+
+        <Modal open={showCard} onClose={() => setShowCard(false)} eyebrow="REPLACE PAYMENT METHOD" title="Add a new card" footer={
+          <>
+            <button onClick={() => setShowCard(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+            <button onClick={submitCard} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Save card</button>
+          </>
+        }>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <label>
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>CARDHOLDER</div>
+              <input value={card.name} onChange={e => setCard(c => ({ ...c, name: e.target.value }))} placeholder="Sofia Martinez" autoFocus style={input} />
+            </label>
+            <label>
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>CARD NUMBER</div>
+              <input
+                value={card.number}
+                onChange={e => {
+                  const digits = e.target.value.replace(/\D/g, '').slice(0, 16);
+                  setCard(c => ({ ...c, number: digits.replace(/(.{4})/g, '$1 ').trim() }));
+                }}
+                inputMode="numeric"
+                placeholder="1234 5678 9012 3456"
+                style={{ ...input, fontFamily: type.mono, letterSpacing: '0.04em' }}
+              />
+            </label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <label>
+                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>EXPIRES</div>
+                <input
+                  value={card.exp}
+                  onChange={e => {
+                    let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                    if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+                    setCard(c => ({ ...c, exp: v }));
+                  }}
+                  inputMode="numeric" placeholder="MM/YY"
+                  style={{ ...input, fontFamily: type.mono }}
+                />
+              </label>
+              <label>
+                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>CVC</div>
+                <input
+                  value={card.cvc}
+                  onChange={e => setCard(c => ({ ...c, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                  inputMode="numeric" placeholder="123"
+                  style={{ ...input, fontFamily: type.mono }}
+                />
+              </label>
+            </div>
+            <div style={{ fontSize: 11, color: p.inkMuted, lineHeight: 1.5, marginTop: 4 }}>
+              Demo · the prototype doesn't store card data. Real Glossi sends this through Stripe Elements with PCI-compliant tokenization.
+            </div>
+          </div>
         </Modal>
       </div>
     </CustomerLayout>

@@ -28,12 +28,13 @@ export default function Explore() {
 
   const list = useMemo(() => {
     let arr = BIDS;
+    if (filter !== 'all') arr = arr.filter(b => (b.categories || []).includes(filter));
     if (q.trim()) arr = arr.filter(b => `${b.name} ${b.neighborhood}`.toLowerCase().includes(q.toLowerCase()));
     if (sort === 'rating') arr = [...arr].sort((a, b) => b.rating - a.rating);
     if (sort === 'distance') arr = [...arr].sort((a, b) => a.distance - b.distance);
     if (sort === 'price') arr = [...arr].sort((a, b) => a.price - b.price);
     return arr;
-  }, [q, sort]);
+  }, [filter, q, sort]);
 
   return (
     <CustomerLayout active="explore" mobileTitle="Explore">

@@ -101,19 +101,19 @@ export default function MarketingA() {
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>EDITORIAL</div>
             <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 30 : 44, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '10px 0 0' }}>This week in beauty.</h2>
           </div>
-          {!isPhone && <button onClick={() => toast('Editorial archive — coming soon.')} style={{ background: 'transparent', border: 0, fontSize: 13, color: p.inkSoft, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' }}>See all guides →</button>}
+          {!isPhone && <Link to="/editorial" style={{ background: 'transparent', border: 0, fontSize: 13, color: p.inkSoft, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none' }}>See all guides →</Link>}
         </div>
         <div style={{ marginTop: isPhone ? 20 : 32, display: 'grid', gap: isPhone ? 14 : 18, gridTemplateColumns: isPhone ? '1fr' : 'repeat(3, 1fr)' }}>
           {[
-            { n: 'GUIDE · 6 MIN', t: 'The honest balayage guide', m: 0 },
-            { n: 'INTERVIEW · 4 MIN', t: 'Inside Casa de Belleza', m: 7 },
-            { n: 'GUIDE · 5 MIN', t: 'How to brief a colorist', m: 5 },
+            { n: 'GUIDE · 6 MIN', t: 'The honest balayage guide', m: 0, idx: 0 },
+            { n: 'INTERVIEW · 4 MIN', t: 'Inside Casa de Belleza', m: 7, idx: 1 },
+            { n: 'GUIDE · 5 MIN', t: 'How to brief a colorist', m: 5, idx: 2 },
           ].map((g, i) => (
-            <button key={i} onClick={() => toast(`${g.t} — coming soon.`)} style={{ cursor: 'pointer', background: 'transparent', border: 0, padding: 0, textAlign: 'left', fontFamily: 'inherit', color: p.ink }}>
+            <Link key={i} to={`/editorial/${g.idx}`} style={{ cursor: 'pointer', background: 'transparent', border: 0, padding: 0, textAlign: 'left', fontFamily: 'inherit', color: p.ink, textDecoration: 'none' }}>
               <div style={{ aspectRatio: isPhone ? '16/10' : '4/5', borderRadius: 14, overflow: 'hidden', backgroundImage: `url(${PHOTOS[g.m]})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
               <div style={{ marginTop: 10, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>{g.n}</div>
               <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 22 : 26, fontWeight: type.displayWeight, letterSpacing: '-0.015em', marginTop: 4, lineHeight: 1.05, textWrap: 'balance' }}>{g.t}</div>
-            </button>
+            </Link>
           ))}
         </div>
       </div>

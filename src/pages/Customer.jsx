@@ -81,12 +81,12 @@ export default function Customer() {
         );
       })}
       <div style={{ flex: 1 }} />
-      <button onClick={() => toast('Profile settings — coming soon.')} style={{ padding: '14px 12px', borderRadius: 12, background: p.bg, border: `0.5px solid ${p.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
+      <button onClick={() => navigate('/me')} style={{ padding: '14px 12px', borderRadius: 12, background: p.bg, border: `0.5px solid ${p.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 99, background: 'linear-gradient(135deg,#E8B7A8,#B8893E)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 13, fontWeight: 700 }}>SM</div>
+          <div style={{ width: 36, height: 36, borderRadius: 99, background: user?.avatar || 'linear-gradient(135deg,#E8B7A8,#B8893E)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 13, fontWeight: 700 }}>{user?.initials || 'SM'}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 12.5, fontWeight: 600 }}>Sofia M.</div>
-            <div style={{ fontSize: 10.5, color: p.inkMuted }}>Pharr, TX</div>
+            <div style={{ fontSize: 12.5, fontWeight: 600 }}>{user?.name?.split(' ').slice(0, 2).join(' ') || 'Sofia M.'}</div>
+            <div style={{ fontSize: 10.5, color: p.inkMuted }}>{user?.city || 'Pharr, TX'}</div>
           </div>
         </div>
       </button>
@@ -247,7 +247,7 @@ export default function Customer() {
           <Link to="/" style={{ fontFamily: type.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.22em', color: p.ink, textDecoration: 'none' }}>GLOSSI</Link>
           <div style={{ flex: 1 }} />
           <button onClick={() => toggleLang()} style={{ background: 'transparent', border: 0, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>{lang}</button>
-          <button onClick={() => toast('Profile — coming soon.')} style={{ width: 34, height: 34, borderRadius: 99, background: 'linear-gradient(135deg,#E8B7A8,#B8893E)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, border: 0, cursor: 'pointer', fontFamily: 'inherit' }}>SM</button>
+          <button onClick={() => navigate('/me')} style={{ width: 34, height: 34, borderRadius: 99, background: user?.avatar || 'linear-gradient(135deg,#E8B7A8,#B8893E)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, border: 0, cursor: 'pointer', fontFamily: 'inherit' }}>{user?.initials || 'SM'}</button>
         </div>
         {main}
         {counterModal}

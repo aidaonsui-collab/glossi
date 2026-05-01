@@ -30,6 +30,7 @@ import SalonSettings from './pages/SalonSettings.jsx';
 import NotificationsPage from './pages/NotificationsPage.jsx';
 import Me from './pages/Me.jsx';
 import SignUp from './pages/SignUp.jsx';
+import { Terms, Privacy, Help, Cities } from './pages/Static.jsx';
 
 export default function App() {
   return (
@@ -66,6 +67,10 @@ export default function App() {
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/me" element={<Me />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/help" element={<Help />} />
+        <Route path="/cities" element={<Cities />} />
       </Routes>
     </BrowserRouter>
   );

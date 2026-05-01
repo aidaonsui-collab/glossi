@@ -12,6 +12,7 @@ const DAY_ORDER = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 // Surface = 'web' | 'ios'
 export default function SalonProfile({ p, type, lang, surface, bid, onBack, onMessage, onMakeOffer, onBook }) {
   const [activeTab, setActiveTab] = useState('about');
+  const [heroIdx, setHeroIdx] = useState(0);
   const { isSaved, toggle: toggleSaved } = useSaved();
   const { forSalon } = useReviews();
   const { profile: salonProfile } = useSalonProfile();
@@ -25,6 +26,7 @@ export default function SalonProfile({ p, type, lang, surface, bid, onBack, onMe
     ? salonProfile.gallery
     : d.gallery.map(v => ({ kind: 'mood', value: v }));
   const galleryUrl = item => item.kind === 'upload' ? item.value : PHOTOS[item.value % PHOTOS.length];
+  const safeHeroIdx = Math.min(heroIdx, galleryItems.length - 1);
 
   const isIOS = surface === 'ios';
   const pad = isIOS ? '0 20px' : '0 32px';
@@ -57,16 +59,25 @@ export default function SalonProfile({ p, type, lang, surface, bid, onBack, onMe
       {/* Hero gallery */}
       <div style={{ position: 'relative', height: isIOS ? 280 : 380, overflow: 'hidden' }}>
         {isIOS && <IOSStatusBar dark />}
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${galleryUrl(galleryItems[0])})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${galleryUrl(galleryItems[safeHeroIdx])})`, backgroundSize: 'cover', backgroundPosition: 'center', transition: 'background-image 0.18s ease' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(31,24,22,0) 0%, rgba(31,24,22,0.30) 100%)' }} />
         <div style={{ position: 'absolute', top: isIOS ? 54 : 24, left: 16, right: 16, display: 'flex', justifyContent: 'space-between', zIndex: 10 }}>
           {back}
           {heart}
         </div>
         <div style={{ position: 'absolute', bottom: 14, left: 16, right: 16, display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4 }}>
-          {galleryItems.slice(1).map((item, i) => (
-            <div key={i} style={{ width: 60, height: 60, borderRadius: 10, flexShrink: 0, backgroundImage: `url(${galleryUrl(item)})`, backgroundSize: 'cover', backgroundPosition: 'center', border: '1.5px solid rgba(255,255,255,0.7)' }} />
-          ))}
+          {galleryItems.map((item, i) => {
+            const active = i === safeHeroIdx;
+            return (
+              <button key={i} onClick={() => setHeroIdx(i)} style={{
+                width: 60, height: 60, borderRadius: 10, flexShrink: 0,
+                backgroundImage: `url(${galleryUrl(item)})`, backgroundSize: 'cover', backgroundPosition: 'center',
+                border: active ? `2px solid ${p.accent}` : '1.5px solid rgba(255,255,255,0.7)',
+                cursor: 'pointer', padding: 0, fontFamily: 'inherit',
+                transform: active ? 'scale(1.06)' : 'scale(1)', transition: 'transform 0.12s ease',
+              }} />
+            );
+          })}
         </div>
       </div>
 

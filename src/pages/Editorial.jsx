@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import CustomerLayout from '../components/CustomerLayout.jsx';
 import SalonPhoto from '../components/SalonPhoto.jsx';
@@ -5,9 +6,22 @@ import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { GUIDES } from '../ios/data.js';
 import { GUIDE_BODIES } from '../ios/guideBodies.js';
+import { useToast } from '../components/Toast.jsx';
 
 export default function Editorial() {
   const isPhone = useNarrow();
+  const toast = useToast();
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const onSubscribe = e => {
+    e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newsletterEmail)) {
+      toast('Add a valid email to subscribe.', { tone: 'warn' });
+      return;
+    }
+    setSubscribed(true);
+    toast('Subscribed. First drop lands Thursday.', { tone: 'success' });
+  };
   return (
     <CustomerLayout active="editorial" mobileTitle="Editorial">
       <div style={{ padding: isPhone ? '20px 18px 24px' : '34px 40px 60px', maxWidth: 1100 }}>
@@ -68,10 +82,16 @@ export default function Editorial() {
             <h3 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 26 : 36, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1.05, margin: '8px 0 0' }}>One guide a week. No noise.</h3>
             <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.65)', lineHeight: 1.55, margin: '10px 0 0' }}>Every Thursday morning, by editors who actually book in the Valley.</p>
           </div>
-          <form onSubmit={e => { e.preventDefault(); }} style={{ display: 'flex', gap: 8 }}>
-            <input type="email" placeholder="you@email.com" style={{ flex: 1, minWidth: 0, padding: '12px 14px', borderRadius: 12, border: 0, background: 'rgba(255,255,255,0.08)', color: p.bg, fontFamily: type.body, fontSize: 14, outline: 'none' }} />
-            <button type="submit" style={{ background: p.accent, color: p.ink, border: 0, padding: '12px 18px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Subscribe</button>
-          </form>
+          {subscribed ? (
+            <div style={{ padding: '14px 18px', background: 'rgba(255,255,255,0.08)', borderRadius: 12, color: p.bg, fontSize: 13.5, lineHeight: 1.5 }}>
+              ✓ Subscribed as <span style={{ fontFamily: type.mono, fontWeight: 600 }}>{newsletterEmail}</span>. Unsubscribe anytime in settings.
+            </div>
+          ) : (
+            <form onSubmit={onSubscribe} style={{ display: 'flex', gap: 8 }}>
+              <input value={newsletterEmail} onChange={e => setNewsletterEmail(e.target.value)} type="email" placeholder="you@email.com" style={{ flex: 1, minWidth: 0, padding: '12px 14px', borderRadius: 12, border: 0, background: 'rgba(255,255,255,0.08)', color: p.bg, fontFamily: type.body, fontSize: 14, outline: 'none' }} />
+              <button type="submit" style={{ background: p.accent, color: p.ink, border: 0, padding: '12px 18px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Subscribe</button>
+            </form>
+          )}
         </div>
       </div>
     </CustomerLayout>

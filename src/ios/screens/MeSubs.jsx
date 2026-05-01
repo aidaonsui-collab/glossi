@@ -6,6 +6,8 @@ import { Stars } from '../atoms.jsx';
 import { useBookings, useSaved } from '../../store.jsx';
 import { BIDS } from '../data.js';
 import BookingActions from '../../components/BookingActions.jsx';
+import Modal from '../../components/Modal.jsx';
+import { useToast } from '../../components/Toast.jsx';
 
 const FALLBACK_HISTORY = [
   { id: 'h1', salonName: 'Studio Onyx', service: 'Lash · Hybrid', service_es: 'Pestañas · Híbridas', total: 135, rating: 4, createdAt: new Date('2026-02-21').getTime(), mood: 3, salonId: 'b2' },
@@ -74,7 +76,7 @@ export function Saved({ p, type, lang, onBack }) {
   );
 }
 
-export function History({ p, type, lang, onBack, onReview }) {
+export function History({ p, type, lang, onBack, onReview, onRebook }) {
   const { bookings } = useBookings();
   const [actionFor, setActionFor] = useState(null);
   const merged = [...bookings, ...FALLBACK_HISTORY];
@@ -113,8 +115,8 @@ export function History({ p, type, lang, onBack, onReview }) {
                     {lang === 'en' ? 'Leave a review →' : 'Reseña →'}
                   </button>
                 ) : <span style={{ fontSize: 11, color: p.inkMuted, fontStyle: 'italic' }}>{lang === 'en' ? `Refunded $${(h.refund ?? 0).toFixed(0)}` : `Reembolso $${(h.refund ?? 0).toFixed(0)}`}</span>}
-                {!upcoming && !cancelled && (
-                  <button style={{ border: `0.5px solid ${p.line}`, background: p.bg, cursor: 'pointer', padding: '6px 12px', borderRadius: 99, fontFamily: type.body, fontSize: 11.5, fontWeight: 600, color: p.ink }}>
+                {!upcoming && !cancelled && h.salonId && (
+                  <button onClick={() => onRebook?.(h)} style={{ border: `0.5px solid ${p.line}`, background: p.bg, cursor: 'pointer', padding: '6px 12px', borderRadius: 99, fontFamily: type.body, fontSize: 11.5, fontWeight: 600, color: p.ink }}>
                     {lang === 'en' ? 'Book again' : 'Reservar de nuevo'}
                   </button>
                 )}
@@ -129,6 +131,18 @@ export function History({ p, type, lang, onBack, onReview }) {
 }
 
 export function Payment({ p, type, lang, onBack }) {
+  const toast = useToast();
+  const [showAdd, setShowAdd] = useState(false);
+  const [card, setCard] = useState({ name: '', number: '', exp: '', cvc: '' });
+  const last4 = card.number.replace(/\s/g, '').slice(-4);
+  const submitCard = () => {
+    if (card.number.replace(/\s/g, '').length < 12) { toast(lang === 'en' ? 'Card number looks too short.' : 'Número incompleto.', { tone: 'warn' }); return; }
+    if (!/^\d{2}\/\d{2}$/.test(card.exp)) { toast(lang === 'en' ? 'Use MM/YY for expiry.' : 'Usa MM/AA.', { tone: 'warn' }); return; }
+    if (card.cvc.length < 3) { toast(lang === 'en' ? 'CVC needs 3+ digits.' : 'CVC mínimo 3 dígitos.', { tone: 'warn' }); return; }
+    toast(lang === 'en' ? `Card ending ${last4} added.` : `Tarjeta •••• ${last4} agregada.`, { tone: 'success' });
+    setShowAdd(false);
+    setCard({ name: '', number: '', exp: '', cvc: '' });
+  };
   return (
     <div style={{ background: p.bg, minHeight: '100%', paddingBottom: 24 }}>
       <IOSStatusBar />
@@ -150,7 +164,7 @@ export function Payment({ p, type, lang, onBack }) {
           </div>
         </div>
 
-        <button style={{
+        <button onClick={() => setShowAdd(true)} style={{
           marginTop: 14, width: '100%', padding: '14px', borderRadius: 12, cursor: 'pointer',
           background: p.surface, border: `0.5px dashed ${p.line}`, color: p.ink,
           fontFamily: type.body, fontSize: 13, fontWeight: 600,
@@ -174,6 +188,63 @@ export function Payment({ p, type, lang, onBack }) {
           ))}
         </div>
       </div>
+
+      <Modal open={showAdd} onClose={() => setShowAdd(false)} eyebrow={lang === 'en' ? 'NEW CARD' : 'NUEVA TARJETA'} title={lang === 'en' ? 'Add a payment method' : 'Añadir tarjeta'} footer={
+        <>
+          <button onClick={() => setShowAdd(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>{lang === 'en' ? 'Cancel' : 'Cancelar'}</button>
+          <button onClick={submitCard} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>{lang === 'en' ? 'Add card' : 'Añadir'}</button>
+        </>
+      }>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <label>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{lang === 'en' ? 'CARDHOLDER' : 'TITULAR'}</div>
+            <input value={card.name} onChange={e => setCard(c => ({ ...c, name: e.target.value }))} placeholder="SOFIA MARTINEZ" autoFocus style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.body, fontSize: 14, color: p.ink, outline: 'none', boxSizing: 'border-box' }} />
+          </label>
+          <label>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{lang === 'en' ? 'CARD NUMBER' : 'NÚMERO'}</div>
+            <input
+              value={card.number}
+              onChange={e => {
+                const digits = e.target.value.replace(/\D/g, '').slice(0, 16);
+                const grouped = digits.replace(/(.{4})/g, '$1 ').trim();
+                setCard(c => ({ ...c, number: grouped }));
+              }}
+              inputMode="numeric"
+              placeholder="1234 5678 9012 3456"
+              style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.mono, fontSize: 14, color: p.ink, outline: 'none', boxSizing: 'border-box', letterSpacing: '0.04em' }}
+            />
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <label>
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{lang === 'en' ? 'EXPIRES' : 'VENCE'}</div>
+              <input
+                value={card.exp}
+                onChange={e => {
+                  let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                  if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+                  setCard(c => ({ ...c, exp: v }));
+                }}
+                inputMode="numeric" placeholder="MM/YY"
+                style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.mono, fontSize: 14, color: p.ink, outline: 'none', boxSizing: 'border-box' }}
+              />
+            </label>
+            <label>
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>CVC</div>
+              <input
+                value={card.cvc}
+                onChange={e => setCard(c => ({ ...c, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                inputMode="numeric" placeholder="123"
+                style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.mono, fontSize: 14, color: p.ink, outline: 'none', boxSizing: 'border-box' }}
+              />
+            </label>
+          </div>
+          <div style={{ fontSize: 11, color: p.inkMuted, lineHeight: 1.5, marginTop: 4 }}>
+            {lang === 'en'
+              ? 'Demo · the prototype does not store card data. Real Glossi sends this through Stripe Elements with PCI-compliant tokenization.'
+              : 'Demo · el prototipo no guarda datos. Glossi real usa Stripe Elements.'}
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
