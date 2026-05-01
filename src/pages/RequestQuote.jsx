@@ -6,8 +6,20 @@ import { useToast } from '../components/Toast.jsx';
 import CustomerLayout from '../components/CustomerLayout.jsx';
 import { useAuth, useCustomerProfile } from '../store.jsx';
 import { createQuoteRequest } from '../lib/quotes.js';
-import { isSupabaseConfigured } from '../lib/supabase.js';
+import { isSupabaseConfigured, supabase } from '../lib/supabase.js';
 import { ZIP_CENTROIDS } from '../lib/geocode.js';
+
+// Read the last-used ZIP synchronously from localStorage so the form
+// renders with it on the very first paint — no flash-of-disabled-button
+// while the customer profile hydrates. Falls through to the user's
+// home_zip in the profile row (handled by the prefill effect below).
+function readCachedZip() {
+  if (typeof window === 'undefined') return '';
+  try {
+    const v = localStorage.getItem('glossi.lastQuoteZip');
+    return v && /^\d{5}$/.test(v) ? v : '';
+  } catch { return ''; }
+}
 
 const SERVICES = [
   { slug: 'haircut', label: 'Haircut', icon: '💇‍♀️' },
@@ -38,14 +50,17 @@ export default function RequestQuote() {
     const valid = new Set(SERVICES.map(s => s.slug));
     return new Set(slugs.filter(s => valid.has(s)));
   });
-  const [zip, setZip] = useState('');
+  // Initial value: cached ZIP if we have one. Falls back to profile
+  // .zip via the effect below once auth hydrates.
+  const [zip, setZip] = useState(readCachedZip);
   const [radius, setRadius] = useState(10);
   const [notes, setNotes] = useState('');
   const [earliestDate, setEarliestDate] = useState('');
   const [latestDate, setLatestDate] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Prefill ZIP from profile once loaded
+  // Prefill ZIP from the customer profile once it hydrates — only if
+  // the local cache didn't already give us one.
   useEffect(() => {
     if (!zip && profile?.zip) setZip(profile.zip);
   }, [profile, zip]);
@@ -84,6 +99,14 @@ export default function RequestQuote() {
         return;
       }
       toast('Request posted — salons within your radius will see it shortly.', { tone: 'success' });
+      // Cache the ZIP so the next /request visit pre-fills the field
+      // (avoids the disabled-button-on-first-land friction). Also
+      // best-effort backfill the profile.home_zip so the cache works
+      // across browsers.
+      try { localStorage.setItem('glossi.lastQuoteZip', zip); } catch { /* noop */ }
+      if (isSupabaseConfigured && user?.id) {
+        supabase.from('profiles').update({ home_zip: zip }).eq('id', user.id).then(() => {});
+      }
       navigate(`/quotes/${result.id}`);
     } catch (err) {
       console.error('submit error:', err);
