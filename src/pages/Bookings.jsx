@@ -64,7 +64,7 @@ export default function Bookings() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const { bookings: localBookings } = useBookings();
-  const { bookings: supaBookings, loading: supaLoading, refresh: refreshSupa } = useSupabaseBookings();
+  const { bookings: supaBookings, loading: supaLoading, refresh: refreshSupa, applyLocalReview } = useSupabaseBookings();
   const [actionFor, setActionFor] = useState(null);
   const [lifecycleAction, setLifecycleAction] = useState(null);
 
@@ -153,6 +153,7 @@ export default function Bookings() {
             booking={lifecycleAction.booking}
             mode={lifecycleAction.mode}
             callerRole="customer"
+            onLocalReview={applyLocalReview}
             onClose={refresh => {
               setLifecycleAction(null);
               if (refresh) refreshSupa?.();
@@ -190,7 +191,10 @@ function BookingRow({ b, navigate, accent, onAction, onReview }) {
           </div>
         )}
         {!accent && b.rating ? (
-          <Stars n={b.rating} color={p.accent} size={13} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.12em', color: p.success }}>REVIEWED</span>
+            <Stars n={b.rating} color={p.accent} size={13} />
+          </div>
         ) : !accent && !cancelled && b.isCompleted ? (
           <button onClick={() => onReview ? onReview() : navigate(`/review/${b.id}`)} style={{ background: p.ink, color: p.bg, border: 0, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
             Leave a review →

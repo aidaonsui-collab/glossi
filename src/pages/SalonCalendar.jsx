@@ -19,6 +19,37 @@ function startOfWeek(date) {
   return d;
 }
 
+// Per-day header date data: {label: 'Mon', dateNum: 5, monthShort: 'May',
+// isToday: bool, isWeekend: bool} — drives the calendar header chrome.
+function dayHeaders(weekStart) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return DAY_LABELS.map((label, idx) => {
+    const d = new Date(weekStart);
+    d.setDate(d.getDate() + idx);
+    return {
+      label,
+      dateNum: d.getDate(),
+      monthShort: d.toLocaleString('en-US', { month: 'short' }),
+      isToday: d.getTime() === today.getTime(),
+      isWeekend: idx >= 5,
+    };
+  });
+}
+
+// "May 5 – 11" header for the current week. Spans across months when
+// they cross over: "May 30 – Jun 5".
+function fmtWeekRange(weekStart) {
+  const end = new Date(weekStart);
+  end.setDate(end.getDate() + 6);
+  const sameMonth = weekStart.getMonth() === end.getMonth();
+  const opt = (full) => ({ month: full ? 'long' : 'short', day: 'numeric' });
+  if (sameMonth) {
+    return `${weekStart.toLocaleDateString('en-US', opt(true))} – ${end.getDate()}`;
+  }
+  return `${weekStart.toLocaleDateString('en-US', opt(false))} – ${end.toLocaleDateString('en-US', opt(false))}`;
+}
+
 const fmtServices = slugs => (slugs || []).map(s => s.replace('-', ' & ')).join(', ') || 'Appointment';
 const fmtPrice = cents => `$${Math.round((cents || 0) / 100)}`;
 
@@ -81,6 +112,8 @@ export default function SalonCalendar() {
   );
 
   const week = weekOffset === 0 ? 'This week' : weekOffset === 1 ? 'Next week' : weekOffset === -1 ? 'Last week' : `${weekOffset > 0 ? '+' : ''}${weekOffset} weeks`;
+  const weekRange = fmtWeekRange(weekStart);
+  const headers = dayHeaders(weekStart);
 
   // States: no business, loading, no Supabase, no bookings this week.
   const showEmpty = isSupabaseConfigured && !bizLoading && businessId && !loading && visible.length === 0;
@@ -90,7 +123,7 @@ export default function SalonCalendar() {
       <div style={{ padding: isPhone ? '20px 18px 24px' : '34px 40px 48px' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>CALENDAR</div>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>CALENDAR · {weekRange.toUpperCase()}</div>
             <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>{week}.</h1>
           </div>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
@@ -148,9 +181,15 @@ export default function SalonCalendar() {
             {DAY_LABELS.map((d, di) => {
               const dayAppts = visible.filter(a => a.grid.day === di).sort((a, b) => a.grid.start - b.grid.start);
               if (dayAppts.length === 0) return null;
+              const h = headers[di];
               return (
                 <div key={di}>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted, marginBottom: 8 }}>{d.toUpperCase()}</div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
+                    <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: h.isToday ? p.accent : p.inkMuted }}>{d.toUpperCase()}</span>
+                    <span style={{ fontFamily: type.mono, fontSize: 14, fontWeight: 600, color: h.isToday ? p.accent : p.ink, letterSpacing: '-0.01em' }}>{h.dateNum}</span>
+                    <span style={{ fontSize: 10, color: p.inkMuted, fontWeight: 500 }}>{h.monthShort}</span>
+                    {h.isToday && <span style={{ fontSize: 9, color: p.accent, fontWeight: 700, letterSpacing: '0.14em' }}>· TODAY</span>}
+                  </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {dayAppts.map(a => {
                       const bar = statusBar(p, a.status, a.scheduled_at);
@@ -187,8 +226,25 @@ export default function SalonCalendar() {
           <div style={{ marginTop: 22, background: p.surface, borderRadius: 14, border: `0.5px solid ${p.line}`, overflow: 'hidden' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '60px repeat(7, 1fr)', borderBottom: `0.5px solid ${p.line}`, background: p.surface2 }}>
               <div />
-              {DAY_LABELS.map(d => (
-                <div key={d} style={{ padding: '14px 8px', fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, textAlign: 'center' }}>{d.toUpperCase()}</div>
+              {headers.map((h, i) => (
+                <div key={i} style={{
+                  padding: '12px 8px 10px',
+                  textAlign: 'center',
+                  borderLeft: i ? `0.5px solid ${p.line}` : 'none',
+                  background: h.isToday ? p.bg : 'transparent',
+                }}>
+                  <div style={{ fontFamily: type.body, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: h.isWeekend ? p.inkMuted : p.inkSoft }}>
+                    {h.label.toUpperCase()}
+                  </div>
+                  <div style={{ marginTop: 4, display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: 4 }}>
+                    <span style={{
+                      fontFamily: type.mono, fontSize: 18, fontWeight: 600,
+                      color: h.isToday ? p.accent : p.ink,
+                      letterSpacing: '-0.02em',
+                    }}>{h.dateNum}</span>
+                    <span style={{ fontSize: 10, color: p.inkMuted, fontWeight: 500 }}>{h.monthShort}</span>
+                  </div>
+                </div>
               ))}
             </div>
             {HOURS.map((h, hi) => (

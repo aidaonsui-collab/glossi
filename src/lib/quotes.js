@@ -497,16 +497,29 @@ export function useSupabaseBookings() {
   useEffect(() => { refresh(); }, [refresh]);
 
   // Realtime: refresh when this customer's bookings change (e.g. a salon
-  // marks complete, a cancellation lands). Filter on the customer_id is
-  // implicit — RLS already restricts the read.
+  // marks complete, a cancellation lands) OR when a review is inserted
+  // (so the "Leave a review" button on the row flips to stars without
+  // a manual reload). RLS gates the read so other customers' rows
+  // can't leak in.
   useEffect(() => {
     if (!isSupabaseConfigured) return;
     const ch = supabase
       .channel('my-bookings')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => refresh())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reviews' }, () => refresh())
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, [refresh]);
 
-  return { bookings, loading, refresh };
+  // Optimistic merge so the UI doesn't have to wait on the explicit
+  // refresh after a review submit — the BookingLifecycleModal calls
+  // this with { bookingId, rating, body } the moment the RPC succeeds.
+  const applyLocalReview = useCallback(({ bookingId, rating, body }) => {
+    setBookings(curr => curr.map(b => b.id === bookingId
+      ? { ...b, reviews: [{ id: 'local', rating, body }] }
+      : b
+    ));
+  }, []);
+
+  return { bookings, loading, refresh, applyLocalReview };
 }

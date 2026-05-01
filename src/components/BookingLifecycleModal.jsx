@@ -55,7 +55,7 @@ function BookingSummary({ booking, callerRole }) {
 //
 // onClosed(refresh: boolean) is called from every exit path so the caller
 // can tell whether to refetch.
-export default function BookingLifecycleModal({ booking, mode, callerRole, onClose }) {
+export default function BookingLifecycleModal({ booking, mode, callerRole, onClose, onLocalReview }) {
   const toast = useToast();
   const [submitting, setSubmitting] = useState(false);
   const [reason, setReason] = useState('');
@@ -117,6 +117,10 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
     const r = await submitReview({ bookingId: booking.id, rating, body });
     setSubmitting(false);
     if (!r.ok) { toast(r.error, { tone: 'warn' }); return; }
+    // Flip the row's button to stars immediately so the customer
+    // can't double-submit while the explicit refresh + realtime
+    // catch up. The realtime + refresh still run via close(true).
+    onLocalReview?.({ bookingId: booking.id, rating, body });
     toast(`Thanks — ${rating}★ posted.`, { tone: 'success' });
     close(true);
   };
