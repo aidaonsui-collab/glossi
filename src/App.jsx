@@ -1,9 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Marketing from './pages/Marketing.jsx';
 import Customer from './pages/Customer.jsx';
 import CustomerEmpty from './pages/CustomerEmpty.jsx';
 import CustomerLoading from './pages/CustomerLoading.jsx';
-import Salon from './pages/Salon.jsx';
+// Salon was the marketing-style stub-with-fake-data dashboard. Real
+// salon dashboards live under /salon/inbox /salon/bids etc., so we
+// redirect /salon there instead of rendering the stub.
 import SalonEmpty from './pages/SalonEmpty.jsx';
 import Pricing from './pages/Pricing.jsx';
 import OnboardingCustomer from './pages/OnboardingCustomer.jsx';
@@ -44,7 +46,7 @@ export default function App() {
         <Route path="/quotes" element={<Customer />} />
         <Route path="/quotes/empty" element={<CustomerEmpty />} />
         <Route path="/quotes/waiting" element={<CustomerLoading />} />
-        <Route path="/salon" element={<Salon />} />
+        <Route path="/salon" element={<Navigate to="/salon/inbox" replace />} />
         <Route path="/salon/empty" element={<SalonEmpty />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/onboarding/customer" element={<OnboardingCustomer />} />
