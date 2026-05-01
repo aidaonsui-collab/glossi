@@ -168,6 +168,97 @@ export async function submitReview({ bookingId, rating, body }) {
   return { ok: true, id: data };
 }
 
+export async function replyToReview({ reviewId, reply }) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  const { error } = await supabase.rpc('reply_to_review', {
+    p_review_id: reviewId,
+    p_reply: reply ?? null,
+  });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+// Hook: every review the salon's primary business has received, joined
+// with the booking it came from. Realtime subscribed so a freshly-
+// posted review surfaces without a refresh.
+export function useBusinessReviews(businessId) {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(Boolean(businessId && isSupabaseConfigured));
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured || !businessId) { setLoading(false); return; }
+    setLoading(true);
+    const { data, error } = await supabase.rpc('business_reviews', { p_business_id: businessId });
+    if (error) { console.error('business_reviews error', error); setReviews([]); }
+    else setReviews(data || []);
+    setLoading(false);
+  }, [businessId]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured || !businessId) return;
+    const ch = supabase
+      .channel(`business-reviews-${businessId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reviews', filter: `business_id=eq.${businessId}` }, () => refresh())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [businessId, refresh]);
+
+  return { reviews, loading, refresh };
+}
+
+// Hook: small badge count of reviews newer than businesses.reviews_seen_at.
+// Polled via realtime on the reviews table so the nav badge updates live.
+export function useUnseenReviewsCount(businessId) {
+  const [count, setCount] = useState(0);
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured || !businessId) { setCount(0); return; }
+    const { data, error } = await supabase.rpc('unseen_reviews_count', { p_business_id: businessId });
+    if (error) { console.error('unseen_reviews_count error', error); return; }
+    setCount(typeof data === 'number' ? data : 0);
+  }, [businessId]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured || !businessId) return;
+    const ch = supabase
+      .channel(`unseen-reviews-${businessId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'reviews', filter: `business_id=eq.${businessId}` }, () => refresh())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [businessId, refresh]);
+
+  return { count, refresh };
+}
+
+export async function markReviewsSeen(businessId) {
+  if (!isSupabaseConfigured || !businessId) return { ok: false };
+  const { error } = await supabase.rpc('mark_reviews_seen', { p_business_id: businessId });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+// Hook: anon-callable list for the public salon profile page.
+export function usePublicBusinessReviews(businessId) {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(Boolean(businessId && isSupabaseConfigured));
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured || !businessId) { setLoading(false); return; }
+    setLoading(true);
+    const { data } = await supabase.rpc('public_business_reviews', { p_business_id: businessId });
+    setReviews(data || []);
+    setLoading(false);
+  }, [businessId]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  return { reviews, loading, refresh };
+}
+
 // ── Salon side ────────────────────────────────────────────────────
 
 // Hook: get the businesses the current user owns. Salons need this to know what

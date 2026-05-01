@@ -5,14 +5,16 @@ import { useNarrow } from '../hooks.js';
 import { useToast } from './Toast.jsx';
 import { useAuth } from '../store.jsx';
 import SignInModal from './SignInModal.jsx';
+import { useMyBusinesses, useUnseenReviewsCount } from '../lib/quotes.js';
 
-// Sidebar nav. Badge counts come from real Supabase reads in the
-// pages themselves — the layout doesn't fake numbers anymore.
+// Sidebar nav. Badge counts come from real Supabase reads (the
+// reviews badge is wired live; other counts wire here as needed).
 const NAV = [
   { id: 'inbox', l: 'Inbox', to: '/salon/inbox' },
   { id: 'bids', l: 'My bids', to: '/salon/bids' },
   { id: 'calendar', l: 'Calendar', to: '/salon/calendar' },
   { id: 'clients', l: 'Clients', to: '/salon/clients' },
+  { id: 'reviews', l: 'Reviews', to: '/salon/reviews' },
   { id: 'earnings', l: 'Earnings', to: '/salon/earnings' },
   { id: 'settings', l: 'Settings', to: '/salon/settings' },
 ];
@@ -26,6 +28,15 @@ export default function SalonLayout({ active, children, mobileTitle }) {
   const [signInOpen, setSignInOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const resolved = active || NAV.find(n => location.pathname === n.to)?.id;
+
+  // Reviews-since-last-visit badge for the primary business.
+  const { businesses } = useMyBusinesses();
+  const businessId = businesses[0]?.id;
+  const { count: unseenReviews } = useUnseenReviewsCount(businessId);
+  const navItems = NAV.map(n => n.id === 'reviews' && unseenReviews > 0
+    ? { ...n, badge: unseenReviews > 9 ? '9+' : String(unseenReviews) }
+    : n
+  );
 
   const onSignOut = () => {
     signOut();
@@ -41,7 +52,7 @@ export default function SalonLayout({ active, children, mobileTitle }) {
     }}>
       <Link to="/salon/inbox" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', padding: '4px 12px 4px', color: p.accent, textDecoration: 'none' }}>glossi</Link>
       <div style={{ fontSize: 10, color: p.accent, fontWeight: 700, letterSpacing: '0.18em', padding: '0 12px 14px' }}>FOR SALONS</div>
-      {NAV.map(it => {
+      {navItems.map(it => {
         const isActive = it.id === resolved;
         return (
           <Link key={it.id} to={it.to} style={{
@@ -109,7 +120,7 @@ export default function SalonLayout({ active, children, mobileTitle }) {
           borderTop: `0.5px solid ${p.line}`, padding: '8px 4px 14px',
           display: 'flex', justifyContent: 'space-around', zIndex: 5,
         }}>
-          {NAV.slice(0, 5).map(it => {
+          {navItems.slice(0, 6).map(it => {
             const isActive = it.id === resolved;
             return (
               <Link key={it.id} to={it.to} style={{
@@ -119,7 +130,11 @@ export default function SalonLayout({ active, children, mobileTitle }) {
               }}>
                 <span style={{ width: 6, height: 6, borderRadius: 99, background: isActive ? p.accent : p.inkMuted, marginTop: 8 }} />
                 <div style={{ fontSize: 9.5, fontWeight: isActive ? 600 : 500 }}>{it.l}</div>
-                {it.badge && <span style={{ position: 'absolute', top: 0, right: '30%', width: 6, height: 6, borderRadius: 99, background: p.accent }} />}
+                {it.badge && (
+                  <span style={{ position: 'absolute', top: 2, right: '22%', minWidth: 14, height: 14, padding: '0 4px', borderRadius: 99, background: p.accent, color: p.bg, fontFamily: type.mono, fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>
+                    {it.badge}
+                  </span>
+                )}
               </Link>
             );
           })}
