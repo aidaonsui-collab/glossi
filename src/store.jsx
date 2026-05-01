@@ -91,6 +91,18 @@ export function AuthProvider({ children }) {
     return () => { cancelled = true; sub.subscription.unsubscribe(); };
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    if (!isSupabaseConfigured) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name, home_zip, avatar_url, is_business, preferred_lang')
+      .eq('id', session.user.id)
+      .maybeSingle();
+    setSupaUser(buildProfile(session.user, profile));
+  }, []);
+
   const user = isSupabaseConfigured ? supaUser : demoUser;
 
   const signIn = useCallback(role => {
@@ -137,8 +149,8 @@ export function AuthProvider({ children }) {
     loading,
     isCustomer: user?.type === 'customer',
     isSalon: user?.type === 'salon',
-    signIn, signInWithEmail, signUp, signOut,
-  }), [user, loading, signIn, signInWithEmail, signUp, signOut]);
+    signIn, signInWithEmail, signUp, signOut, refreshProfile,
+  }), [user, loading, signIn, signInWithEmail, signUp, signOut, refreshProfile]);
 
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }

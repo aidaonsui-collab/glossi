@@ -49,18 +49,24 @@ export default function SignUp() {
       return;
     }
     setSubmitting(true);
-    const result = await signUp({ name: name.trim(), email, password, role });
-    setSubmitting(false);
-    if (!result?.ok) {
-      toast(result?.error || 'Sign up failed.', { tone: 'warn' });
-      return;
+    try {
+      const result = await signUp({ name: name.trim(), email, password, role });
+      if (!result?.ok) {
+        toast(result?.error || 'Sign up failed.', { tone: 'warn' });
+        return;
+      }
+      if (result.needsConfirmation) {
+        toast('Check your email to confirm your account.', { tone: 'success' });
+        return;
+      }
+      toast(`Welcome, ${name.split(' ')[0]}!`, { tone: 'success' });
+      navigate(role === 'salon' ? '/onboarding/salon' : '/onboarding/customer');
+    } catch (err) {
+      console.error('signUp error', err);
+      toast(err?.message || 'Sign up failed unexpectedly.', { tone: 'warn' });
+    } finally {
+      setSubmitting(false);
     }
-    if (result.needsConfirmation) {
-      toast('Check your email to confirm your account.', { tone: 'success' });
-      return;
-    }
-    toast(`Welcome, ${name.split(' ')[0]}!`, { tone: 'success' });
-    navigate(role === 'salon' ? '/onboarding/salon' : '/onboarding/customer');
   };
 
   const input = {

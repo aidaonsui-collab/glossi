@@ -1,8 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
+import { useAuth } from '../store.jsx';
+import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 
 const SERVICE_OPTIONS = [
   'Color & balayage', 'Cut & style', 'Lashes', 'Mani · Pedi',
@@ -13,10 +15,17 @@ export default function OnboardingCustomer() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const toast = useToast();
+  const { user, refreshProfile } = useAuth();
   const step = 1;
-  const [name, setName] = useState('Sofia Martinez');
-  const [zip, setZip] = useState('78577');
-  const [services, setServices] = useState(new Set(['Color & balayage', 'Cut & style']));
+  const [name, setName] = useState('');
+  const [nameTouched, setNameTouched] = useState(false);
+  const [zip, setZip] = useState('');
+  const [services, setServices] = useState(new Set());
+
+  // Once the auth user finishes loading, prefill the name (unless user already typed)
+  useEffect(() => {
+    if (!nameTouched && user?.name && user.name !== 'Sofia Martínez') setName(user.name);
+  }, [user, nameTouched]);
 
   const toggle = s => setServices(curr => {
     const next = new Set(curr);
@@ -24,10 +33,18 @@ export default function OnboardingCustomer() {
     return next;
   });
 
-  const onContinue = () => {
+  const onContinue = async () => {
     if (!name.trim()) { toast('Add your name to continue.', { tone: 'warn' }); return; }
     if (!/^\d{5}$/.test(zip)) { toast('ZIP must be 5 digits.', { tone: 'warn' }); return; }
     if (services.size === 0) { toast('Pick at least one service.', { tone: 'warn' }); return; }
+    if (isSupabaseConfigured && user?.id) {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ full_name: name.trim(), home_zip: zip })
+        .eq('id', user.id);
+      if (error) { toast(error.message, { tone: 'warn' }); return; }
+      await refreshProfile?.();
+    }
     toast(`Welcome, ${name.split(' ')[0]}.`, { tone: 'success' });
     navigate('/quotes');
   };
@@ -52,7 +69,7 @@ export default function OnboardingCustomer() {
           <div style={{ marginTop: isPhone ? 22 : 32, display: 'flex', flexDirection: 'column', gap: 14 }}>
             <label>
               <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>YOUR NAME</div>
-              <input value={name} onChange={e => setName(e.target.value)} style={{ marginTop: 6, width: '100%', padding: '14px 16px', border: `0.5px solid ${p.line}`, borderRadius: 12, background: p.surface, fontFamily: type.body, fontSize: 15, color: p.ink, outline: 'none' }} />
+              <input value={name} onChange={e => { setName(e.target.value); setNameTouched(true); }} style={{ marginTop: 6, width: '100%', padding: '14px 16px', border: `0.5px solid ${p.line}`, borderRadius: 12, background: p.surface, fontFamily: type.body, fontSize: 15, color: p.ink, outline: 'none' }} />
             </label>
             <label>
               <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>ZIP CODE · WE'LL MATCH NEARBY SALONS</div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import Modal from './Modal.jsx';
@@ -7,7 +7,12 @@ import { useToast } from './Toast.jsx';
 import { isSupabaseConfigured } from '../lib/supabase.js';
 
 export default function SignInModal({ open, onClose, defaultRole = 'customer' }) {
-  const { signInWithEmail } = useAuth();
+  const { signInWithEmail, user } = useAuth();
+
+  // If user is already signed in when modal opens, close it.
+  useEffect(() => {
+    if (open && user) onClose?.();
+  }, [open, user, onClose]);
   const toast = useToast();
   const navigate = useNavigate();
   const [email, setEmail] = useState(isSupabaseConfigured ? '' : 'sofia@example.com');
@@ -19,11 +24,17 @@ export default function SignInModal({ open, onClose, defaultRole = 'customer' })
     if (!email.trim()) { toast('Email required.', { tone: 'warn' }); return; }
     if (isSupabaseConfigured && !password) { toast('Password required.', { tone: 'warn' }); return; }
     setBusy(true);
-    const result = await signInWithEmail(email.trim(), password, role);
-    setBusy(false);
-    if (!result?.ok) { toast(result?.error || 'Sign in failed.', { tone: 'warn' }); return; }
-    toast('Signed in.', { tone: 'success' });
-    onClose?.();
+    try {
+      const result = await signInWithEmail(email.trim(), password, role);
+      if (!result?.ok) { toast(result?.error || 'Sign in failed.', { tone: 'warn' }); return; }
+      toast('Signed in.', { tone: 'success' });
+      onClose?.();
+    } catch (err) {
+      console.error('signIn error', err);
+      toast(err?.message || 'Sign in failed unexpectedly.', { tone: 'warn' });
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
