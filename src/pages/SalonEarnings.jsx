@@ -3,7 +3,7 @@ import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
-import { useMyBusinesses, useSalonBookingsList } from '../lib/quotes.js';
+import { useMyBusinessProfile, useSalonBookingsList } from '../lib/quotes.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
@@ -31,9 +31,11 @@ function weeklyBuckets(bookings) {
 export default function SalonEarnings() {
   const isPhone = useNarrow();
   const toast = useToast();
-  const { businesses } = useMyBusinesses();
-  const businessId = businesses[0]?.id;
+  const { business } = useMyBusinessProfile();
+  const businessId = business?.id;
   const { bookings, loading } = useSalonBookingsList(businessId);
+  const stripeReady = business?.stripe_charges_enabled && business?.stripe_payouts_enabled;
+  const stripePending = business?.stripe_account_id && !stripeReady;
 
   const stats = useMemo(() => {
     const completed = bookings.filter(b => b.status !== 'cancelled');
@@ -99,9 +101,20 @@ export default function SalonEarnings() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ padding: '14px 16px', background: 'rgba(255,255,255,0.06)', borderRadius: 12 }}>
               <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.5)' }}>PAYOUTS</div>
-              <div style={{ fontSize: 13, marginTop: 4, lineHeight: 1.5, color: 'rgba(255,255,255,0.85)' }}>
-                Stripe Connect arrives in Phase 6. Until then, customers pay you directly at the appointment.
-              </div>
+              {stripeReady ? (
+                <div style={{ fontSize: 13, marginTop: 4, lineHeight: 1.5, color: 'rgba(255,255,255,0.85)' }}>
+                  Stripe verified. Funds settle to your bank 1–2 business days after each booking.
+                  <span style={{ display: 'block', marginTop: 4, fontFamily: type.mono, fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>{business?.stripe_account_id?.slice(-8)}</span>
+                </div>
+              ) : stripePending ? (
+                <div style={{ fontSize: 13, marginTop: 4, lineHeight: 1.5, color: 'rgba(255,255,255,0.85)' }}>
+                  Onboarding incomplete — finish in Settings → Payouts. Customers can't accept your bids until Stripe verifies your details.
+                </div>
+              ) : (
+                <div style={{ fontSize: 13, marginTop: 4, lineHeight: 1.5, color: 'rgba(255,255,255,0.85)' }}>
+                  Connect your bank in Settings → Payouts to start receiving payouts. Until then, bookings show in your history but money can't move.
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -10,12 +10,24 @@ export const isStripeConfigured = Boolean(PUBLISHABLE_KEY);
 // Helper: invoke a Supabase Edge Function with the current user's JWT
 // attached. Used by Settings (Connect onboarding) and the customer
 // payment flow (PaymentIntent creation).
+//
+// On non-2xx, supabase-js wraps the response in FunctionsHttpError
+// with the raw Response object on `context`. The actual error
+// message lives in the response body, so we have to read it
+// ourselves — supabase-js doesn't surface it.
 export async function invokeEdgeFunction(name, body) {
   if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
   const { data, error } = await supabase.functions.invoke(name, { body });
   if (error) {
-    // FunctionsHttpError exposes context with the body the function returned
-    const msg = error.context?.errorMessage || error.message || 'Edge function failed';
+    let msg = error.message || 'Edge function failed';
+    try {
+      const resp = error.context;
+      if (resp && typeof resp.json === 'function') {
+        const payload = await resp.clone().json();
+        if (payload?.message) msg = payload.message;
+        else if (payload?.error) msg = payload.error;
+      }
+    } catch { /* keep generic message */ }
     return { ok: false, error: msg, raw: error };
   }
   return { ok: true, data };
