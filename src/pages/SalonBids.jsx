@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
@@ -36,40 +36,41 @@ const fmtSlot = ts => ts ? new Date(ts).toLocaleString('en-US', { weekday: 'shor
 // expired → lost
 const mapStatus = s => s === 'accepted' ? 'won' : s === 'active' ? 'pending' : 'lost';
 
-// Derive a placeholder customer label until contact reveal lands.
-// "Customer · #abc123" gives the salon a stable handle without
-// leaking PII before the bid is accepted.
-const customerLabel = bid => {
-  if (bid.customer_full_name) return bid.customer_full_name;
-  const tag = (bid.quote_requests?.id || bid.id || '').slice(0, 6);
+// Derive a fallback label when the RPC didn't reveal the name (rejected
+// or withdrawn bids). "Customer · #abc123" gives the salon a stable
+// handle without leaking the PII a withdrawn bid shouldn't unlock.
+const customerLabel = row => {
+  if (row.customer_name) return row.customer_name;
+  const tag = (row.request_id || row.bid_id || '').slice(0, 6);
   return `Customer · #${tag}`;
 };
 
 const initialsFromLabel = s => (s || 'C').split(/[\s·#]+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
 
-// Translate a Supabase quote_bids row into the shape the existing
-// list/modal renderers expect. Keeps the visual layout intact while
-// the underlying data source flips to real.
-const toRow = bid => {
-  const req = bid.quote_requests;
-  const status = mapStatus(bid.status);
-  const services = req?.service_slugs || [];
+// Translate a salon_bids RPC row into the shape the existing list /
+// modal renderers expect. Customer info is on the row directly now —
+// no second round-trip via request_customer_contact for the list.
+const toRow = row => {
+  const status = mapStatus(row.status);
+  const services = row.service_slugs || [];
   const service = services.length
     ? services.map(s => s.replace('-', ' & ')).join(', ')
     : 'Service';
-  const label = customerLabel(bid);
+  const label = customerLabel(row);
   return {
-    id: bid.id,
-    raw: bid,
+    id: row.bid_id,
+    raw: row,
     client: label,
+    customerEmail: row.customer_email,
+    customerPhone: row.customer_phone,
     service,
-    bid: Math.round((bid.price_cents || 0) / 100),
+    bid: Math.round((row.price_cents || 0) / 100),
     status,
-    sent: fmtAgo(bid.created_at),
-    slot: fmtSlot(bid.earliest_slot),
+    sent: fmtAgo(row.created_at),
+    slot: fmtSlot(row.earliest_slot),
     initials: initialsFromLabel(label),
-    note: bid.message || req?.notes || '—',
-    requestZip: req?.search_zip,
+    note: row.message || row.request_notes || '—',
+    requestZip: row.search_zip,
   };
 };
 
@@ -83,24 +84,6 @@ export default function SalonBids() {
   const [editDraft, setEditDraft] = useState(null);
   const [confirmWithdraw, setConfirmWithdraw] = useState(false);
   const [acting, setActing] = useState(false);
-  // Cache resolved customer contact info per request_id so we don't
-  // re-fetch every time the salon opens the same modal.
-  const [contacts, setContacts] = useState({});
-
-  // When the salon opens a modal, fetch the real customer contact via
-  // request_customer_contact (RPC gates on the bid being active or
-  // accepted, so it works for both pending and won bids in this view).
-  useEffect(() => {
-    if (!isSupabaseConfigured || !openBid?.raw) return;
-    const requestId = openBid.raw.quote_requests?.id;
-    if (!requestId || contacts[requestId] !== undefined) return;
-    let cancelled = false;
-    supabase.rpc('request_customer_contact', { p_request_id: requestId }).then(({ data }) => {
-      if (cancelled) return;
-      setContacts(curr => ({ ...curr, [requestId]: data?.[0] || null }));
-    });
-    return () => { cancelled = true; };
-  }, [openBid, contacts]);
 
   const bids = useMemo(() => rawBids.map(toRow), [rawBids]);
   const list = bids.filter(b => tab === 'all' || b.status === tab);
@@ -135,7 +118,7 @@ export default function SalonBids() {
     setActing(true);
     const { error } = await supabase.rpc('submit_bid', {
       p_business_id: openBid.raw.business_id,
-      p_request_id: openBid.raw.quote_requests?.id,
+      p_request_id: openBid.raw.request_id,
       p_price_cents: priceCents,
       p_estimated_duration: openBid.raw.estimated_duration,
       p_earliest_slot: openBid.raw.earliest_slot || null,
@@ -152,7 +135,7 @@ export default function SalonBids() {
   const withdraw = async () => {
     if (!isSupabaseConfigured || !openBid?.raw) return;
     setActing(true);
-    const { error } = await supabase.rpc('withdraw_bid', { p_bid_id: openBid.raw.id });
+    const { error } = await supabase.rpc('withdraw_bid', { p_bid_id: openBid.raw.bid_id });
     setActing(false);
     if (error) { toast(error.message, { tone: 'warn' }); return; }
     toast(`Bid withdrawn from ${openBid.client}.`);
@@ -239,19 +222,15 @@ export default function SalonBids() {
         </div>
       </div>
 
-      {(() => null)()}
       {openBid && (() => {
-        // Resolve customer name/email/phone from the contact cache.
-        // request_customer_contact (post-migration 0501_002) reveals
-        // on any active or accepted bid by the caller; rejected bids
-        // get the masked label only.
-        const requestId = openBid.raw?.quote_requests?.id;
-        const contact = requestId ? contacts[requestId] : null;
-        const showContact = openBid.status !== 'lost' && contact;
-        const headerName = showContact && contact.full_name ? contact.full_name : openBid.client;
-        const headerInitials = showContact && contact.full_name
-          ? contact.full_name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase()
+        // Customer info is already on the row from the salon_bids RPC
+        // (revealed on active/accepted bids only). Use it directly.
+        const showContact = openBid.status !== 'lost' && (openBid.customerEmail || openBid.raw?.customer_name);
+        const headerName = openBid.raw?.customer_name || openBid.client;
+        const headerInitials = openBid.raw?.customer_name
+          ? openBid.raw.customer_name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase()
           : openBid.initials;
+        const contact = { email: openBid.customerEmail, phone: openBid.customerPhone };
         return (
       <Modal
         open

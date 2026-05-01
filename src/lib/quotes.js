@@ -226,15 +226,13 @@ export function useMyBids() {
   const refresh = useCallback(async () => {
     if (!isSupabaseConfigured) { setLoading(false); return; }
     setLoading(true);
-    // RLS quote_bids_business_all already restricts SELECT to bids on
-    // businesses the caller owns — we trust the policy here instead of
-    // adding an .eq('businesses.owner_id', ...) filter, because the
-    // embedded-filter syntax was returning zero rows for some salons
-    // even when the data was clearly there.
-    const { data, error } = await supabase
-      .from('quote_bids')
-      .select('id, price_cents, estimated_duration, earliest_slot, message, status, created_at, business_id, businesses(id, name), quote_requests(id, status, service_slugs, search_zip, notes, created_at, expires_at)')
-      .order('created_at', { ascending: false });
+    // Single RPC pulls bid + request + customer contact in one round
+    // trip (see migration 0501_007). Direct quote_bids select with
+    // embeds left names blank in the list because customer info
+    // lives in auth.users / profiles which are RLS-locked to the
+    // caller. The RPC bypasses that with SECURITY DEFINER + an
+    // ownership check.
+    const { data, error } = await supabase.rpc('salon_bids');
     if (error) { console.error('useMyBids error', error); setBids([]); }
     else setBids(data || []);
     setLoading(false);
