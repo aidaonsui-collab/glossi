@@ -8,7 +8,7 @@ function Shell({ children }) {
   return (
     <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body }}>
       <div style={{ display: 'flex', alignItems: 'center', padding: isPhone ? '18px' : '22px 64px', gap: 14, borderBottom: `0.5px solid ${p.line}`, position: 'sticky', top: 0, background: p.bg, zIndex: 5 }}>
-        <Link to="/" style={{ fontFamily: type.body, fontSize: 13, fontWeight: 700, letterSpacing: '0.22em', color: p.ink, textDecoration: 'none' }}>GLOSSI</Link>
+        <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
         <div style={{ flex: 1 }} />
         <Link to="/" style={{ fontSize: 13, color: p.inkSoft, fontWeight: 500, textDecoration: 'none' }}>← Back</Link>
       </div>

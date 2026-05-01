@@ -95,7 +95,7 @@ export default function Welcome({ p, type, lang, onComplete, onSkip }) {
         <div style={{ position: 'relative', height: 380, overflow: 'hidden' }}>
           <SalonPhoto mood={1} h={380} style={{ position: 'absolute', inset: 0, width: '100%', borderRadius: 0 }} />
           <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, ${p.bg}55 0%, ${p.bg}cc 70%, ${p.bg} 100%)` }} />
-          <div style={{ position: 'absolute', top: 64, left: 20, fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.ink }}>GLOSSI</div>
+          <div style={{ position: 'absolute', top: 64, left: 20, fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent }}>glossi</div>
         </div>
         <div style={{ padding: '0 22px 28px', flex: 1, display: 'flex', flexDirection: 'column', marginTop: -100, position: 'relative', zIndex: 2 }}>
           <div style={{ fontFamily: type.display, fontSize: 46, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.03em', fontStyle: 'italic', lineHeight: 0.95 }}>

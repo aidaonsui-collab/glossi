@@ -187,7 +187,7 @@ export default function IOS() {
   return (
     <div style={{ background: '#1a1714', minHeight: '100vh', color: '#fff', padding: isPhone ? '20px 16px 40px' : '40px 32px 60px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: isPhone ? 16 : 28 }}>
-        <Link to="/" style={{ fontFamily: type.body, fontSize: 12, color: 'rgba(255,255,255,0.6)', textDecoration: 'none', letterSpacing: '0.18em', fontWeight: 700 }}>← GLOSSI WEB</Link>
+        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'rgba(232, 183, 168, 0.85)', textDecoration: 'none', fontFamily: type.display, fontStyle: 'italic', fontSize: 18, fontWeight: type.displayWeight, letterSpacing: '-0.02em' }}><span style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.5)' }}>←</span>glossi web</Link>
         <div style={{ flex: 1 }} />
         {side === 'customer' && (
           <button onClick={() => setShowWelcome(s => !s)} style={{

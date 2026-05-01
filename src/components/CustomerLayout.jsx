@@ -40,7 +40,7 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
       width: 240, padding: '24px 18px', borderRight: `0.5px solid ${p.line}`, background: p.surface,
       display: 'flex', flexDirection: 'column', gap: 6, minHeight: '100vh', position: 'sticky', top: 0, flexShrink: 0,
     }}>
-      <Link to="/" style={{ fontFamily: type.body, fontSize: 13, fontWeight: 700, letterSpacing: '0.22em', padding: '4px 12px 18px', color: p.ink, textDecoration: 'none' }}>GLOSSI</Link>
+      <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', padding: '4px 12px 18px', color: p.accent, textDecoration: 'none' }}>glossi</Link>
       {NAV.map(it => {
         const isActive = it.id === resolved;
         return (
@@ -88,7 +88,7 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
     return (
       <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body, display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '18px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: `0.5px solid ${p.line}`, position: 'sticky', top: 0, background: p.bg, zIndex: 5 }}>
-          <Link to="/" style={{ fontFamily: type.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.22em', color: p.ink, textDecoration: 'none' }}>GLOSSI</Link>
+          <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
           {mobileTitle && <span style={{ fontSize: 12, color: p.inkMuted, marginLeft: 8 }}>· {mobileTitle}</span>}
           <div style={{ flex: 1 }} />
           {user ? (

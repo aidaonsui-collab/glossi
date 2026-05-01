@@ -17,7 +17,7 @@ export default function SalonEmpty() {
   const [days, setDays] = useState({ Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: true, Sun: false });
   return (
     <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body, padding: isPhone ? '24px 18px' : '40px 64px' }}>
-      <Link to="/" style={{ display: 'inline-block', marginBottom: 24, fontSize: 12, color: p.inkMuted, textDecoration: 'none', letterSpacing: '0.18em', fontWeight: 700 }}>← GLOSSI</Link>
+      <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 24, fontSize: 22, color: p.accent, textDecoration: 'none', fontFamily: type.display, fontStyle: 'italic', fontWeight: type.displayWeight, letterSpacing: '-0.02em' }}><span style={{ fontFamily: type.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>←</span>glossi</Link>
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>CASA DE BELLEZA · INBOX</div>
       <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', margin: '8px 0 0', lineHeight: 1 }}>All caught up.</h1>
       <div style={{ marginTop: isPhone ? 22 : 32, padding: isPhone ? '24px' : '40px', borderRadius: 18, background: p.surface, border: `0.5px solid ${p.line}`, display: 'flex', flexDirection: isPhone ? 'column' : 'row', alignItems: 'center', gap: isPhone ? 16 : 30 }}>

@@ -52,7 +52,7 @@ export default function OnboardingCustomer() {
   return (
     <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body, display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: isPhone ? '18px' : '24px 40px', display: 'flex', alignItems: 'center', gap: 14, borderBottom: `0.5px solid ${p.line}` }}>
-        <Link to="/" style={{ fontFamily: type.body, fontSize: 13, fontWeight: 700, letterSpacing: '0.22em', color: p.ink, textDecoration: 'none' }}>GLOSSI</Link>
+        <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
         <div style={{ flex: 1 }} />
         <div style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, fontWeight: 600 }}>STEP {step} / 3</div>
         <div style={{ width: 80, height: 3, borderRadius: 2, background: p.line, position: 'relative', overflow: 'hidden' }}>

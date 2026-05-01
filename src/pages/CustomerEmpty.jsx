@@ -9,7 +9,7 @@ export default function CustomerEmpty() {
   const toast = useToast();
   return (
     <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body, padding: isPhone ? '24px 18px' : '48px 64px' }}>
-      <Link to="/" style={{ display: 'inline-block', marginBottom: 24, fontSize: 12, color: p.inkMuted, textDecoration: 'none', letterSpacing: '0.18em', fontWeight: 700 }}>← GLOSSI</Link>
+      <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 24, fontSize: 22, color: p.accent, textDecoration: 'none', fontFamily: type.display, fontStyle: 'italic', fontWeight: type.displayWeight, letterSpacing: '-0.02em' }}><span style={{ fontFamily: type.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>←</span>glossi</Link>
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>YOUR QUOTES</div>
       <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 34 : 54, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>Nothing in flight.</h1>
       <div style={{ marginTop: isPhone ? 22 : 32, padding: isPhone ? '24px' : '40px', borderRadius: 18, border: `1px dashed ${p.inkMuted}`, background: p.surface, display: 'flex', flexDirection: isPhone ? 'column' : 'row', alignItems: 'center', gap: isPhone ? 16 : 30 }}>

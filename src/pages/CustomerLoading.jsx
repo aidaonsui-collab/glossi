@@ -17,7 +17,7 @@ export default function CustomerLoading() {
   const toast = useToast();
   return (
     <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body, padding: isPhone ? '24px 18px' : '40px 64px' }}>
-      <Link to="/" style={{ display: 'inline-block', marginBottom: 24, fontSize: 12, color: p.inkMuted, textDecoration: 'none', letterSpacing: '0.18em', fontWeight: 700 }}>← GLOSSI</Link>
+      <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 24, fontSize: 22, color: p.accent, textDecoration: 'none', fontFamily: type.display, fontStyle: 'italic', fontWeight: type.displayWeight, letterSpacing: '-0.02em' }}><span style={{ fontFamily: type.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>←</span>glossi</Link>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, color: p.accent, letterSpacing: '0.18em', flexWrap: 'wrap' }}>
         <span style={{ width: 8, height: 8, borderRadius: 99, background: p.accent, animation: 'glossiPulse 1.2s infinite' }} />
         <span>WAITING FOR BIDS · 4 SALONS NOTIFIED</span>

@@ -82,7 +82,7 @@ export default function SignUp() {
     <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body, display: 'flex', flexDirection: 'column' }}>
       {/* Top bar */}
       <div style={{ padding: isPhone ? '18px' : '22px 64px', display: 'flex', alignItems: 'center', borderBottom: `0.5px solid ${p.line}` }}>
-        <Link to="/" style={{ fontFamily: type.body, fontSize: 13, fontWeight: 700, letterSpacing: '0.22em', color: p.ink, textDecoration: 'none' }}>GLOSSI</Link>
+        <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
         <div style={{ flex: 1 }} />
         <span style={{ fontSize: 12.5, color: p.inkMuted }}>Already a member?</span>
         <Link to="/?signin=1" style={{ marginLeft: 10, fontSize: 13, color: p.ink, textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>

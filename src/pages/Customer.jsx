@@ -65,7 +65,7 @@ export default function Customer() {
       width: 240, padding: '24px 18px', borderRight: `0.5px solid ${p.line}`, background: p.surface,
       display: 'flex', flexDirection: 'column', gap: 6, minHeight: '100vh', position: 'sticky', top: 0,
     }}>
-      <Link to="/" style={{ fontFamily: type.body, fontSize: 13, fontWeight: 700, letterSpacing: '0.22em', padding: '4px 12px 18px', color: p.ink, textDecoration: 'none' }}>GLOSSI</Link>
+      <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', padding: '4px 12px 18px', color: p.accent, textDecoration: 'none' }}>glossi</Link>
       {navItems.map((it) => {
         const active = it.l === 'Home' || it.l === 'My quotes';
         return (
@@ -244,7 +244,7 @@ export default function Customer() {
     return (
       <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body, display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '18px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: `0.5px solid ${p.line}` }}>
-          <Link to="/" style={{ fontFamily: type.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.22em', color: p.ink, textDecoration: 'none' }}>GLOSSI</Link>
+          <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
           <div style={{ flex: 1 }} />
           <button onClick={() => toggleLang()} style={{ background: 'transparent', border: 0, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>{lang}</button>
           <button onClick={() => navigate('/me')} style={{ width: 34, height: 34, borderRadius: 99, background: user?.avatar || 'linear-gradient(135deg,#E8B7A8,#B8893E)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, border: 0, cursor: 'pointer', fontFamily: 'inherit' }}>{user?.initials || 'SM'}</button>
