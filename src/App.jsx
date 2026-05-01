@@ -1,5 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Marketing from './pages/Marketing.jsx';
+import { useAuth } from './store.jsx';
+
+// At "/", the marketing landing page is for visitors. A logged-in
+// salon hitting "/" — by clicking the logo, deep-linking, or via a
+// stale bookmark — would otherwise see the customer-flavored
+// "Post a request" landing, which is confusing. Bounce them to
+// the salon inbox instead. Customers stay on the marketing page
+// (it doubles as their "find a salon" entry point pre-quote).
+function HomeRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return null; // brief blank while auth hydrates — way less than first paint
+  if (user?.type === 'salon') return <Navigate to="/salon/inbox" replace />;
+  return <Marketing />;
+}
 import Customer from './pages/Customer.jsx';
 import CustomerEmpty from './pages/CustomerEmpty.jsx';
 import CustomerLoading from './pages/CustomerLoading.jsx';
@@ -43,7 +57,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Marketing />} />
+        <Route path="/" element={<HomeRoute />} />
         <Route path="/quotes" element={<Customer />} />
         <Route path="/quotes/empty" element={<CustomerEmpty />} />
         <Route path="/quotes/waiting" element={<CustomerLoading />} />
