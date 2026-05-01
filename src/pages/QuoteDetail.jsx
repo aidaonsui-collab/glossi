@@ -24,14 +24,14 @@ export default function QuoteDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { bids, loading: bidsLoading, refresh } = useBidsForQuote(id);
 
   const [quote, setQuote] = useState(null);
   const [accepting, setAccepting] = useState(null);
 
   useEffect(() => {
-    if (isSupabaseConfigured && user === null) navigate('/signup', { replace: true });
+    if (isSupabaseConfigured && !authLoading && !user) navigate('/signup', { replace: true });
   }, [user, navigate]);
 
   useEffect(() => {

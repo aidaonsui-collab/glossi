@@ -29,7 +29,7 @@ export default function RequestQuote() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const toast = useToast();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { profile } = useCustomerProfile();
   const [params] = useSearchParams();
 
@@ -50,10 +50,10 @@ export default function RequestQuote() {
     if (!zip && profile?.zip) setZip(profile.zip);
   }, [profile, zip]);
 
-  // If not signed in, send them to sign up
+  // If not signed in (after auth has settled), send them to sign up
   useEffect(() => {
-    if (isSupabaseConfigured && user === null) navigate('/signup', { replace: true });
-  }, [user, navigate]);
+    if (isSupabaseConfigured && !authLoading && !user) navigate('/signup', { replace: true });
+  }, [user, authLoading, navigate]);
 
   const togglePicked = slug => setPicked(curr => {
     const next = new Set(curr);
@@ -84,7 +84,7 @@ export default function RequestQuote() {
     }
   };
 
-  const validZip = ZIP_CENTROIDS[zip] || (zip.length === 5 && /^(75|76|78|79)/.test(zip));
+  const validZip = Boolean(ZIP_CENTROIDS[zip]) || (zip.length === 5 && /^(75|76|78|79)/.test(zip));
   const canSubmit = picked.size > 0 && validZip && !submitting;
 
   const inputStyle = {

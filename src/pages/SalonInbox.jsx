@@ -21,12 +21,12 @@ const fmtAgo = ts => {
 export default function SalonInbox() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { businesses, loading: bizLoading } = useMyBusinesses();
   const [activeBizId, setActiveBizId] = useState(null);
 
   useEffect(() => {
-    if (isSupabaseConfigured && user === null) navigate('/signup?role=salon', { replace: true });
+    if (isSupabaseConfigured && !authLoading && !user) navigate('/signup?role=salon', { replace: true });
   }, [user, navigate]);
 
   // Auto-select first business

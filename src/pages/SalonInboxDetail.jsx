@@ -25,7 +25,7 @@ export default function SalonInboxDetail() {
   const businessId = params.get('biz');
   const navigate = useNavigate();
   const toast = useToast();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const [request, setRequest] = useState(null);
   const [contact, setContact] = useState(null);
@@ -40,7 +40,7 @@ export default function SalonInboxDetail() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isSupabaseConfigured && user === null) navigate('/signup?role=salon', { replace: true });
+    if (isSupabaseConfigured && !authLoading && !user) navigate('/signup?role=salon', { replace: true });
   }, [user, navigate]);
 
   useEffect(() => {
