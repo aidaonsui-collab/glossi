@@ -38,6 +38,7 @@ import Editorial from './pages/Editorial.jsx';
 import Article from './pages/Article.jsx';
 import SalonBids from './pages/SalonBids.jsx';
 import SalonCalendar from './pages/SalonCalendar.jsx';
+import SalonBookingDetail from './pages/SalonBookingDetail.jsx';
 import SalonClients from './pages/SalonClients.jsx';
 import SalonEarnings from './pages/SalonEarnings.jsx';
 import Bookings from './pages/Bookings.jsx';
@@ -80,6 +81,7 @@ export default function App() {
         <Route path="/editorial/:id" element={<Article />} />
         <Route path="/salon/bids" element={<SalonBids />} />
         <Route path="/salon/calendar" element={<SalonCalendar />} />
+        <Route path="/salon/booking/:id" element={<SalonBookingDetail />} />
         <Route path="/salon/clients" element={<SalonClients />} />
         <Route path="/salon/earnings" element={<SalonEarnings />} />
         <Route path="/bookings" element={<Bookings />} />

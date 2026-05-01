@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
-import { useToast } from '../components/Toast.jsx';
-import Modal from '../components/Modal.jsx';
-import BookingLifecycleModal from '../components/BookingLifecycleModal.jsx';
 import { useMyBusinesses, useSalonBookingsList } from '../lib/quotes.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
 
@@ -43,16 +41,14 @@ function placeOnGrid(booking, weekStart) {
 
 export default function SalonCalendar() {
   const isPhone = useNarrow();
-  const toast = useToast();
+  const navigate = useNavigate();
   const { businesses, loading: bizLoading } = useMyBusinesses();
   const businessId = businesses[0]?.id;
-  const { bookings, loading, refresh } = useSalonBookingsList(businessId);
+  const { bookings, loading } = useSalonBookingsList(businessId);
 
   const [weekOffset, setWeekOffset] = useState(0);
-  const [selected, setSelected] = useState(null);
-  const [messageOpen, setMessageOpen] = useState(false);
-  const [draft, setDraft] = useState('');
-  const [lifecycleAction, setLifecycleAction] = useState(null);
+
+  const openBooking = id => navigate(`/salon/booking/${id}`);
 
   const weekStart = useMemo(() => {
     const s = startOfWeek(new Date());
@@ -72,16 +68,6 @@ export default function SalonCalendar() {
     100,
     Math.round((visible.reduce((sum, b) => sum + (b.grid?.span || 1), 0) / (HOURS.length * 7)) * 100),
   );
-
-  const sendMessage = () => {
-    // Messaging isn't wired to real channels yet — keep the toast so
-    // the UI still demonstrates the action. Replace with email/SMS
-    // when Phase 7 (notifications) lands.
-    if (!draft.trim()) { toast('Type a message first.', { tone: 'warn' }); return; }
-    toast(`Message to ${selected.customer_name || 'customer'} — coming soon.`, { tone: 'info' });
-    setMessageOpen(false);
-    setDraft('');
-  };
 
   const week = weekOffset === 0 ? 'This week' : weekOffset === 1 ? 'Next week' : weekOffset === -1 ? 'Last week' : `${weekOffset > 0 ? '+' : ''}${weekOffset} weeks`;
 
@@ -140,7 +126,7 @@ export default function SalonCalendar() {
                   <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted, marginBottom: 8 }}>{d.toUpperCase()}</div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {dayAppts.map(a => (
-                      <button key={a.booking_id} onClick={() => setSelected(a)} style={{ padding: '12px 14px', background: p.surface, borderRadius: 12, border: `0.5px solid ${a.status === 'cancelled' ? p.line : p.line}`, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', color: p.ink, opacity: a.status === 'cancelled' ? 0.55 : 1 }}>
+                      <button key={a.booking_id} onClick={() => openBooking(a.booking_id)} style={{ padding: '12px 14px', background: p.surface, borderRadius: 12, border: `0.5px solid ${a.status === 'cancelled' ? p.line : p.line}`, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', color: p.ink, opacity: a.status === 'cancelled' ? 0.55 : 1 }}>
                         <div style={{ fontFamily: type.mono, fontSize: 12, fontWeight: 600, color: p.ink, minWidth: 50 }}>{HOURS[a.grid.start]}</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 13, fontWeight: 600 }}>{a.customer_name || 'Customer'}</div>
@@ -170,7 +156,7 @@ export default function SalonCalendar() {
                   return (
                     <div key={di} style={{ borderRight: di < 6 ? `0.5px solid ${p.line}` : 'none', padding: 4, position: 'relative' }}>
                       {a && (
-                        <button onClick={() => setSelected(a)} style={{
+                        <button onClick={() => openBooking(a.booking_id)} style={{
                           position: 'absolute', inset: 4,
                           height: `calc(${a.grid.span * 100}% + ${(a.grid.span - 1) * 0.5}px - 8px)`,
                           padding: '6px 8px', borderRadius: 8,
@@ -193,81 +179,7 @@ export default function SalonCalendar() {
           </div>
         )}
 
-        {selected && (() => {
-          const isConfirmed = selected.status === 'confirmed';
-          const lifecycleBooking = {
-            id: selected.booking_id,
-            customerName: selected.customer_name,
-            salonName: businesses.find(x => x.id === businessId)?.name,
-            scheduledAt: selected.scheduled_at,
-            priceCents: selected.price_cents,
-          };
-          const openAction = mode => setLifecycleAction({ booking: lifecycleBooking, mode });
-          return (
-            <div style={{ marginTop: 16, padding: '16px 18px', background: p.ink, color: p.bg, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-              <div style={{ flex: '1 1 200px' }}>
-                <div style={{ fontFamily: type.body, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.55)' }}>
-                  {DAY_LABELS[selected.grid.day]} · {HOURS[selected.grid.start]} · {selected.status?.toUpperCase()}
-                  {selected.refunded_amount_cents > 0 && ` · ${fmtPrice(selected.refunded_amount_cents)} refunded`}
-                </div>
-                <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, marginTop: 4 }}>
-                  {selected.customer_name || 'Customer'} · {fmtServices(selected.service_slugs)}
-                </div>
-                {(selected.customer_email || selected.customer_phone) && (
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 2 }}>
-                    {selected.customer_email}{selected.customer_phone ? ` · ${selected.customer_phone}` : ''}
-                  </div>
-                )}
-                {selected.review_rating && (
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', marginTop: 4 }}>
-                    {'★'.repeat(selected.review_rating)}{'☆'.repeat(5 - selected.review_rating)} {selected.review_body ? `· "${selected.review_body}"` : ''}
-                  </div>
-                )}
-              </div>
-              <div style={{ fontFamily: type.mono, fontSize: 24, fontWeight: 600 }}>{fmtPrice(selected.price_cents)}</div>
-              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
-                {isConfirmed && (
-                  <>
-                    <button onClick={() => openAction('complete')} style={{ background: p.success, color: '#fff', border: 0, padding: '10px 16px', borderRadius: 99, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>Mark complete</button>
-                    <button onClick={() => openAction('no_show')} style={{ background: 'rgba(255,255,255,0.1)', border: 0, padding: '10px 14px', borderRadius: 99, color: p.bg, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>No-show</button>
-                    <button onClick={() => openAction('cancel')} style={{ background: 'transparent', border: `0.5px solid rgba(255,255,255,0.3)`, padding: '10px 14px', borderRadius: 99, color: p.bg, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>Cancel</button>
-                  </>
-                )}
-                <button onClick={() => { setDraft(`Hi ${(selected.customer_name || '').split(' ')[0] || ''} — `); setMessageOpen(true); }} style={{ background: 'rgba(255,255,255,0.1)', border: 0, padding: '10px 14px', borderRadius: 99, color: p.bg, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>Message</button>
-                <button onClick={() => setSelected(null)} style={{ background: p.accent, color: p.ink, border: 0, padding: '10px 16px', borderRadius: 99, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>Close</button>
-              </div>
-            </div>
-          );
-        })()}
       </div>
-
-      <Modal open={messageOpen} onClose={() => { setMessageOpen(false); setDraft(''); }} eyebrow="MESSAGE CLIENT" title={selected?.customer_name || 'Customer'} footer={
-        <>
-          <button onClick={() => { setMessageOpen(false); setDraft(''); }} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
-          <button onClick={sendMessage} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Send</button>
-        </>
-      }>
-        {selected && (
-          <div>
-            <div style={{ padding: '10px 12px', background: p.bg, borderRadius: 10, fontSize: 12, color: p.inkSoft, marginBottom: 12 }}>
-              {DAY_LABELS[selected.grid.day]} · {HOURS[selected.grid.start]} · {fmtServices(selected.service_slugs)}
-            </div>
-            <textarea value={draft} onChange={e => setDraft(e.target.value)} autoFocus rows={5} placeholder="Confirmation, slot change, what to bring…" style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.body, fontSize: 14, color: p.ink, lineHeight: 1.5, resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
-          </div>
-        )}
-      </Modal>
-
-      {lifecycleAction && (
-        <BookingLifecycleModal
-          booking={lifecycleAction.booking}
-          mode={lifecycleAction.mode}
-          callerRole="salon"
-          onClose={shouldRefresh => {
-            setLifecycleAction(null);
-            if (shouldRefresh) { refresh?.(); setSelected(null); }
-          }}
-        />
-      )}
     </SalonLayout>
   );
 }
