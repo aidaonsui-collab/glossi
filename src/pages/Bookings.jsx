@@ -8,6 +8,7 @@ import { useBookings } from '../store.jsx';
 import { Stars } from '../ios/atoms.jsx';
 import { BIDS } from '../ios/data.js';
 import BookingActions from '../components/BookingActions.jsx';
+import BookingLifecycleModal from '../components/BookingLifecycleModal.jsx';
 import { useSupabaseBookings } from '../lib/quotes.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
 
@@ -34,6 +35,7 @@ function fromSupabase(row) {
   const ts = row.scheduled_at ? new Date(row.scheduled_at).getTime() : new Date(row.created_at).getTime();
   const isPast = row.status === 'completed' || row.status === 'no_show'
     || (row.status === 'confirmed' && ts < Date.now());
+  const review = (row.reviews || [])[0];
   return {
     id: row.id,
     salonId: row.businesses?.slug,
@@ -43,7 +45,15 @@ function fromSupabase(row) {
     total: (row.price_cents || 0) / 100,
     slot: row.scheduled_at ? fmt(row.scheduled_at) : null,
     createdAt: new Date(row.created_at).getTime(),
+    rawStatus: row.status,
     status: row.status === 'cancelled' ? 'cancelled' : (isPast ? 'past' : 'upcoming'),
+    isCompleted: row.status === 'completed',
+    isNoShow: row.status === 'no_show',
+    refundCents: row.refunded_amount_cents || 0,
+    paymentStatus: row.payment_status,
+    rating: review?.rating,
+    reviewBody: review?.body,
+    fromSupabase: true,
   };
 }
 
@@ -51,8 +61,9 @@ export default function Bookings() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const { bookings: localBookings } = useBookings();
-  const { bookings: supaBookings, loading: supaLoading } = useSupabaseBookings();
+  const { bookings: supaBookings, loading: supaLoading, refresh: refreshSupa } = useSupabaseBookings();
   const [actionFor, setActionFor] = useState(null);
+  const [lifecycleAction, setLifecycleAction] = useState(null);
 
   // When Supabase is configured, the source of truth is the bookings
   // table — the localStorage list and the demo FALLBACK array are
@@ -84,7 +95,15 @@ export default function Bookings() {
             <div style={{ marginTop: 28, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.accent }}>UPCOMING · {upcoming.length}</div>
             <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
               {upcoming.map(b => (
-                <BookingRow key={b.id} b={b} navigate={navigate} accent onAction={action => setActionFor({ ...b, _action: action })} />
+                <BookingRow key={b.id} b={b} navigate={navigate} accent
+                  onAction={action => {
+                    if (b.fromSupabase && action === 'cancel') {
+                      setLifecycleAction({ booking: b, mode: 'cancel' });
+                    } else {
+                      setActionFor({ ...b, _action: action });
+                    }
+                  }}
+                />
               ))}
             </div>
           </>
@@ -94,7 +113,11 @@ export default function Bookings() {
           <>
             <div style={{ marginTop: 28, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>PAST · {past.length}</div>
             <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {past.map(b => <BookingRow key={b.id} b={b} navigate={navigate} />)}
+              {past.map(b => (
+                <BookingRow key={b.id} b={b} navigate={navigate}
+                  onReview={() => setLifecycleAction({ booking: b, mode: 'review' })}
+                />
+              ))}
             </div>
           </>
         )}
@@ -102,12 +125,23 @@ export default function Bookings() {
         {actionFor && (
           <BookingActions booking={actionFor} onClose={() => setActionFor(null)} />
         )}
+        {lifecycleAction && (
+          <BookingLifecycleModal
+            booking={lifecycleAction.booking}
+            mode={lifecycleAction.mode}
+            callerRole="customer"
+            onClose={refresh => {
+              setLifecycleAction(null);
+              if (refresh) refreshSupa?.();
+            }}
+          />
+        )}
       </div>
     </CustomerLayout>
   );
 }
 
-function BookingRow({ b, navigate, accent, onAction }) {
+function BookingRow({ b, navigate, accent, onAction, onReview }) {
   const isPhone = useNarrow();
   const original = BIDS.find(x => x.id === b.salonId);
   const cancelled = b.status === 'cancelled';
@@ -134,10 +168,12 @@ function BookingRow({ b, navigate, accent, onAction }) {
         )}
         {!accent && b.rating ? (
           <Stars n={b.rating} color={p.accent} size={13} />
-        ) : !accent && !cancelled ? (
-          <button onClick={() => navigate(`/review/${b.id}`)} style={{ background: p.ink, color: p.bg, border: 0, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+        ) : !accent && !cancelled && b.isCompleted ? (
+          <button onClick={() => onReview ? onReview() : navigate(`/review/${b.id}`)} style={{ background: p.ink, color: p.bg, border: 0, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
             Leave a review →
           </button>
+        ) : !accent && !cancelled && b.isNoShow ? (
+          <div style={{ fontSize: 11, color: p.inkMuted, fontWeight: 600, letterSpacing: '0.08em' }}>NO-SHOW</div>
         ) : null}
         {b.salonId && (
           <button onClick={() => navigate(`/salon/${b.salonId}`)} style={{ background: 'transparent', border: 0, padding: 0, fontSize: 11, fontWeight: 600, color: p.inkMuted, cursor: 'pointer', fontFamily: 'inherit' }}>

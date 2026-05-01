@@ -108,6 +108,66 @@ export async function counterBid({ bidId, counterCents, message }) {
   return { ok: true };
 }
 
+// ── Booking lifecycle (Phase 7) ───────────────────────────────────
+
+// Read-only: pull the cancellation policy decision for a booking from
+// the same RPC the cancel-booking edge function uses, so the UI shows
+// the exact refund amount that will land.
+export async function fetchCancellationPreview(bookingId) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  const { data, error } = await supabase.rpc('prepare_cancellation', { p_booking_id: bookingId });
+  if (error) return { ok: false, error: error.message };
+  const row = (data || [])[0];
+  if (!row) return { ok: false, error: 'Booking not found.' };
+  return { ok: true, preview: row };
+}
+
+// Cancels via the cancel-booking edge function so the Stripe refund
+// (with reverse_transfer) and the DB write happen together.
+export async function cancelBooking({ bookingId, reason }) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) return { ok: false, error: 'Sign in to cancel.' };
+  const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/cancel-booking`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${session.access_token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ bookingId, reason: reason || null }),
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) return { ok: false, error: j.message || j.error || 'Cancellation failed.' };
+  return { ok: true, ...j };
+}
+
+export async function markBookingComplete(bookingId) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  const { error } = await supabase.rpc('mark_booking_complete', { p_booking_id: bookingId });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+export async function markBookingNoShow(bookingId) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  const { error } = await supabase.rpc('mark_booking_no_show', { p_booking_id: bookingId });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+export async function submitReview({ bookingId, rating, body }) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  if (!rating || rating < 1 || rating > 5) return { ok: false, error: 'Pick 1–5 stars.' };
+  const { data, error } = await supabase.rpc('submit_review', {
+    p_booking_id: bookingId,
+    p_rating: rating,
+    p_body: body || null,
+  });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true, id: data };
+}
+
 // ── Salon side ────────────────────────────────────────────────────
 
 // Hook: get the businesses the current user owns. Salons need this to know what
@@ -332,15 +392,30 @@ export function useSupabaseBookings() {
     // Join bid → request so the row carries service_slugs (the original
     // request) — Bookings.jsx needs this to render "Color, Nails" etc.
     // RLS gates everything via bookings_customer_read on the parent row.
+    // reviews(id, rating, body) is left-joined so the customer-side
+    // booking row knows whether they've already reviewed (hides the
+    // "Leave a review" prompt) without a second round trip.
     const { data } = await supabase
       .from('bookings')
-      .select('id, scheduled_at, duration_min, price_cents, deposit_cents, status, created_at, business_id, businesses(name, slug, city, hero_image_url), quote_bids(quote_requests(service_slugs))')
+      .select('id, scheduled_at, duration_min, price_cents, deposit_cents, status, payment_status, completed_at, no_show_at, refunded_amount_cents, created_at, business_id, businesses(name, slug, city, hero_image_url), quote_bids(quote_requests(service_slugs)), reviews(id, rating, body)')
       .order('scheduled_at', { ascending: false });
     setBookings(data || []);
     setLoading(false);
   }, []);
 
   useEffect(() => { refresh(); }, [refresh]);
+
+  // Realtime: refresh when this customer's bookings change (e.g. a salon
+  // marks complete, a cancellation lands). Filter on the customer_id is
+  // implicit — RLS already restricts the read.
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    const ch = supabase
+      .channel('my-bookings')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => refresh())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [refresh]);
 
   return { bookings, loading, refresh };
 }

@@ -4,6 +4,7 @@ import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
 import Modal from '../components/Modal.jsx';
+import BookingLifecycleModal from '../components/BookingLifecycleModal.jsx';
 import { useMyBusinesses, useSalonBookingsList } from '../lib/quotes.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
 
@@ -45,12 +46,13 @@ export default function SalonCalendar() {
   const toast = useToast();
   const { businesses, loading: bizLoading } = useMyBusinesses();
   const businessId = businesses[0]?.id;
-  const { bookings, loading } = useSalonBookingsList(businessId);
+  const { bookings, loading, refresh } = useSalonBookingsList(businessId);
 
   const [weekOffset, setWeekOffset] = useState(0);
   const [selected, setSelected] = useState(null);
   const [messageOpen, setMessageOpen] = useState(false);
   const [draft, setDraft] = useState('');
+  const [lifecycleAction, setLifecycleAction] = useState(null);
 
   const weekStart = useMemo(() => {
     const s = startOfWeek(new Date());
@@ -191,26 +193,52 @@ export default function SalonCalendar() {
           </div>
         )}
 
-        {selected && (
-          <div style={{ marginTop: 16, padding: '16px 18px', background: p.ink, color: p.bg, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-            <div style={{ flex: '1 1 200px' }}>
-              <div style={{ fontFamily: type.body, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.55)' }}>
-                {DAY_LABELS[selected.grid.day]} · {HOURS[selected.grid.start]} · {selected.status?.toUpperCase()}
-              </div>
-              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, marginTop: 4 }}>
-                {selected.customer_name || 'Customer'} · {fmtServices(selected.service_slugs)}
-              </div>
-              {(selected.customer_email || selected.customer_phone) && (
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 2 }}>
-                  {selected.customer_email}{selected.customer_phone ? ` · ${selected.customer_phone}` : ''}
+        {selected && (() => {
+          const isConfirmed = selected.status === 'confirmed';
+          const lifecycleBooking = {
+            id: selected.booking_id,
+            customerName: selected.customer_name,
+            salonName: businesses.find(x => x.id === businessId)?.name,
+            scheduledAt: selected.scheduled_at,
+            priceCents: selected.price_cents,
+          };
+          const openAction = mode => setLifecycleAction({ booking: lifecycleBooking, mode });
+          return (
+            <div style={{ marginTop: 16, padding: '16px 18px', background: p.ink, color: p.bg, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+              <div style={{ flex: '1 1 200px' }}>
+                <div style={{ fontFamily: type.body, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.55)' }}>
+                  {DAY_LABELS[selected.grid.day]} · {HOURS[selected.grid.start]} · {selected.status?.toUpperCase()}
+                  {selected.refunded_amount_cents > 0 && ` · ${fmtPrice(selected.refunded_amount_cents)} refunded`}
                 </div>
-              )}
+                <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, marginTop: 4 }}>
+                  {selected.customer_name || 'Customer'} · {fmtServices(selected.service_slugs)}
+                </div>
+                {(selected.customer_email || selected.customer_phone) && (
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 2 }}>
+                    {selected.customer_email}{selected.customer_phone ? ` · ${selected.customer_phone}` : ''}
+                  </div>
+                )}
+                {selected.review_rating && (
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', marginTop: 4 }}>
+                    {'★'.repeat(selected.review_rating)}{'☆'.repeat(5 - selected.review_rating)} {selected.review_body ? `· "${selected.review_body}"` : ''}
+                  </div>
+                )}
+              </div>
+              <div style={{ fontFamily: type.mono, fontSize: 24, fontWeight: 600 }}>{fmtPrice(selected.price_cents)}</div>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                {isConfirmed && (
+                  <>
+                    <button onClick={() => openAction('complete')} style={{ background: p.success, color: '#fff', border: 0, padding: '10px 16px', borderRadius: 99, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>Mark complete</button>
+                    <button onClick={() => openAction('no_show')} style={{ background: 'rgba(255,255,255,0.1)', border: 0, padding: '10px 14px', borderRadius: 99, color: p.bg, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>No-show</button>
+                    <button onClick={() => openAction('cancel')} style={{ background: 'transparent', border: `0.5px solid rgba(255,255,255,0.3)`, padding: '10px 14px', borderRadius: 99, color: p.bg, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>Cancel</button>
+                  </>
+                )}
+                <button onClick={() => { setDraft(`Hi ${(selected.customer_name || '').split(' ')[0] || ''} — `); setMessageOpen(true); }} style={{ background: 'rgba(255,255,255,0.1)', border: 0, padding: '10px 14px', borderRadius: 99, color: p.bg, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>Message</button>
+                <button onClick={() => setSelected(null)} style={{ background: p.accent, color: p.ink, border: 0, padding: '10px 16px', borderRadius: 99, cursor: 'pointer', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit' }}>Close</button>
+              </div>
             </div>
-            <div style={{ fontFamily: type.mono, fontSize: 24, fontWeight: 600 }}>{fmtPrice(selected.price_cents)}</div>
-            <button onClick={() => { setDraft(`Hi ${(selected.customer_name || '').split(' ')[0] || ''} — `); setMessageOpen(true); }} style={{ background: 'rgba(255,255,255,0.1)', border: 0, padding: '10px 18px', borderRadius: 99, color: p.bg, cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'inherit' }}>Message</button>
-            <button onClick={() => setSelected(null)} style={{ background: p.accent, color: p.ink, border: 0, padding: '10px 18px', borderRadius: 99, cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'inherit' }}>Close</button>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       <Modal open={messageOpen} onClose={() => { setMessageOpen(false); setDraft(''); }} eyebrow="MESSAGE CLIENT" title={selected?.customer_name || 'Customer'} footer={
@@ -228,6 +256,18 @@ export default function SalonCalendar() {
           </div>
         )}
       </Modal>
+
+      {lifecycleAction && (
+        <BookingLifecycleModal
+          booking={lifecycleAction.booking}
+          mode={lifecycleAction.mode}
+          callerRole="salon"
+          onClose={shouldRefresh => {
+            setLifecycleAction(null);
+            if (shouldRefresh) { refresh?.(); setSelected(null); }
+          }}
+        />
+      )}
     </SalonLayout>
   );
 }
