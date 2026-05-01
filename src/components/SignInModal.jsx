@@ -25,6 +25,13 @@ export default function SignInModal({ open, onClose, defaultRole = 'customer' })
     if (!email.trim()) { toast('Email required.', { tone: 'warn' }); return; }
     if (isSupabaseConfigured && !password) { toast('Password required.', { tone: 'warn' }); return; }
     setBusy(true);
+    // Hard 15s ceiling so the spinner can never get truly stuck even if the
+    // network or Supabase hangs. The actual sign-in continues in the background;
+    // we just stop blocking the UI.
+    const watchdog = setTimeout(() => {
+      setBusy(false);
+      toast('Sign-in is taking too long. Check your connection or try again.', { tone: 'warn' });
+    }, 15000);
     try {
       const result = await signInWithEmail(email.trim(), password, role);
       if (!result?.ok) { toast(result?.error || 'Sign in failed.', { tone: 'warn' }); return; }
@@ -34,6 +41,7 @@ export default function SignInModal({ open, onClose, defaultRole = 'customer' })
       console.error('signIn error', err);
       toast(err?.message || 'Sign in failed unexpectedly.', { tone: 'warn' });
     } finally {
+      clearTimeout(watchdog);
       setBusy(false);
     }
   };
