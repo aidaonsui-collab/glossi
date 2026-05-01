@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
 import { useNarrow } from '../hooks.js';
@@ -59,19 +59,29 @@ export default function SalonSettings() {
   // After Stripe Connect onboarding, the salon comes back with
   // ?stripe=return in the URL. Force-refresh the businesses row so
   // the UI flips from "Connect" → "Verified" without waiting for
-  // the realtime subscription. Then strip the query param so a
-  // refresh doesn't repeat the toast.
-  const [params, setParams] = useSearchParams();
+  // the realtime subscription. Read the flag straight off
+  // window.location to keep the effect's dependency surface simple
+  // — using useSearchParams + setSearchParams here introduced a
+  // re-render loop that was blanking the page.
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
     const flag = params.get('stripe');
     if (!flag) return;
     refreshBiz();
     if (flag === 'return') toast('Welcome back. Stripe is verifying your details — payouts unlock as soon as they finish.', { tone: 'success' });
     if (flag === 'refresh') toast('That onboarding link expired — start a new one.', { tone: 'warn' });
-    const next = new URLSearchParams(params);
-    next.delete('stripe');
-    setParams(next, { replace: true });
-  }, [params, refreshBiz, setParams, toast]);
+    // Strip the query param without triggering a router state update,
+    // so we don't re-fire this effect or any sibling that depends on
+    // useSearchParams.
+    params.delete('stripe');
+    const qs = params.toString();
+    const newUrl = window.location.pathname + (qs ? `?${qs}` : '') + window.location.hash;
+    window.history.replaceState(null, '', newUrl);
+    // Eslint-disable: we intentionally run once on mount; refreshBiz
+    // and toast are stable callbacks.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Hydrate Business info section from the live row whenever it (re)loads
   useEffect(() => {
