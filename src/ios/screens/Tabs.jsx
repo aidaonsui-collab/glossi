@@ -106,41 +106,65 @@ export function Inbox({ p, type, lang, onOpenThread }) {
   );
 }
 
-export function Me({ p, type, lang, onRow }) {
+export function Me({ p, type, lang, onRow, user, onSignIn }) {
   const stats = [
     { k: lang === 'en' ? 'Bookings' : 'Reservas', v: 14 },
     { k: lang === 'en' ? 'Saved' : 'Ahorrado', v: '$284' },
     { k: lang === 'en' ? 'Salons' : 'Salones', v: 6 },
   ];
-  const rows = lang === 'en' ? [
-    { k: 'saved', l: 'Saved salons' }, { k: 'history', l: 'Past bookings' },
-    { k: 'payment', l: 'Payment & cards' }, { k: 'notifications', l: 'Notifications' },
-    { k: 'lang', l: 'Language · English' }, { k: 'help', l: 'Help & support' },
-    { k: 'signout', l: 'Sign out' },
-  ] : [
-    { k: 'saved', l: 'Salones guardados' }, { k: 'history', l: 'Historial' },
-    { k: 'payment', l: 'Pagos y tarjetas' }, { k: 'notifications', l: 'Notificaciones' },
-    { k: 'lang', l: 'Idioma · Español' }, { k: 'help', l: 'Ayuda' },
-    { k: 'signout', l: 'Cerrar sesión' },
-  ];
+  const signedIn = Boolean(user);
+  const rows = signedIn
+    ? (lang === 'en' ? [
+        { k: 'saved', l: 'Saved salons' }, { k: 'history', l: 'Past bookings' },
+        { k: 'payment', l: 'Payment & cards' }, { k: 'notifications', l: 'Notifications' },
+        { k: 'lang', l: 'Language · English' }, { k: 'help', l: 'Help & support' },
+        { k: 'signout', l: 'Sign out' },
+      ] : [
+        { k: 'saved', l: 'Salones guardados' }, { k: 'history', l: 'Historial' },
+        { k: 'payment', l: 'Pagos y tarjetas' }, { k: 'notifications', l: 'Notificaciones' },
+        { k: 'lang', l: 'Idioma · Español' }, { k: 'help', l: 'Ayuda' },
+        { k: 'signout', l: 'Cerrar sesión' },
+      ])
+    : (lang === 'en' ? [
+        { k: 'lang', l: 'Language · English' }, { k: 'help', l: 'Help & support' },
+      ] : [
+        { k: 'lang', l: 'Idioma · Español' }, { k: 'help', l: 'Ayuda' },
+      ]);
+
+  const displayName = user?.name || (lang === 'en' ? 'Guest' : 'Invitado');
+  const displayInitials = user?.initials || 'G';
+  const displayAvatar = user?.avatar || 'linear-gradient(135deg,#E8B7A8,#B8893E)';
+  const memberLine = user
+    ? `${user.email || ''}${user.city ? ` · ${user.city}` : ''}`
+    : (lang === 'en' ? 'Sign in to save bookings & favorites' : 'Inicia sesión para guardar reservas');
+
   return (
     <div style={{ background: p.bg, minHeight: '100%' }}>
       <IOSStatusBar />
       <div style={{ padding: '54px 20px 0', display: 'flex', alignItems: 'center', gap: 14 }}>
-        <div style={{ width: 64, height: 64, borderRadius: 999, background: 'linear-gradient(135deg,#E8B7A8,#B8893E)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 22, fontWeight: 700 }}>SM</div>
-        <div>
-          <div style={{ fontFamily: type.display, fontSize: 24, fontWeight: type.displayWeight, color: p.ink, fontStyle: 'italic', letterSpacing: '-0.02em' }}>Sofia Martínez</div>
-          <div style={{ fontFamily: type.body, fontSize: 12, color: p.inkMuted, marginTop: 2 }}>{lang === 'en' ? 'Pharr, TX · Member since 2024' : 'Pharr, TX · Miembro desde 2024'}</div>
+        <div style={{ width: 64, height: 64, borderRadius: 999, background: displayAvatar, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 22, fontWeight: 700 }}>{displayInitials}</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: type.display, fontSize: 24, fontWeight: type.displayWeight, color: p.ink, fontStyle: 'italic', letterSpacing: '-0.02em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
+          <div style={{ fontFamily: type.body, fontSize: 12, color: p.inkMuted, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{memberLine}</div>
         </div>
       </div>
-      <div style={{ margin: '20px 20px 0', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
-        {stats.map((s, i) => (
-          <div key={i} style={{ padding: '12px', background: p.surface, borderRadius: 12, border: `0.5px solid ${p.line}` }}>
-            <div style={{ fontFamily: type.body, fontSize: 9.5, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.1em' }}>{s.k.toUpperCase()}</div>
-            <div style={{ fontFamily: type.mono, fontSize: 22, color: p.ink, fontWeight: 600, marginTop: 2 }}>{s.v}</div>
-          </div>
-        ))}
-      </div>
+      {!signedIn && onSignIn && (
+        <div style={{ padding: '14px 20px 0' }}>
+          <button onClick={onSignIn} style={{ width: '100%', padding: '12px 16px', borderRadius: 12, background: p.ink, color: p.bg, border: 0, fontFamily: type.body, fontSize: 13.5, fontWeight: 600, cursor: 'pointer' }}>
+            {lang === 'en' ? 'Sign in or create an account' : 'Inicia sesión o crea cuenta'}
+          </button>
+        </div>
+      )}
+      {signedIn && (
+        <div style={{ margin: '20px 20px 0', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
+          {stats.map((s, i) => (
+            <div key={i} style={{ padding: '12px', background: p.surface, borderRadius: 12, border: `0.5px solid ${p.line}` }}>
+              <div style={{ fontFamily: type.body, fontSize: 9.5, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.1em' }}>{s.k.toUpperCase()}</div>
+              <div style={{ fontFamily: type.mono, fontSize: 22, color: p.ink, fontWeight: 600, marginTop: 2 }}>{s.v}</div>
+            </div>
+          ))}
+        </div>
+      )}
       <div style={{ padding: '20px 0 110px' }}>
         {rows.map((r, i) => (
           <button key={i} onClick={() => onRow(r.k)} style={{

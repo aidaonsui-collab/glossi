@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import Modal from '../components/Modal.jsx';
@@ -21,6 +21,22 @@ export default function OnboardingSalon() {
   const [items, setItems] = useState(initialServices);
   const [showAdd, setShowAdd] = useState(false);
   const [draft, setDraft] = useState({ name: '', from: 50, to: 90, dur: '1 hr' });
+  const [photos, setPhotos] = useState([]);
+  const photoInputRef = useRef(null);
+
+  const onPhotoPick = e => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    Promise.all(files.map(f => new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(f);
+    }))).then(dataUrls => {
+      setPhotos(curr => [...curr, ...dataUrls].slice(0, 8));
+      toast(`${dataUrls.length} photo${dataUrls.length === 1 ? '' : 's'} added.`, { tone: 'success' });
+    });
+    e.target.value = '';
+  };
 
   const toggle = i => setItems(curr => curr.map((it, idx) => idx === i ? { ...it, sel: !it.sel } : it));
   const updateField = (i, field, value) => setItems(curr => curr.map((it, idx) => idx === i ? { ...it, [field]: value } : it));
@@ -40,7 +56,13 @@ export default function OnboardingSalon() {
   const onContinue = () => {
     const selected = items.filter(i => i.sel);
     if (selected.length === 0) { toast('Pick at least one service.', { tone: 'warn' }); return; }
-    toast(`${selected.length} service${selected.length === 1 ? '' : 's'} saved. Next: photos.`, { tone: 'success' });
+    if (photos.length === 0) {
+      // Open the file picker for the first time. The next click of this button (with photos chosen) will navigate.
+      photoInputRef.current?.click();
+      return;
+    }
+    toast(`${selected.length} service${selected.length === 1 ? '' : 's'} and ${photos.length} photo${photos.length === 1 ? '' : 's'} saved.`, { tone: 'success' });
+    try { localStorage.setItem('glossi.salon.gallery', JSON.stringify(photos)); } catch { /* noop */ }
     navigate('/salon');
   };
 
@@ -95,9 +117,26 @@ export default function OnboardingSalon() {
             <button onClick={() => setShowAdd(true)} style={{ alignSelf: 'flex-start', background: 'transparent', border: `0.5px dashed ${p.inkMuted}`, color: p.inkSoft, cursor: 'pointer', padding: '10px 16px', borderRadius: 12, fontSize: 13, fontWeight: 500, fontFamily: 'inherit' }}>+ Add another service</button>
           </div>
 
+          {/* Photos */}
+          <div style={{ marginTop: 28 }}>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>02 · PHOTOS · {photos.length}/8</div>
+            <p style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.5, margin: '6px 0 12px' }}>Add a few shots of your space and recent work — the more the better. Up to 8.</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: 8 }}>
+              {photos.map((src, i) => (
+                <div key={i} style={{ position: 'relative', aspectRatio: '1/1', borderRadius: 10, overflow: 'hidden', backgroundImage: `url(${src})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                  <button onClick={() => setPhotos(curr => curr.filter((_, idx) => idx !== i))} aria-label="Remove photo" style={{ position: 'absolute', top: 4, right: 4, width: 22, height: 22, borderRadius: 99, border: 0, background: 'rgba(0,0,0,0.55)', color: '#fff', cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+                </div>
+              ))}
+              {photos.length < 8 && (
+                <button onClick={() => photoInputRef.current?.click()} style={{ aspectRatio: '1/1', borderRadius: 10, background: p.surface, border: `0.5px dashed ${p.inkMuted}`, color: p.inkSoft, cursor: 'pointer', fontSize: 11, fontWeight: 600, fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+ Add</button>
+              )}
+            </div>
+            <input ref={photoInputRef} type="file" accept="image/*" multiple onChange={onPhotoPick} style={{ display: 'none' }} />
+          </div>
+
           <div style={{ marginTop: 28, display: 'flex', gap: 10, alignItems: 'center' }}>
             <button onClick={() => navigate(-1)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, cursor: 'pointer', padding: '14px 18px', borderRadius: 99, fontSize: 13.5, fontWeight: 600, fontFamily: 'inherit', color: p.ink }}>← Back</button>
-            <button onClick={onContinue} style={{ background: p.accent, color: p.ink, border: 0, padding: '14px 22px', borderRadius: 99, fontSize: 14.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Continue · upload photos</button>
+            <button onClick={onContinue} style={{ background: p.accent, color: p.ink, border: 0, padding: '14px 22px', borderRadius: 99, fontSize: 14.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>{photos.length === 0 ? 'Continue · upload photos' : `Continue · ${photos.length} photo${photos.length === 1 ? '' : 's'} →`}</button>
           </div>
         </div>
 

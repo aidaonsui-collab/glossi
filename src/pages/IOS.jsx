@@ -20,7 +20,7 @@ import Review from '../components/Review.jsx';
 import { BIDS } from '../ios/data.js';
 import { useToast } from '../components/Toast.jsx';
 import { useNarrow } from '../hooks.js';
-import { useBookings, useLang } from '../store.jsx';
+import { useAuth, useBookings, useLang } from '../store.jsx';
 
 const SCREEN_TO_TAB = {
   home: 'home', compose: 'home', guide: 'home', profile: 'home',
@@ -36,6 +36,7 @@ export default function IOS() {
   const [side, setSide] = useState('customer');
   const { lang, setLang } = useLang();
   const { add: addBooking } = useBookings();
+  const { user, signOut } = useAuth();
   const [showWelcome, setShowWelcome] = useState(false);
 
   // Customer flow state
@@ -70,7 +71,7 @@ export default function IOS() {
     else if (k === 'history') setScreen('history');
     else if (k === 'payment') setScreen('payment');
     else if (k === 'notifications') setScreen('notifications');
-    else if (k === 'signout') toast(lang === 'en' ? 'Signed out.' : 'Cerrado sesión.');
+    else if (k === 'signout') { signOut(); toast(lang === 'en' ? 'Signed out.' : 'Cerrado sesión.'); }
     else if (k === 'help') {
       window.open('/help', '_blank', 'noopener');
       toast(lang === 'en' ? 'Opening help center…' : 'Abriendo ayuda…');
@@ -164,7 +165,7 @@ export default function IOS() {
     if (screen === 'bids') return <Bids p={p} type={type} lang={lang} onBack={() => { setScreen('home'); setTab('home'); }} onPick={b => { setPicked(b); setScreen('checkout'); }} onOffer={b => setOfferSalon(b)} onProfile={b => openProfile(b)} />;
     if (screen === 'explore') return <Explore p={p} type={type} lang={lang} onOpenSalon={s => openProfile(s)} />;
     if (screen === 'inbox') return <InboxScreen p={p} type={type} lang={lang} onOpenThread={openThread} />;
-    if (screen === 'me') return <Me p={p} type={type} lang={lang} onRow={onMeRow} />;
+    if (screen === 'me') return <Me p={p} type={type} lang={lang} onRow={onMeRow} user={user} onSignIn={() => setShowWelcome(true)} />;
     return null;
   };
 

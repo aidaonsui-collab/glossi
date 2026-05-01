@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import SalonPhoto from '../../components/SalonPhoto.jsx';
 import { IOSStatusBar } from '../IOSFrame.jsx';
+import { useAuth } from '../../store.jsx';
+import { useToast } from '../../components/Toast.jsx';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 
 function ProgressDots({ step, total, p }) {
   return (
@@ -22,9 +25,67 @@ function SocialIcon({ kind }) {
 }
 
 export default function Welcome({ p, type, lang, onComplete, onSkip }) {
+  const { signInWithEmail, signUp } = useAuth();
+  const toast = useToast();
   const [step, setStep] = useState(0);
-  const [email, setEmail] = useState('sofia@example.com');
-  const [code, setCode] = useState('');
+  const [mode, setMode] = useState('signup'); // 'signup' | 'signin'
+  const [role, setRole] = useState('customer');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const handleOAuth = async (provider) => {
+    if (!isSupabaseConfigured) {
+      toast(lang === 'en' ? `${provider} sign-in needs a connected provider.` : `${provider} no disponible.`, { tone: 'warn' });
+      return;
+    }
+    const providerKey = provider === 'apple' ? 'apple' : provider === 'google' ? 'google' : 'facebook';
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: providerKey,
+      options: { skipBrowserRedirect: true, redirectTo: `${window.location.origin}/ios` },
+    });
+    if (error || !data?.url) {
+      toast(lang === 'en' ? `${provider} sign-in isn't enabled yet.` : `${provider} no habilitado.`, { tone: 'warn' });
+      return;
+    }
+    try {
+      const probe = await fetch(data.url, { method: 'HEAD', redirect: 'manual' });
+      if (probe.status >= 400 && probe.status < 500) {
+        toast(lang === 'en' ? `${provider} sign-in isn't enabled yet.` : `${provider} no habilitado.`, { tone: 'warn' });
+        return;
+      }
+    } catch { /* fall through */ }
+    window.location.href = data.url;
+  };
+
+  const submit = async () => {
+    if (!email.trim()) { toast(lang === 'en' ? 'Email required.' : 'Correo requerido.', { tone: 'warn' }); return; }
+    if (isSupabaseConfigured && !password) { toast(lang === 'en' ? 'Password required.' : 'Contraseña requerida.', { tone: 'warn' }); return; }
+    if (mode === 'signup' && !name.trim()) { toast(lang === 'en' ? 'Add your name.' : 'Agrega tu nombre.', { tone: 'warn' }); return; }
+    setBusy(true);
+    try {
+      if (mode === 'signup') {
+        const result = await signUp({ name: name.trim(), email: email.trim(), password, role });
+        if (!result?.ok) { toast(result?.error || 'Sign up failed.', { tone: 'warn' }); return; }
+        if (result.needsConfirmation) {
+          toast(lang === 'en' ? 'Check your email to confirm.' : 'Revisa tu correo.', { tone: 'success' });
+          return;
+        }
+        toast(lang === 'en' ? `Welcome, ${name.split(' ')[0]}!` : `¡Hola, ${name.split(' ')[0]}!`, { tone: 'success' });
+      } else {
+        const result = await signInWithEmail(email.trim(), password, role);
+        if (!result?.ok) { toast(result?.error || 'Sign in failed.', { tone: 'warn' }); return; }
+        toast(lang === 'en' ? 'Signed in.' : 'Sesión iniciada.', { tone: 'success' });
+      }
+      onComplete?.();
+    } catch (err) {
+      console.error(err);
+      toast(err?.message || 'Auth failed.', { tone: 'warn' });
+    } finally {
+      setBusy(false);
+    }
+  };
 
   // Step 0: brand splash with photo + intent picker
   if (step === 0) {
@@ -45,118 +106,114 @@ export default function Welcome({ p, type, lang, onComplete, onSkip }) {
           </div>
           <div style={{ flex: 1 }} />
           <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <button onClick={() => setStep(1)} style={primaryBtn(p, type)}>
+            <button onClick={() => { setMode('signup'); setRole('customer'); setStep(1); }} style={primaryBtn(p, type)}>
               {lang === 'en' ? "I'm booking — Get started" : 'Quiero reservar'}
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </button>
-            <button onClick={() => setStep(1)} style={secondaryBtn(p, type)}>
+            <button onClick={() => { setMode('signup'); setRole('salon'); setStep(1); }} style={secondaryBtn(p, type)}>
               {lang === 'en' ? 'I run a salon — Join Glossi' : 'Tengo un salón — Únete'}
             </button>
-            <button onClick={onSkip} style={{ border: 0, background: 'transparent', cursor: 'pointer', fontFamily: type.body, fontSize: 12.5, color: p.inkMuted, fontWeight: 500, marginTop: 6, padding: '8px' }}>
+            <button onClick={() => { setMode('signin'); setStep(1); }} style={{ border: 0, background: 'transparent', cursor: 'pointer', fontFamily: type.body, fontSize: 12.5, color: p.inkMuted, fontWeight: 500, marginTop: 6, padding: '8px' }}>
               {lang === 'en' ? 'Already have an account? Sign in' : '¿Ya tienes cuenta?'}
             </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Step 1: email
-  if (step === 1) {
-    return (
-      <div style={{ background: p.bg, minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
-        <IOSStatusBar />
-        <div style={{ padding: '54px 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button onClick={() => setStep(0)} style={backBtn(p)}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke={p.ink} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </button>
-          <ProgressDots step={0} total={3} p={p} />
-          <div style={{ width: 36 }} />
-        </div>
-        <div style={{ padding: '30px 22px 24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ fontFamily: type.body, fontSize: 10, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.16em' }}>{lang === 'en' ? '01 · GET STARTED' : '01 · EMPEZAR'}</div>
-          <div style={{ fontFamily: type.display, fontSize: 34, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.025em', fontStyle: 'italic', lineHeight: 1, marginTop: 8 }}>
-            {lang === 'en' ? 'Get started' : 'Empezar'}
-          </div>
-          <div style={{ fontFamily: type.body, fontSize: 14, color: p.inkSoft, lineHeight: 1.5, marginTop: 10 }}>
-            {lang === 'en' ? 'Create an account or log in to book and manage appointments.' : 'Crea cuenta para reservar y gestionar citas.'}
-          </div>
-          <div style={{ marginTop: 22, display: 'flex', alignItems: 'center', gap: 10, border: `0.5px solid ${p.line}`, background: p.surface, borderRadius: 14, padding: '14px 16px' }}>
-            <input value={email} onChange={e => setEmail(e.target.value)} placeholder={lang === 'en' ? 'Email' : 'Correo'} autoFocus style={{ flex: 1, border: 0, outline: 0, background: 'transparent', fontFamily: type.body, fontSize: 15, color: p.ink, fontWeight: 500 }} />
-          </div>
-          <div style={{ flex: 1 }} />
-          <button disabled={!email} onClick={() => setStep(2)} style={{ ...primaryBtn(p, type), opacity: email ? 1 : 0.5, cursor: email ? 'pointer' : 'not-allowed' }}>
-            {lang === 'en' ? 'Continue' : 'Continuar'}
-          </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '18px 0 14px', fontFamily: type.body, fontSize: 10, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.14em' }}>
-            <span style={{ flex: 1, height: 0.5, background: p.line }} />
-            <span>{lang === 'en' ? 'OR' : 'O'}</span>
-            <span style={{ flex: 1, height: 0.5, background: p.line }} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {[{ l: lang === 'en' ? 'Continue with Apple' : 'Continuar con Apple', i: 'apple' }, { l: lang === 'en' ? 'Continue with Google' : 'Continuar con Google', i: 'google' }, { l: lang === 'en' ? 'Continue with Facebook' : 'Continuar con Facebook', i: 'fb' }].map(b => (
-              <button key={b.i} onClick={() => setStep(2)} style={{ width: '100%', padding: '13px 16px', borderRadius: 12, border: `0.5px solid ${p.line}`, background: p.surface, cursor: 'pointer', fontFamily: type.body, fontSize: 13.5, fontWeight: 600, color: p.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-                <SocialIcon kind={b.i} /><span>{b.l}</span>
+            {onSkip && (
+              <button onClick={onSkip} style={{ border: 0, background: 'transparent', cursor: 'pointer', fontFamily: type.body, fontSize: 11.5, color: p.inkMuted, fontWeight: 500, padding: '4px' }}>
+                {lang === 'en' ? 'Skip — just browsing' : 'Saltar — solo viendo'}
               </button>
-            ))}
+            )}
           </div>
         </div>
       </div>
     );
   }
 
-  // Step 2: 4-digit code
-  if (step === 2) {
-    const filled = code.length;
-    return (
-      <div style={{ background: p.bg, minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
-        <IOSStatusBar />
-        <div style={{ padding: '54px 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button onClick={() => setStep(1)} style={backBtn(p)}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke={p.ink} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </button>
-          <ProgressDots step={1} total={3} p={p} />
-          <div style={{ width: 36 }} />
+  // Step 1: email + password (+ name when signing up)
+  return (
+    <div style={{ background: p.bg, minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
+      <IOSStatusBar />
+      <div style={{ padding: '54px 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button onClick={() => setStep(0)} style={backBtn(p)}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke={p.ink} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        <ProgressDots step={0} total={2} p={p} />
+        <div style={{ width: 36 }} />
+      </div>
+      <div style={{ padding: '30px 22px 24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ fontFamily: type.body, fontSize: 10, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.16em' }}>
+          {mode === 'signup'
+            ? (lang === 'en' ? '01 · CREATE ACCOUNT' : '01 · CREAR CUENTA')
+            : (lang === 'en' ? '01 · SIGN IN' : '01 · INICIAR SESIÓN')}
         </div>
-        <div style={{ padding: '30px 22px 24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ fontFamily: type.body, fontSize: 10, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.16em' }}>{lang === 'en' ? '02 · VERIFY' : '02 · VERIFICAR'}</div>
-          <div style={{ fontFamily: type.display, fontSize: 34, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.025em', fontStyle: 'italic', lineHeight: 1, marginTop: 8 }}>
-            {lang === 'en' ? 'Check your email' : 'Revisa tu correo'}
-          </div>
-          <div style={{ fontFamily: type.body, fontSize: 14, color: p.inkSoft, lineHeight: 1.5, marginTop: 10 }}>
-            {lang === 'en' ? `We sent a 4-digit code to ${email}.` : `Mandamos un código de 4 dígitos a ${email}.`}
-          </div>
-          <div style={{ marginTop: 26, display: 'flex', gap: 10, justifyContent: 'center' }}>
-            {[0, 1, 2, 3].map(i => (
-              <div key={i} style={{
-                width: 56, height: 64, borderRadius: 14, border: `0.5px solid ${i === filled ? p.ink : p.line}`,
-                background: p.surface, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: type.mono, fontSize: 28, fontWeight: 600, color: p.ink,
-              }}>{code[i] || ''}</div>
-            ))}
-          </div>
-          <input value={code} onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 4))} inputMode="numeric" autoFocus
-            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 1, height: 1 }} />
-          <div style={{ marginTop: 14, textAlign: 'center', fontFamily: type.body, fontSize: 12, color: p.inkMuted }}>
-            {lang === 'en' ? 'Tap the boxes to enter your code' : 'Toca los recuadros para ingresar'}
-          </div>
-          <div style={{ marginTop: 8, textAlign: 'center' }}>
-            <button onClick={() => setCode('1234')} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontFamily: type.body, fontSize: 12, color: p.accent, fontWeight: 600 }}>
-              {lang === 'en' ? 'Demo: fill 1234' : 'Demo: rellenar 1234'}
+        <div style={{ fontFamily: type.display, fontSize: 34, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.025em', fontStyle: 'italic', lineHeight: 1, marginTop: 8 }}>
+          {mode === 'signup'
+            ? (lang === 'en' ? 'Create your account' : 'Crea tu cuenta')
+            : (lang === 'en' ? 'Welcome back' : 'Bienvenido')}
+        </div>
+        <div style={{ fontFamily: type.body, fontSize: 14, color: p.inkSoft, lineHeight: 1.5, marginTop: 10 }}>
+          {mode === 'signup'
+            ? (lang === 'en' ? `${role === 'salon' ? "Set up your salon's listing." : 'A few details and you can start booking.'}` : (role === 'salon' ? 'Configura tu salón.' : 'Unos datos y a reservar.'))
+            : (lang === 'en' ? 'Sign in to your Glossi account.' : 'Inicia sesión en Glossi.')}
+        </div>
+
+        <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {mode === 'signup' && (
+            <input value={name} onChange={e => setName(e.target.value)} placeholder={lang === 'en' ? 'Your name' : 'Tu nombre'} autoFocus
+              style={inputStyle(p, type)} />
+          )}
+          <input value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder={lang === 'en' ? 'Email' : 'Correo'} autoComplete="email"
+            autoFocus={mode === 'signin'} style={inputStyle(p, type)} />
+          {isSupabaseConfigured && (
+            <input value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder={lang === 'en' ? 'Password' : 'Contraseña'}
+              autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+              onKeyDown={e => { if (e.key === 'Enter') submit(); }} style={inputStyle(p, type)} />
+          )}
+        </div>
+
+        <button disabled={busy} onClick={submit} style={{ ...primaryBtn(p, type), marginTop: 16, opacity: busy ? 0.6 : 1, cursor: busy ? 'wait' : 'pointer' }}>
+          {busy
+            ? (lang === 'en' ? 'Working…' : 'Trabajando…')
+            : mode === 'signup'
+              ? (lang === 'en' ? 'Create account' : 'Crear cuenta')
+              : (lang === 'en' ? 'Sign in' : 'Iniciar sesión')}
+        </button>
+
+        {mode === 'signup' ? (
+          <button onClick={() => setMode('signin')} style={switchBtn(p, type)}>
+            {lang === 'en' ? 'Already have an account? Sign in' : '¿Ya tienes cuenta? Inicia sesión'}
+          </button>
+        ) : (
+          <button onClick={() => setMode('signup')} style={switchBtn(p, type)}>
+            {lang === 'en' ? "Don't have an account? Create one" : '¿No tienes cuenta? Crear'}
+          </button>
+        )}
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '18px 0 14px', fontFamily: type.body, fontSize: 10, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.14em' }}>
+          <span style={{ flex: 1, height: 0.5, background: p.line }} />
+          <span>{lang === 'en' ? 'OR' : 'O'}</span>
+          <span style={{ flex: 1, height: 0.5, background: p.line }} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {[
+            { l: lang === 'en' ? 'Continue with Apple' : 'Continuar con Apple', i: 'apple' },
+            { l: lang === 'en' ? 'Continue with Google' : 'Continuar con Google', i: 'google' },
+            { l: lang === 'en' ? 'Continue with Facebook' : 'Continuar con Facebook', i: 'fb' },
+          ].map(b => (
+            <button key={b.i} onClick={() => handleOAuth(b.i)} style={{ width: '100%', padding: '13px 16px', borderRadius: 12, border: `0.5px solid ${p.line}`, background: p.surface, cursor: 'pointer', fontFamily: type.body, fontSize: 13.5, fontWeight: 600, color: p.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+              <SocialIcon kind={b.i} /><span>{b.l}</span>
             </button>
-          </div>
-          <div style={{ flex: 1 }} />
-          <button disabled={code.length < 4} onClick={onComplete} style={{ ...primaryBtn(p, type), opacity: code.length >= 4 ? 1 : 0.5, cursor: code.length >= 4 ? 'pointer' : 'not-allowed' }}>
-            {lang === 'en' ? 'Verify & continue' : 'Verificar'}
-          </button>
+          ))}
         </div>
       </div>
-    );
-  }
-
-  return null;
+    </div>
+  );
 }
 
+const inputStyle = (p, type) => ({
+  width: '100%', padding: '14px 16px', borderRadius: 14,
+  border: `0.5px solid ${p.line}`, background: p.surface,
+  fontFamily: type.body, fontSize: 14, color: p.ink, fontWeight: 500,
+  outline: 'none', boxSizing: 'border-box',
+});
 const primaryBtn = (p, type) => ({
   width: '100%', padding: '15px 18px', borderRadius: 14, border: 0,
   background: p.ink, color: p.bg, fontFamily: type.body, fontSize: 14, fontWeight: 600,
@@ -166,6 +223,10 @@ const secondaryBtn = (p, type) => ({
   width: '100%', padding: '15px 18px', borderRadius: 14, border: `0.5px solid ${p.line}`,
   background: p.surface, color: p.ink, fontFamily: type.body, fontSize: 14, fontWeight: 600,
   cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+});
+const switchBtn = (p, type) => ({
+  marginTop: 8, border: 0, background: 'transparent', cursor: 'pointer',
+  fontFamily: type.body, fontSize: 12.5, color: p.accent, fontWeight: 600, padding: '8px',
 });
 const backBtn = p => ({
   border: 0, cursor: 'pointer', width: 36, height: 36, borderRadius: 999,
