@@ -198,7 +198,11 @@ function BookingRow({ b, navigate, accent, onAction, onReview }) {
         ) : !accent && !cancelled && b.isNoShow ? (
           <div style={{ fontSize: 11, color: p.inkMuted, fontWeight: 600, letterSpacing: '0.08em' }}>NO-SHOW</div>
         ) : null}
-        {b.salonId && (
+        {/* "View salon" only points at the demo salon catalog (BIDS in
+            ios/data.js); real Supabase salons aren't there yet, so the
+            link 404s on every Phase-6 booking. Hide for those rows
+            until SalonDetail is wired to Supabase. */}
+        {b.salonId && !b.fromSupabase && (
           <button onClick={() => navigate(`/salon/${b.salonId}`)} style={{ background: 'transparent', border: 0, padding: 0, fontSize: 11, fontWeight: 600, color: p.inkMuted, cursor: 'pointer', fontFamily: 'inherit' }}>
             View salon →
           </button>

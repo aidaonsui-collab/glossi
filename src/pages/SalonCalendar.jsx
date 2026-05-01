@@ -22,6 +22,17 @@ function startOfWeek(date) {
 const fmtServices = slugs => (slugs || []).map(s => s.replace('-', ' & ')).join(', ') || 'Appointment';
 const fmtPrice = cents => `$${Math.round((cents || 0) / 100)}`;
 
+// Status → bottom bar color + label. Pending = scheduled in the
+// future; salon hasn't acted yet. Past pending stays pending until the
+// salon marks it complete or no-show.
+const statusBar = (palette, status, scheduledAt) => {
+  if (status === 'completed') return { color: palette.success, label: 'COMPLETED' };
+  if (status === 'cancelled') return { color: '#C7402F',          label: 'CANCELLED' };
+  if (status === 'no_show')   return { color: palette.inkMuted,   label: 'NO-SHOW' };
+  // confirmed
+  return { color: '#D4A437', label: 'PENDING' };
+};
+
 // Project a booking onto the (day 0-6, start 0-10, span 1-N) grid
 // relative to the week-of view. Bookings outside the visible 9am-7pm
 // window get clamped — span is truncated rather than dropped so the
@@ -115,6 +126,22 @@ export default function SalonCalendar() {
           </div>
         )}
 
+        {!showEmpty && visible.length > 0 && (
+          <div style={{ marginTop: 16, display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+            {[
+              { label: 'PENDING', color: '#D4A437' },
+              { label: 'COMPLETED', color: p.success },
+              { label: 'NO-SHOW', color: p.inkMuted },
+              { label: 'CANCELLED', color: '#C7402F' },
+            ].map(s => (
+              <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color }} />
+                <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>{s.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Week grid */}
         {isPhone ? (
           <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -125,16 +152,32 @@ export default function SalonCalendar() {
                 <div key={di}>
                   <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted, marginBottom: 8 }}>{d.toUpperCase()}</div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {dayAppts.map(a => (
-                      <button key={a.booking_id} onClick={() => openBooking(a.booking_id)} style={{ padding: '12px 14px', background: p.surface, borderRadius: 12, border: `0.5px solid ${a.status === 'cancelled' ? p.line : p.line}`, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', color: p.ink, opacity: a.status === 'cancelled' ? 0.55 : 1 }}>
-                        <div style={{ fontFamily: type.mono, fontSize: 12, fontWeight: 600, color: p.ink, minWidth: 50 }}>{HOURS[a.grid.start]}</div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600 }}>{a.customer_name || 'Customer'}</div>
-                          <div style={{ fontSize: 11.5, color: p.inkMuted }}>{fmtServices(a.service_slugs)}</div>
-                        </div>
-                        <div style={{ fontFamily: type.mono, fontSize: 13, fontWeight: 600 }}>{fmtPrice(a.price_cents)}</div>
-                      </button>
-                    ))}
+                    {dayAppts.map(a => {
+                      const bar = statusBar(p, a.status, a.scheduled_at);
+                      const dim = a.status === 'cancelled' || a.status === 'no_show';
+                      return (
+                        <button key={a.booking_id} onClick={() => openBooking(a.booking_id)} style={{
+                          background: p.surface, borderRadius: 12,
+                          border: `0.5px solid ${p.line}`,
+                          borderLeft: `3px solid ${bar.color}`,
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          padding: '12px 14px',
+                          cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', color: p.ink,
+                          opacity: dim ? 0.6 : 1,
+                          textDecoration: a.status === 'cancelled' ? 'line-through' : 'none',
+                        }}>
+                          <div style={{ fontFamily: type.mono, fontSize: 12, fontWeight: 600, color: p.ink, minWidth: 50 }}>{HOURS[a.grid.start]}</div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 13, fontWeight: 600 }}>{a.customer_name || 'Customer'}</div>
+                            <div style={{ fontSize: 11.5, color: p.inkMuted }}>{fmtServices(a.service_slugs)}</div>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+                            <div style={{ fontFamily: type.mono, fontSize: 13, fontWeight: 600 }}>{fmtPrice(a.price_cents)}</div>
+                            <div style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: '0.12em', color: bar.color }}>{bar.label}</div>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -155,22 +198,35 @@ export default function SalonCalendar() {
                   const a = visible.find(x => x.grid.day === di && x.grid.start === hi);
                   return (
                     <div key={di} style={{ borderRight: di < 6 ? `0.5px solid ${p.line}` : 'none', padding: 4, position: 'relative' }}>
-                      {a && (
-                        <button onClick={() => openBooking(a.booking_id)} style={{
-                          position: 'absolute', inset: 4,
-                          height: `calc(${a.grid.span * 100}% + ${(a.grid.span - 1) * 0.5}px - 8px)`,
-                          padding: '6px 8px', borderRadius: 8,
-                          background: a.status === 'cancelled' ? p.surface2 : p.ink,
-                          color: a.status === 'cancelled' ? p.inkMuted : p.bg,
-                          border: a.status === 'cancelled' ? `0.5px solid ${p.line}` : 0,
-                          cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', overflow: 'hidden',
-                          display: 'flex', flexDirection: 'column', gap: 2,
-                          textDecoration: a.status === 'cancelled' ? 'line-through' : 'none',
-                        }}>
-                          <div style={{ fontSize: 10.5, fontWeight: 600, lineHeight: 1.1 }}>{a.customer_name || 'Customer'}</div>
-                          <div style={{ fontSize: 9.5, opacity: 0.7, lineHeight: 1.2 }}>{fmtServices(a.service_slugs)}</div>
-                        </button>
-                      )}
+                      {a && (() => {
+                        const bar = statusBar(p, a.status, a.scheduled_at);
+                        const dim = a.status === 'cancelled' || a.status === 'no_show';
+                        return (
+                          <button onClick={() => openBooking(a.booking_id)} style={{
+                            position: 'absolute', inset: 4,
+                            height: `calc(${a.grid.span * 100}% + ${(a.grid.span - 1) * 0.5}px - 8px)`,
+                            borderRadius: 8,
+                            background: dim ? p.surface2 : p.ink,
+                            color: dim ? p.inkMuted : p.bg,
+                            border: dim ? `0.5px solid ${p.line}` : 0,
+                            cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', overflow: 'hidden',
+                            display: 'flex', flexDirection: 'column',
+                            textDecoration: a.status === 'cancelled' ? 'line-through' : 'none',
+                            padding: 0,
+                          }}>
+                            <div style={{ flex: 1, padding: '6px 8px', display: 'flex', flexDirection: 'column', gap: 2, minHeight: 0 }}>
+                              <div style={{ fontSize: 10.5, fontWeight: 600, lineHeight: 1.1 }}>{a.customer_name || 'Customer'}</div>
+                              <div style={{ fontSize: 9.5, opacity: 0.7, lineHeight: 1.2 }}>{fmtServices(a.service_slugs)}</div>
+                            </div>
+                            <div style={{
+                              padding: '3px 6px',
+                              background: bar.color, color: '#fff',
+                              fontSize: 8.5, fontWeight: 700, letterSpacing: '0.12em', textAlign: 'center',
+                              textDecoration: 'none',
+                            }}>{bar.label}</div>
+                          </button>
+                        );
+                      })()}
                     </div>
                   );
                 })}
