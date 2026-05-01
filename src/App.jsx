@@ -31,6 +31,10 @@ import NotificationsPage from './pages/NotificationsPage.jsx';
 import Me from './pages/Me.jsx';
 import SignUp from './pages/SignUp.jsx';
 import { Terms, Privacy, Help, Cities } from './pages/Static.jsx';
+import RequestQuote from './pages/RequestQuote.jsx';
+import QuoteDetail from './pages/QuoteDetail.jsx';
+import SalonInbox from './pages/SalonInbox.jsx';
+import SalonInboxDetail from './pages/SalonInboxDetail.jsx';
 
 export default function App() {
   return (
@@ -71,6 +75,10 @@ export default function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/help" element={<Help />} />
         <Route path="/cities" element={<Cities />} />
+        <Route path="/request" element={<RequestQuote />} />
+        <Route path="/quotes/:id" element={<QuoteDetail />} />
+        <Route path="/salon/inbox" element={<SalonInbox />} />
+        <Route path="/salon/inbox/:id" element={<SalonInboxDetail />} />
       </Routes>
     </BrowserRouter>
   );

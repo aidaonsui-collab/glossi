@@ -7,7 +7,7 @@ import { useAuth } from '../store.jsx';
 import SignInModal from './SignInModal.jsx';
 
 const NAV = [
-  { id: 'inbox', l: 'Inbox', badge: 4, to: '/salon' },
+  { id: 'inbox', l: 'Inbox', badge: 4, to: '/salon/inbox' },
   { id: 'bids', l: 'My bids', to: '/salon/bids' },
   { id: 'calendar', l: 'Calendar', to: '/salon/calendar' },
   { id: 'clients', l: 'Clients', to: '/salon/clients' },

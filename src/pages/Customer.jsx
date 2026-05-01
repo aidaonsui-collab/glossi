@@ -114,7 +114,7 @@ export default function Customer() {
           })}
         </div>
       </div>
-      <button onClick={() => navigate('/quotes/waiting')} style={{
+      <button onClick={() => navigate('/request')} style={{
         background: p.accent, color: p.ink, border: 0, cursor: 'pointer',
         padding: isPhone ? '14px 18px' : '16px 20px', borderRadius: 14,
         fontSize: isPhone ? 14 : 15, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'inherit',

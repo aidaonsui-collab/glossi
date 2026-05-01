@@ -1,0 +1,188 @@
+// Glossi marketplace flow — Supabase-backed hooks for quote requests,
+// bids, and bookings. Mirrors the schema in supabase/migrations.
+
+import { useCallback, useEffect, useState } from 'react';
+import { supabase, isSupabaseConfigured } from './supabase.js';
+import { geocodeZip } from './geocode.js';
+
+// ── Customer side ─────────────────────────────────────────────────
+
+// Create a new quote request. Returns { ok: true, id } or { ok: false, error }.
+export async function createQuoteRequest({ serviceSlugs, zip, radius = 10, notes, earliestDate, latestDate }) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  if (!serviceSlugs?.length) return { ok: false, error: 'Pick at least one service.' };
+  const centroid = geocodeZip(zip);
+  if (!centroid) return { ok: false, error: 'ZIP must be inside Texas (Dallas, Austin, San Antonio, RGV).' };
+  if (![5, 10, 15, 25].includes(radius)) return { ok: false, error: 'Radius must be 5, 10, 15, or 25 miles.' };
+
+  const { data, error } = await supabase.rpc('create_quote_request', {
+    p_service_slugs: serviceSlugs,
+    p_lat: centroid.lat,
+    p_lng: centroid.lng,
+    p_radius_miles: radius,
+    p_zip: zip,
+    p_notes: notes || null,
+    p_earliest_date: earliestDate || null,
+    p_latest_date: latestDate || null,
+  });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true, id: data, centroid };
+}
+
+// Hook: customer's own quote requests with bid counts. Refetches on mount + when refresh() is called.
+export function useMyQuotes() {
+  const [quotes, setQuotes] = useState([]);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
+  const [error, setError] = useState(null);
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured) { setLoading(false); return; }
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('quote_requests')
+      .select('id, created_at, expires_at, status, service_slugs, search_zip, radius_miles, notes, quote_bids(count)')
+      .order('created_at', { ascending: false });
+    if (error) { setError(error.message); setQuotes([]); }
+    else { setError(null); setQuotes(data || []); }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  return { quotes, loading, error, refresh };
+}
+
+// Hook: bids for a single quote request — used on the request-detail page so the customer can pick.
+export function useBidsForQuote(requestId) {
+  const [bids, setBids] = useState([]);
+  const [loading, setLoading] = useState(Boolean(requestId && isSupabaseConfigured));
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured || !requestId) { setLoading(false); return; }
+    setLoading(true);
+    const { data } = await supabase
+      .from('quote_bids')
+      .select('id, price_cents, estimated_duration, earliest_slot, message, status, created_at, business_id, businesses(name, slug, city, price_tier, hero_image_url, verified)')
+      .eq('request_id', requestId)
+      .neq('status', 'withdrawn')
+      .order('price_cents', { ascending: true });
+    setBids(data || []);
+    setLoading(false);
+  }, [requestId]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  // Subscribe to realtime inserts/updates on bids for this request
+  useEffect(() => {
+    if (!isSupabaseConfigured || !requestId) return;
+    const ch = supabase
+      .channel(`quote-bids-${requestId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'quote_bids', filter: `request_id=eq.${requestId}` }, () => refresh())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [requestId, refresh]);
+
+  return { bids, loading, refresh };
+}
+
+// Accept a bid → server creates the booking row and closes the request.
+export async function acceptBid(bidId) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  const { error } = await supabase.rpc('accept_bid', { p_bid_id: bidId });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+// ── Salon side ────────────────────────────────────────────────────
+
+// Hook: get the businesses the current user owns. Salons need this to know what
+// inbox to show (a user could in theory own multiple businesses).
+export function useMyBusinesses() {
+  const [businesses, setBusinesses] = useState([]);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured) { setLoading(false); return; }
+    setLoading(true);
+    const { data } = await supabase
+      .from('businesses')
+      .select('id, slug, name, city, hero_image_url, published, verified')
+      .order('created_at', { ascending: true });
+    setBusinesses(data || []);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  return { businesses, loading, refresh };
+}
+
+// Hook: a salon's inbox of nearby quote requests with their bid status.
+export function useSalonInbox(businessId) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(Boolean(businessId && isSupabaseConfigured));
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured || !businessId) { setLoading(false); return; }
+    setLoading(true);
+    const { data, error } = await supabase.rpc('business_inbox', { p_business_id: businessId });
+    if (error) { console.error('business_inbox error', error); setItems([]); }
+    else setItems(data || []);
+    setLoading(false);
+  }, [businessId]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  // Realtime: any new quote_request OR bid status change in this business's area
+  useEffect(() => {
+    if (!isSupabaseConfigured || !businessId) return;
+    const ch = supabase
+      .channel(`salon-inbox-${businessId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'quote_requests' }, () => refresh())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'quote_bids' }, () => refresh())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [businessId, refresh]);
+
+  return { items, loading, refresh };
+}
+
+// Submit (or update) a bid on a quote request.
+export async function submitBid({ businessId, requestId, priceCents, durationMin, earliestSlot, message, providerId }) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  if (priceCents == null || priceCents < 0) return { ok: false, error: 'Price required.' };
+  if (durationMin == null || durationMin <= 0) return { ok: false, error: 'Duration required.' };
+  const { data, error } = await supabase.rpc('submit_bid', {
+    p_business_id: businessId,
+    p_request_id: requestId,
+    p_price_cents: priceCents,
+    p_estimated_duration: durationMin,
+    p_earliest_slot: earliestSlot || null,
+    p_message: message || null,
+    p_provider_id: providerId || null,
+  });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true, id: data };
+}
+
+// ── Bookings (for /bookings list) ─────────────────────────────────
+
+export function useSupabaseBookings() {
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured) { setLoading(false); return; }
+    setLoading(true);
+    const { data } = await supabase
+      .from('bookings')
+      .select('id, scheduled_at, duration_min, price_cents, deposit_cents, status, created_at, business_id, businesses(name, slug, city, hero_image_url)')
+      .order('scheduled_at', { ascending: false });
+    setBookings(data || []);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  return { bookings, loading, refresh };
+}
