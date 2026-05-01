@@ -1,19 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
 import Modal from '../components/Modal.jsx';
-
-const INITIAL_BIDS = [
-  { id: 'mb1', client: 'Sofia M.', service: 'Color & balayage', bid: 95, status: 'won', sent: '2h ago', slot: 'Today, 4:00 PM', initials: 'SM', note: 'Caramel balayage, soft, low-maintenance. 3 hr block, includes wash + blow.' },
-  { id: 'mb2', client: 'Daniela R.', service: 'Lash · Hybrid set', bid: 145, status: 'pending', sent: '14m ago', initials: 'DR', competing: 4, note: 'Hybrid set, natural look. Allergy to standard adhesive — using sensitive formula.', slot: 'This week' },
-  { id: 'mb3', client: 'Maritza C.', service: 'Gel mani + pedi', bid: 52, status: 'pending', sent: '38m ago', initials: 'MC', competing: 6, note: 'Wedding guest. Soft nude or blush. Sat AM works best.', slot: 'Sat, 9:30 AM' },
-  { id: 'mb4', client: 'Kevin O.', service: 'Barber + beard', bid: 38, status: 'lost', sent: '4h ago', initials: 'KO', note: 'Skin fade + beard line-up. Last cut went too short on top.', slot: 'Today after 5 PM' },
-  { id: 'mb5', client: 'Ana V.', service: 'Cut & style', bid: 65, status: 'won', sent: '1d ago', slot: 'Tomorrow, 11:30 AM', initials: 'AV', note: 'Trim + face-frame layers. No bangs.' },
-  { id: 'mb6', client: 'Camila P.', service: 'Color refresh', bid: 110, status: 'won', sent: '2d ago', slot: 'Sat, 2:00 PM', initials: 'CP', note: 'Root touch-up + gloss. Cool tones — no brassy.' },
-  { id: 'mb7', client: 'Jasmin O.', service: 'Brazilian blowout', bid: 175, status: 'lost', sent: '3d ago', initials: 'JO', note: 'First-time, fine hair. Wants 3-month smoothness.', slot: 'Flexible' },
-];
+import { useMyBids } from '../lib/quotes.js';
+import { isSupabaseConfigured, supabase } from '../lib/supabase.js';
 
 const TABS = [
   { id: 'all', l: 'All' },
@@ -26,16 +18,73 @@ const STATUS_COLOR = (p, s) => ({
   won: p.success, pending: p.accent, lost: p.inkMuted,
 })[s];
 
+const fmtAgo = ts => {
+  const m = Math.floor((Date.now() - new Date(ts).getTime()) / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+};
+
+const fmtSlot = ts => ts ? new Date(ts).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : null;
+
+// active → pending (still in bidding window)
+// accepted → won (customer chose us)
+// rejected → lost (customer chose someone else)
+// withdrawn → lost (we backed out — kept under Lost so the salon can see the audit trail)
+// expired → lost
+const mapStatus = s => s === 'accepted' ? 'won' : s === 'active' ? 'pending' : 'lost';
+
+// Derive a placeholder customer label until contact reveal lands.
+// "Customer · #abc123" gives the salon a stable handle without
+// leaking PII before the bid is accepted.
+const customerLabel = bid => {
+  if (bid.customer_full_name) return bid.customer_full_name;
+  const tag = (bid.quote_requests?.id || bid.id || '').slice(0, 6);
+  return `Customer · #${tag}`;
+};
+
+const initialsFromLabel = s => (s || 'C').split(/[\s·#]+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+
+// Translate a Supabase quote_bids row into the shape the existing
+// list/modal renderers expect. Keeps the visual layout intact while
+// the underlying data source flips to real.
+const toRow = bid => {
+  const req = bid.quote_requests;
+  const status = mapStatus(bid.status);
+  const services = req?.service_slugs || [];
+  const service = services.length
+    ? services.map(s => s.replace('-', ' & ')).join(', ')
+    : 'Service';
+  const label = customerLabel(bid);
+  return {
+    id: bid.id,
+    raw: bid,
+    client: label,
+    service,
+    bid: Math.round((bid.price_cents || 0) / 100),
+    status,
+    sent: fmtAgo(bid.created_at),
+    slot: fmtSlot(bid.earliest_slot),
+    initials: initialsFromLabel(label),
+    note: bid.message || req?.notes || '—',
+    requestZip: req?.search_zip,
+  };
+};
+
 export default function SalonBids() {
   const isPhone = useNarrow();
   const toast = useToast();
   const [tab, setTab] = useState('all');
-  const [bids, setBids] = useState(INITIAL_BIDS);
+  const { bids: rawBids, loading, refresh } = useMyBids();
   const [openBid, setOpenBid] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editDraft, setEditDraft] = useState(null);
   const [confirmWithdraw, setConfirmWithdraw] = useState(false);
+  const [acting, setActing] = useState(false);
 
+  const bids = useMemo(() => rawBids.map(toRow), [rawBids]);
   const list = bids.filter(b => tab === 'all' || b.status === tab);
 
   const counts = {
@@ -44,7 +93,7 @@ export default function SalonBids() {
     won: bids.filter(b => b.status === 'won').length,
     lost: bids.filter(b => b.status === 'lost').length,
   };
-  const winRate = Math.round((counts.won / bids.length) * 100);
+  const winRate = bids.length === 0 ? 0 : Math.round((counts.won / bids.length) * 100);
   const totalEarned = bids.filter(b => b.status === 'won').reduce((sum, b) => sum + b.bid, 0);
 
   const openModal = bid => {
@@ -54,22 +103,49 @@ export default function SalonBids() {
     setConfirmWithdraw(false);
   };
 
-  const saveEdit = () => {
-    setBids(curr => curr.map(b => b.id === openBid.id ? { ...b, ...editDraft } : b));
+  // Edit re-submits via submit_bid (which withdraws the old active bid
+  // and inserts a new one — see migration 0010 header). Slot is a
+  // free-text field on the local draft, so we ignore it here for now;
+  // wire it to earliest_slot when we add a date picker.
+  const saveEdit = async () => {
+    if (!isSupabaseConfigured || !openBid?.raw) return;
+    const priceCents = Math.round(Number(editDraft.bid) * 100);
+    if (!Number.isFinite(priceCents) || priceCents < 0) {
+      toast('Enter a valid price.', { tone: 'warn' });
+      return;
+    }
+    setActing(true);
+    const { error } = await supabase.rpc('submit_bid', {
+      p_business_id: openBid.raw.business_id,
+      p_request_id: openBid.raw.quote_requests?.id,
+      p_price_cents: priceCents,
+      p_estimated_duration: openBid.raw.estimated_duration,
+      p_earliest_slot: openBid.raw.earliest_slot || null,
+      p_message: editDraft.note || null,
+      p_provider_id: null,
+    });
+    setActing(false);
+    if (error) { toast(error.message, { tone: 'warn' }); return; }
     toast(`Bid updated · $${editDraft.bid}.`, { tone: 'success' });
     setOpenBid(null);
+    refresh();
   };
 
-  const withdraw = () => {
-    setBids(curr => curr.filter(b => b.id !== openBid.id));
+  const withdraw = async () => {
+    if (!isSupabaseConfigured || !openBid?.raw) return;
+    setActing(true);
+    const { error } = await supabase.rpc('withdraw_bid', { p_bid_id: openBid.raw.id });
+    setActing(false);
+    if (error) { toast(error.message, { tone: 'warn' }); return; }
     toast(`Bid withdrawn from ${openBid.client}.`);
     setOpenBid(null);
+    refresh();
   };
 
   return (
     <SalonLayout active="bids" mobileTitle="My bids">
       <div style={{ padding: isPhone ? '20px 18px 24px' : '34px 40px 48px' }}>
-        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>CASA DE BELLEZA · MY BIDS</div>
+        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>MY BIDS</div>
         <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>The bid book.</h1>
 
         {/* Stats row */}
@@ -104,6 +180,19 @@ export default function SalonBids() {
 
         {/* List */}
         <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {!isSupabaseConfigured ? (
+            <div style={{ padding: 22, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5 }}>
+              Supabase isn't configured — bids need a backend.
+            </div>
+          ) : loading ? (
+            <div style={{ padding: 22, color: p.inkMuted, fontSize: 13.5 }}>Loading…</div>
+          ) : list.length === 0 ? (
+            <div style={{ padding: 22, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5, lineHeight: 1.55 }}>
+              {tab === 'all'
+                ? "No bids yet. Open a request from your inbox and send one — speed wins."
+                : `No ${tab} bids.`}
+            </div>
+          ) : null}
           {list.map((b, i) => (
             <div key={i} style={{ padding: '14px 18px', background: p.surface, borderRadius: 14, border: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
               <div style={{ width: 38, height: 38, borderRadius: 999, flexShrink: 0, background: p.accentSoft, color: p.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontSize: 13, fontWeight: 700 }}>{b.initials}</div>

@@ -216,6 +216,51 @@ export function useSalonInbox(businessId) {
   return { items, loading, refresh };
 }
 
+// Hook: every bid the salon owner has submitted across all their
+// businesses, joined with the request so the list can render service
+// + ZIP + posted-at without a second round-trip. Used by /salon/bids.
+export function useMyBids() {
+  const [bids, setBids] = useState([]);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured) { setLoading(false); return; }
+    setLoading(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id;
+    if (!userId) { setBids([]); setLoading(false); return; }
+    // Pull every bid where the bid's business is owned by the caller.
+    // RLS quote_bids_business_all already enforces this on the server,
+    // we just include the businesses!inner join so PostgREST surfaces
+    // an empty list rather than a 403 if the policy filters it out.
+    const { data, error } = await supabase
+      .from('quote_bids')
+      .select('id, price_cents, estimated_duration, earliest_slot, message, status, created_at, business_id, businesses!inner(id, name, owner_id), quote_requests(id, status, service_slugs, search_zip, notes, created_at, expires_at)')
+      .eq('businesses.owner_id', userId)
+      .order('created_at', { ascending: false });
+    if (error) { console.error('useMyBids error', error); setBids([]); }
+    else setBids(data || []);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  // Realtime: any bid status change on the salon's businesses or any
+  // request flip (open → booked) refreshes the list so the salon sees
+  // a "won" badge appear without needing to reload.
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    const ch = supabase
+      .channel('my-bids')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'quote_bids' }, () => refresh())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'quote_requests' }, () => refresh())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [refresh]);
+
+  return { bids, loading, refresh };
+}
+
 // Submit (or update) a bid on a quote request.
 export async function submitBid({ businessId, requestId, priceCents, durationMin, earliestSlot, message, providerId }) {
   if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
