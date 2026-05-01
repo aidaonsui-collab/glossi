@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
 import { useNarrow } from '../hooks.js';
@@ -25,8 +25,13 @@ export default function SignUp() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const toast = useToast();
-  const { signUp } = useAuth();
+  const { signUp, user } = useAuth();
   const [params] = useSearchParams();
+
+  // If already signed in, redirect to the right dashboard.
+  useEffect(() => {
+    if (user) navigate(user.type === 'salon' ? '/salon' : '/quotes', { replace: true });
+  }, [user, navigate]);
 
   const [role, setRole] = useState(params.get('role') === 'salon' ? 'salon' : 'customer');
   const [name, setName] = useState('');
@@ -192,17 +197,30 @@ export default function SignUp() {
                     toast(`Single sign-on with ${s.l} requires a connected provider. Use email to continue.`, { tone: 'warn' });
                     return;
                   }
-                  const { error } = await supabase.auth.signInWithOAuth({
+                  // Get the OAuth URL but don't redirect yet — pre-flight it so we can
+                  // catch a "provider not enabled" 400 and show a friendly toast
+                  // instead of dumping users on a raw JSON error page.
+                  const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: OAUTH_PROVIDER[s.id],
-                    options: { redirectTo: `${window.location.origin}/onboarding/${role}` },
+                    options: { skipBrowserRedirect: true, redirectTo: `${window.location.origin}/onboarding/${role}` },
                   });
-                  if (error) {
-                    if (/provider is not enabled|Unsupported provider/i.test(error.message)) {
-                      toast(`${s.l} sign-in isn't enabled yet. Ask the Glossi team to turn it on.`, { tone: 'warn' });
-                    } else {
-                      toast(error.message, { tone: 'warn' });
-                    }
+                  if (error || !data?.url) {
+                    toast(`${s.l} sign-in isn't enabled yet. Ask the Glossi team to turn it on.`, { tone: 'warn' });
+                    return;
                   }
+                  try {
+                    const probe = await fetch(data.url, { method: 'HEAD', redirect: 'manual' });
+                    // Supabase /authorize returns 400 when the provider is disabled.
+                    // A successful flow returns either an opaque-redirect (status 0)
+                    // or a 3xx — anything 4xx means the provider isn't ready.
+                    if (probe.status >= 400 && probe.status < 500) {
+                      toast(`${s.l} sign-in isn't enabled yet. Ask the Glossi team to turn it on.`, { tone: 'warn' });
+                      return;
+                    }
+                  } catch {
+                    // Network error / CORS — fall through and let the redirect happen
+                  }
+                  window.location.href = data.url;
                 }} style={{
                   padding: '12px 14px', borderRadius: 12,
                   border: `0.5px solid ${p.line}`, background: p.surface, cursor: 'pointer',

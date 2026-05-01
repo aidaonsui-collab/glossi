@@ -308,19 +308,59 @@ export function useLang() {
 }
 
 // ── Customer profile (editable contact + prefs) ────────────────────
-const DEFAULT_CUSTOMER_PROFILE = {
+const DEFAULT_NOTIFICATIONS = { bids: true, reminders: true, drops: false, news: true, sound: true };
+
+const DEFAULT_DEMO_PROFILE = {
   name: 'Sofia Martínez',
   email: 'sofia@example.com',
   phone: '(956) 555-0124',
   zip: '78577',
   city: 'Pharr, TX',
-  notifications: { bids: true, reminders: true, drops: false, news: true, sound: true },
+  notifications: DEFAULT_NOTIFICATIONS,
 };
 
 export function useCustomerProfile() {
-  const [profile, setProfile] = useLocalState('glossi.profile.customer', DEFAULT_CUSTOMER_PROFILE);
-  const update = useCallback(patch => setProfile(curr => ({ ...curr, ...patch })), [setProfile]);
-  const updateNotifications = useCallback(patch => setProfile(curr => ({ ...curr, notifications: { ...curr.notifications, ...patch } })), [setProfile]);
+  // Per-user notification + phone overrides keyed by auth user id (or 'demo')
+  const { user } = useContext(AuthCtx) || { user: null };
+  const key = `glossi.profile.customer.${user?.id || 'demo'}`;
+  const [overrides, setOverrides] = useLocalState(key, { phone: '', notifications: DEFAULT_NOTIFICATIONS });
+
+  // Derive profile from auth user (canonical fields) + local overrides (phone/notifications)
+  const profile = useMemo(() => {
+    if (!user) return DEFAULT_DEMO_PROFILE;
+    const isDemo = user.email === 'sofia@example.com' && !isSupabaseConfigured;
+    if (isDemo) return DEFAULT_DEMO_PROFILE;
+    const zip = user.city?.startsWith('ZIP ') ? user.city.slice(4) : '';
+    return {
+      name: user.name || '',
+      email: user.email || '',
+      phone: overrides.phone || '',
+      zip,
+      city: user.city || '',
+      notifications: { ...DEFAULT_NOTIFICATIONS, ...(overrides.notifications || {}) },
+    };
+  }, [user, overrides]);
+
+  const update = useCallback(async patch => {
+    // Phone + notifications stay local; name/email/zip live in Supabase
+    if (patch.phone !== undefined || patch.notifications) {
+      setOverrides(curr => ({
+        phone: patch.phone !== undefined ? patch.phone : curr.phone,
+        notifications: patch.notifications ? { ...curr.notifications, ...patch.notifications } : curr.notifications,
+      }));
+    }
+    if (isSupabaseConfigured && user?.id && (patch.name || patch.zip)) {
+      const dbPatch = {};
+      if (patch.name) dbPatch.full_name = patch.name;
+      if (patch.zip) dbPatch.home_zip = patch.zip;
+      await supabase.from('profiles').update(dbPatch).eq('id', user.id);
+    }
+  }, [user, setOverrides]);
+
+  const updateNotifications = useCallback(patch => {
+    setOverrides(curr => ({ ...curr, notifications: { ...curr.notifications, ...patch } }));
+  }, [setOverrides]);
+
   return { profile, update, updateNotifications };
 }
 

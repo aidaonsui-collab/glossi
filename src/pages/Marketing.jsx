@@ -39,7 +39,7 @@ export default function Marketing() {
       ) : (
         <button onClick={() => setSignInOpen(true)} style={{ background: 'transparent', border: 0, padding: '8px 12px', fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer' }}>Sign in</button>
       )}
-      <button onClick={() => navigate('/signup')} style={{ background: p.accent, color: p.ink, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{isPhone ? 'Sign up' : 'Get started'}</button>
+      <button onClick={() => navigate(user ? '/quotes' : '/signup')} style={{ background: p.accent, color: p.ink, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{isPhone ? 'Sign up' : 'Get started'}</button>
     </div>
   );
 
@@ -70,7 +70,7 @@ export default function Marketing() {
               Beauty,<br />negotiated.
             </div>
             <div style={{ marginTop: isPhone ? 12 : 18, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-              <button onClick={() => navigate('/signup')} style={{ background: p.bg, color: p.ink, border: 0, padding: isPhone ? '12px 18px' : '14px 22px', borderRadius: 99, fontSize: isPhone ? 13.5 : 14, fontWeight: 600, cursor: 'pointer' }}>Post a request</button>
+              <button onClick={() => navigate(user ? '/quotes' : '/signup')} style={{ background: p.bg, color: p.ink, border: 0, padding: isPhone ? '12px 18px' : '14px 22px', borderRadius: 99, fontSize: isPhone ? 13.5 : 14, fontWeight: 600, cursor: 'pointer' }}>Post a request</button>
               <span style={{ fontFamily: type.mono, fontSize: isPhone ? 11 : 12, color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>1,400+ SALONS · 4 CITIES</span>
             </div>
           </div>
@@ -92,7 +92,7 @@ export default function Marketing() {
           </p>
         </div>
         <div style={{ marginTop: isPhone ? 28 : 42, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          <button onClick={() => navigate('/signup')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '18px 30px', borderRadius: 99, fontSize: isPhone ? 14 : 16, fontWeight: 600, cursor: 'pointer' }}>Post your first request →</button>
+          <button onClick={() => navigate(user ? '/quotes' : '/signup')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '18px 30px', borderRadius: 99, fontSize: isPhone ? 14 : 16, fontWeight: 600, cursor: 'pointer' }}>Post your first request →</button>
           <span style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, fontWeight: 500, letterSpacing: '0.1em' }}>FREE · 30 SECONDS · NO ACCOUNT NEEDED</span>
         </div>
       </div>
