@@ -5,7 +5,7 @@ import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
 import CustomerLayout from '../components/CustomerLayout.jsx';
 import { useAuth } from '../store.jsx';
-import { useBidsForQuote, acceptBid } from '../lib/quotes.js';
+import { useBidsForQuote } from '../lib/quotes.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 
 const fmtPrice = cents => cents == null ? '—' : `$${(cents / 100).toFixed(0)}`;
@@ -43,16 +43,14 @@ export default function QuoteDetail() {
     return () => { cancel = true; };
   }, [id]);
 
+  // Phase 6: accepting now means paying. We hand off to /pay/:bidId
+  // which calls the create-payment-intent Edge Function and shows
+  // the Stripe Elements card form. The actual bid → booking flip
+  // happens server-side after payment_intent.succeeded fires.
   const onAccept = async bid => {
     const name = bid.businesses?.name || 'this salon';
-    if (!confirm(`Accept ${name}'s bid for ${fmtPrice(bid.price_cents)}? They'll reach out to confirm a time, then we'll send a deposit link.`)) return;
-    setAccepting(bid.id);
-    const result = await acceptBid(bid.id);
-    setAccepting(null);
-    if (!result.ok) { toast(result.error, { tone: 'warn' }); return; }
-    toast(`Accepted ${name}'s bid. They'll text you to lock in a time.`, { tone: 'success' });
-    await refresh();
-    navigate('/bookings');
+    if (!confirm(`Pay ${fmtPrice(bid.price_cents)} to book with ${name}? Glossi holds the funds and releases them after your appointment.`)) return;
+    navigate(`/pay/${bid.id}`);
   };
 
   if (!quote) {

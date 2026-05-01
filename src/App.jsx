@@ -17,6 +17,7 @@ import SalonDetail from './pages/SalonDetail.jsx';
 import InboxList from './pages/InboxList.jsx';
 import ConversationPage from './pages/ConversationPage.jsx';
 import CheckoutPage from './pages/CheckoutPage.jsx';
+import PaymentPage from './pages/PaymentPage.jsx';
 import Explore from './pages/Explore.jsx';
 import Saved from './pages/Saved.jsx';
 import Editorial from './pages/Editorial.jsx';
@@ -58,6 +59,7 @@ export default function App() {
         <Route path="/inbox" element={<InboxList />} />
         <Route path="/inbox/:id" element={<ConversationPage /> } />
         <Route path="/checkout/:id" element={<CheckoutPage />} />
+        <Route path="/pay/:bidId" element={<PaymentPage />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/saved" element={<Saved />} />
         <Route path="/editorial" element={<Editorial />} />

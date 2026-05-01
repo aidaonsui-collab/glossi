@@ -142,7 +142,7 @@ export function useMyBusinessProfile() {
     if (!userId) { setBusiness(null); setLoading(false); return; }
     const { data, error } = await supabase
       .from('businesses')
-      .select('id, slug, name, bio_en, address_line1, city, state, postal_code, phone, website, instagram, price_tier, hero_image_url, published, verified')
+      .select('id, slug, name, bio_en, address_line1, city, state, postal_code, phone, website, instagram, price_tier, hero_image_url, published, verified, stripe_account_id, stripe_charges_enabled, stripe_payouts_enabled, stripe_details_submitted')
       .eq('owner_id', userId)
       .order('created_at', { ascending: true })
       .limit(1)

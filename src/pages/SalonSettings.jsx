@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
 import { useNarrow } from '../hooks.js';
@@ -8,6 +8,7 @@ import Modal from '../components/Modal.jsx';
 import { useAuth, useSalonProfile } from '../store.jsx';
 import { useMyBusinessProfile } from '../lib/quotes.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
+import { invokeEdgeFunction } from '../lib/stripe.js';
 
 // Fields that come from Supabase (the real businesses row). Other sections
 // of this page — hours, services, photos, payouts, notifications — are
@@ -51,9 +52,26 @@ export default function SalonSettings() {
   const [draft, setDraft] = useState(profile);
   const [bizDraft, setBizDraft] = useState(EMPTY_BIZ_DRAFT);
   const [saving, setSaving] = useState(false);
+  const [connectLoading, setConnectLoading] = useState(false);
   const [serviceDraft, setServiceDraft] = useState({ name: '', from: 50, to: 90, dur: '1 hr' });
   const [showAddService, setShowAddService] = useState(false);
-  const [showBank, setShowBank] = useState(false);
+
+  // After Stripe Connect onboarding, the salon comes back with
+  // ?stripe=return in the URL. Force-refresh the businesses row so
+  // the UI flips from "Connect" → "Verified" without waiting for
+  // the realtime subscription. Then strip the query param so a
+  // refresh doesn't repeat the toast.
+  const [params, setParams] = useSearchParams();
+  useEffect(() => {
+    const flag = params.get('stripe');
+    if (!flag) return;
+    refreshBiz();
+    if (flag === 'return') toast('Welcome back. Stripe is verifying your details — payouts unlock as soon as they finish.', { tone: 'success' });
+    if (flag === 'refresh') toast('That onboarding link expired — start a new one.', { tone: 'warn' });
+    const next = new URLSearchParams(params);
+    next.delete('stripe');
+    setParams(next, { replace: true });
+  }, [params, refreshBiz, setParams, toast]);
 
   // Hydrate Business info section from the live row whenever it (re)loads
   useEffect(() => {
@@ -93,6 +111,33 @@ export default function SalonSettings() {
     setDraft(profile);
     if (business) refreshBiz();
   };
+
+  // Stripe Connect onboarding. Calls the Edge Function which creates
+  // (or reuses) the salon's Express account and returns a fresh
+  // account_link URL. We replace the whole window so Stripe's hosted
+  // form can take over; on completion they redirect back to /salon/
+  // settings?stripe=return.
+  const onConnectStripe = async () => {
+    if (!business?.id) {
+      toast('Save business info first.', { tone: 'warn' });
+      return;
+    }
+    setConnectLoading(true);
+    const result = await invokeEdgeFunction('create-connect-account', { businessId: business.id });
+    setConnectLoading(false);
+    if (!result.ok) {
+      toast(result.error || 'Could not start Stripe onboarding.', { tone: 'warn' });
+      return;
+    }
+    if (result.data?.url) {
+      window.location.href = result.data.url;
+    } else {
+      toast('Stripe did not return an onboarding link.', { tone: 'warn' });
+    }
+  };
+
+  const stripeReady = business?.stripe_charges_enabled && business?.stripe_payouts_enabled;
+  const stripePending = business?.stripe_account_id && !stripeReady;
 
   const Section = ({ title, eyebrow, children }) => (
     <section style={{ marginTop: 28 }}>
@@ -283,27 +328,40 @@ export default function SalonSettings() {
           </div>
         </Section>
 
-        <Section title="Payouts" eyebrow="05 · BANKING">
-          <Field label="Bank account">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 40, height: 28, borderRadius: 6, background: '#117EB3', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontSize: 8, fontWeight: 700 }}>CHASE</div>
-              <span style={{ fontFamily: type.mono, fontSize: 14, fontWeight: 600 }}>{profile.payouts.bank}</span>
-              <div style={{ flex: 1 }} />
-              <button onClick={() => setShowBank(true)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Replace via Plaid</button>
-            </div>
-          </Field>
-          <Field label="Schedule" last>
-            <div style={{ display: 'inline-flex', background: p.bg, borderRadius: 99, border: `0.5px solid ${p.line}`, padding: 3 }}>
-              {['daily', 'weekly', 'monthly'].map(s => {
-                const a = profile.payouts.schedule === s;
-                return (
-                  <button key={s} onClick={() => update({ payouts: { ...profile.payouts, schedule: s } })} style={{
-                    padding: '7px 16px', borderRadius: 99, border: 0,
-                    background: a ? p.ink : 'transparent', color: a ? p.bg : p.ink,
-                    fontFamily: type.body, fontSize: 12.5, fontWeight: 600, cursor: 'pointer', textTransform: 'capitalize',
-                  }}>{s}</button>
-                );
-              })}
+        <Section title="Payouts" eyebrow="05 · STRIPE CONNECT">
+          <Field label="Status" last>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              {stripeReady ? (
+                <>
+                  <span style={{ width: 7, height: 7, borderRadius: 99, background: p.success, flexShrink: 0 }} />
+                  <span style={{ fontSize: 13.5, fontWeight: 600, color: p.ink }}>Stripe verified · payouts active</span>
+                  <span style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted }}>{business?.stripe_account_id?.slice(-8)}</span>
+                  <div style={{ flex: 1 }} />
+                  <button onClick={onConnectStripe} disabled={connectLoading} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: connectLoading ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}>
+                    {connectLoading ? 'Loading…' : 'Manage account →'}
+                  </button>
+                </>
+              ) : stripePending ? (
+                <>
+                  <span style={{ width: 7, height: 7, borderRadius: 99, background: p.accent, flexShrink: 0 }} />
+                  <span style={{ fontSize: 13.5, fontWeight: 600, color: p.ink }}>Onboarding incomplete</span>
+                  <span style={{ fontSize: 12, color: p.inkSoft }}>Stripe still needs a few details before you can take payments.</span>
+                  <div style={{ flex: 1 }} />
+                  <button onClick={onConnectStripe} disabled={connectLoading} style={{ background: p.accent, color: p.ink, border: 0, padding: '8px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, cursor: connectLoading ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}>
+                    {connectLoading ? 'Loading…' : 'Finish onboarding →'}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span style={{ width: 7, height: 7, borderRadius: 99, background: p.line, flexShrink: 0 }} />
+                  <span style={{ fontSize: 13.5, fontWeight: 600, color: p.ink }}>Not connected</span>
+                  <span style={{ fontSize: 12, color: p.inkSoft }}>Customers can't accept your bids until you connect a payout account.</span>
+                  <div style={{ flex: 1 }} />
+                  <button onClick={onConnectStripe} disabled={connectLoading || !business?.id} style={{ background: p.ink, color: p.bg, border: 0, padding: '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: (connectLoading || !business?.id) ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}>
+                    {connectLoading ? 'Loading…' : 'Connect with Stripe →'}
+                  </button>
+                </>
+              )}
             </div>
           </Field>
         </Section>
@@ -376,16 +434,6 @@ export default function SalonSettings() {
           </div>
         </Modal>
 
-        <Modal open={showBank} onClose={() => setShowBank(false)} eyebrow="BANK ACCOUNT" title="Connect via Plaid" footer={
-          <>
-            <button onClick={() => setShowBank(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
-            <button onClick={() => { toast('Plaid verification email sent.', { tone: 'success' }); setShowBank(false); }} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Open Plaid</button>
-          </>
-        }>
-          <div style={{ fontSize: 13.5, color: p.inkSoft, lineHeight: 1.55 }}>
-            Glossi uses Plaid to securely link your business checking account. Routing and account numbers are never stored on our servers.
-          </div>
-        </Modal>
       </div>
     </SalonLayout>
   );
