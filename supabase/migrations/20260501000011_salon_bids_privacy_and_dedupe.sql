@@ -56,11 +56,14 @@ begin
   end if;
 
   return query
-    with paid as (
+    with paid_bids as (
       -- A bid earns the contact reveal only when its booking has
       -- collected payment. Mirrors the gate in
       -- request_customer_contact (post-Phase-6 escrow).
-      select bk.bid_id
+      -- Aliased to paid_bid_id because the function's RETURNS TABLE
+      -- already declares a column named bid_id — Postgres flags the
+      -- bare reference as ambiguous in the CASE/IN clauses below.
+      select bk.bid_id as paid_bid_id
       from public.bookings bk
       where bk.payment_status = 'succeeded'
     )
@@ -85,12 +88,12 @@ begin
       qr.created_at,
       qr.expires_at,
       qr.customer_id,
-      case when qb.id in (select bid_id from paid)
+      case when qb.id in (select paid_bid_id from paid_bids)
         then coalesce(p.full_name, u.raw_user_meta_data->>'full_name', u.raw_user_meta_data->>'name')
         else null end,
-      case when qb.id in (select bid_id from paid)
+      case when qb.id in (select paid_bid_id from paid_bids)
         then u.email::text else null end,
-      case when qb.id in (select bid_id from paid)
+      case when qb.id in (select paid_bid_id from paid_bids)
         then p.phone else null end
     from public.quote_bids qb
     join public.businesses b      on b.id  = qb.business_id
