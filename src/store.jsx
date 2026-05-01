@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { supabase, isSupabaseConfigured } from './lib/supabase.js';
 
 // ── Generic localStorage hook ──────────────────────────────────────
 export function useLocalState(key, defaultValue) {
@@ -39,31 +40,105 @@ const DEMO_ACCOUNTS = {
   salon: { type: 'salon', name: 'Casa de Belleza', initials: 'MR', email: 'marisol@casadebelleza.com', city: 'Pharr · 4.9★', avatar: 'linear-gradient(135deg,#C28A6B,#8B4F3A)' },
 };
 
+const initialsFrom = s => (s || 'You').split(/[\s@]+/).map(p => p[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+const avatarFor = role => role === 'salon'
+  ? 'linear-gradient(135deg,#C28A6B,#8B4F3A)'
+  : 'linear-gradient(135deg,#E8B7A8,#B8893E)';
+
+// Map a Supabase auth user + profile row → the shape the rest of the app expects
+const buildProfile = (authUser, profileRow) => {
+  if (!authUser) return null;
+  const meta = authUser.user_metadata || {};
+  const name = profileRow?.full_name || meta.full_name || authUser.email?.split('@')[0] || 'Member';
+  const role = profileRow?.is_business || meta.role === 'salon' ? 'salon' : 'customer';
+  return {
+    id: authUser.id,
+    type: role,
+    name,
+    initials: initialsFrom(name),
+    email: authUser.email,
+    city: role === 'salon' ? 'New salon' : (profileRow?.home_zip ? `ZIP ${profileRow.home_zip}` : 'Pharr, TX'),
+    avatar: profileRow?.avatar_url || avatarFor(role),
+    createdAt: Date.parse(authUser.created_at) || Date.now(),
+  };
+};
+
 const AuthCtx = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useLocalState('glossi.auth', DEMO_ACCOUNTS.customer);
+  // Demo-mode fallback when Supabase env vars are missing (e.g. local dev without .env.local)
+  const [demoUser, setDemoUser] = useLocalState('glossi.auth', DEMO_ACCOUNTS.customer);
+  const [supaUser, setSupaUser] = useState(null);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
+
+  // Subscribe to Supabase auth state — runs once when configured
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    let cancelled = false;
+
+    const hydrate = async session => {
+      if (!session?.user) { if (!cancelled) { setSupaUser(null); setLoading(false); } return; }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, home_zip, avatar_url, is_business, preferred_lang')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      if (!cancelled) { setSupaUser(buildProfile(session.user, profile)); setLoading(false); }
+    };
+
+    supabase.auth.getSession().then(({ data }) => hydrate(data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => hydrate(session));
+    return () => { cancelled = true; sub.subscription.unsubscribe(); };
+  }, []);
+
+  const user = isSupabaseConfigured ? supaUser : demoUser;
 
   const signIn = useCallback(role => {
-    if (DEMO_ACCOUNTS[role]) setUser(DEMO_ACCOUNTS[role]);
-  }, [setUser]);
+    // Demo-mode role swap; no-op when using real auth (caller should use signInWithEmail)
+    if (!isSupabaseConfigured && DEMO_ACCOUNTS[role]) setDemoUser(DEMO_ACCOUNTS[role]);
+  }, [setDemoUser]);
 
-  const signInWithEmail = useCallback((email, role = 'customer') => {
-    setUser({ ...DEMO_ACCOUNTS[role], email: email || DEMO_ACCOUNTS[role].email });
-  }, [setUser]);
+  const signInWithEmail = useCallback(async (email, password, role = 'customer') => {
+    if (!isSupabaseConfigured) {
+      setDemoUser({ ...DEMO_ACCOUNTS[role], email: email || DEMO_ACCOUNTS[role].email });
+      return { ok: true };
+    }
+    if (!password) return { ok: false, error: 'Password required.' };
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { ok: false, error: error.message };
+    return { ok: true };
+  }, [setDemoUser]);
 
-  const signUp = useCallback(({ name, email, role = 'customer' }) => {
-    const initials = (name || email || 'You').split(/[\s@]+/).map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
-    const avatar = role === 'salon'
-      ? 'linear-gradient(135deg,#C28A6B,#8B4F3A)'
-      : 'linear-gradient(135deg,#E8B7A8,#B8893E)';
-    const city = role === 'salon' ? 'New salon' : 'Pharr, TX';
-    setUser({ type: role, name: name || 'New member', initials, email, city, avatar, isNew: true, createdAt: Date.now() });
-  }, [setUser]);
+  const signUp = useCallback(async ({ name, email, password, role = 'customer' }) => {
+    if (!isSupabaseConfigured) {
+      setDemoUser({ type: role, name: name || 'New member', initials: initialsFrom(name || email), email, city: role === 'salon' ? 'New salon' : 'Pharr, TX', avatar: avatarFor(role), isNew: true, createdAt: Date.now() });
+      return { ok: true };
+    }
+    if (!password) return { ok: false, error: 'Password required.' };
+    const { data, error } = await supabase.auth.signUp({
+      email, password,
+      options: { data: { full_name: name, role } },
+    });
+    if (error) return { ok: false, error: error.message };
+    // Update is_business flag on the profile row that the trigger just created
+    if (role === 'salon' && data.user) {
+      await supabase.from('profiles').update({ is_business: true }).eq('id', data.user.id);
+    }
+    return { ok: true, needsConfirmation: !data.session };
+  }, [setDemoUser]);
 
-  const signOut = useCallback(() => setUser(null), [setUser]);
+  const signOut = useCallback(async () => {
+    if (isSupabaseConfigured) await supabase.auth.signOut();
+    else setDemoUser(null);
+  }, [setDemoUser]);
 
-  const value = useMemo(() => ({ user, isCustomer: user?.type === 'customer', isSalon: user?.type === 'salon', signIn, signInWithEmail, signUp, signOut }), [user, signIn, signInWithEmail, signUp, signOut]);
+  const value = useMemo(() => ({
+    user,
+    loading,
+    isCustomer: user?.type === 'customer',
+    isSalon: user?.type === 'salon',
+    signIn, signInWithEmail, signUp, signOut,
+  }), [user, loading, signIn, signInWithEmail, signUp, signOut]);
 
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }

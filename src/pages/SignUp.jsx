@@ -36,7 +36,7 @@ export default function SignUp() {
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const canSubmit = name.trim().length >= 2 && emailValid && password.length >= PASSWORD_MIN && agree;
 
-  const submit = e => {
+  const submit = async e => {
     e?.preventDefault();
     if (!canSubmit) {
       if (!agree) toast('Please accept the terms to continue.', { tone: 'warn' });
@@ -46,11 +46,18 @@ export default function SignUp() {
       return;
     }
     setSubmitting(true);
-    setTimeout(() => {
-      signUp({ name: name.trim(), email, role });
-      toast(`Welcome, ${name.split(' ')[0]}!`, { tone: 'success' });
-      navigate(role === 'salon' ? '/onboarding/salon' : '/onboarding/customer');
-    }, 600);
+    const result = await signUp({ name: name.trim(), email, password, role });
+    setSubmitting(false);
+    if (!result?.ok) {
+      toast(result?.error || 'Sign up failed.', { tone: 'warn' });
+      return;
+    }
+    if (result.needsConfirmation) {
+      toast('Check your email to confirm your account.', { tone: 'success' });
+      return;
+    }
+    toast(`Welcome, ${name.split(' ')[0]}!`, { tone: 'success' });
+    navigate(role === 'salon' ? '/onboarding/salon' : '/onboarding/customer');
   };
 
   const input = {
