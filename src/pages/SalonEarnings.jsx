@@ -1,43 +1,81 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
-import Modal from '../components/Modal.jsx';
+import { useMyBusinesses, useSalonBookingsList } from '../lib/quotes.js';
+import { isSupabaseConfigured } from '../lib/supabase.js';
 
-const PAYOUTS = [
-  { date: 'Mar 15', amount: 612.40, status: 'paid', method: 'Chase ••3829', count: 7 },
-  { date: 'Mar 8', amount: 718.10, status: 'paid', method: 'Chase ••3829', count: 9 },
-  { date: 'Mar 1', amount: 524.80, status: 'paid', method: 'Chase ••3829', count: 6 },
-  { date: 'Feb 22', amount: 891.20, status: 'paid', method: 'Chase ••3829', count: 11 },
-  { date: 'Feb 15', amount: 480.50, status: 'paid', method: 'Chase ••3829', count: 5 },
-];
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const fmtMoney = cents => `$${Math.round((cents || 0) / 100).toLocaleString()}`;
+const fmtMoneyDec = cents => `$${((cents || 0) / 100).toFixed(2)}`;
 
-const WEEKLY = [410, 524, 718, 891, 480, 524, 718, 612];
-const MAX_WEEKLY = Math.max(...WEEKLY);
+// Bucket bookings into the last 8 weeks. Index 7 = current week, 0 = 7 weeks ago.
+function weeklyBuckets(bookings) {
+  const buckets = Array(8).fill(0);
+  const now = Date.now();
+  // Anchor: start of "this week" (Mon 00:00) so week boundaries are stable.
+  const monday = new Date(now);
+  monday.setHours(0, 0, 0, 0);
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  const start = monday.getTime() - 7 * WEEK_MS;
+  for (const b of bookings) {
+    if (b.status === 'cancelled') continue;
+    const t = new Date(b.scheduled_at || b.created_at).getTime();
+    const idx = Math.floor((t - start) / WEEK_MS);
+    if (idx >= 0 && idx < 8) buckets[idx] += (b.price_cents || 0);
+  }
+  return buckets;
+}
 
 export default function SalonEarnings() {
   const isPhone = useNarrow();
   const toast = useToast();
-  const [showBank, setShowBank] = useState(false);
-  const [showInstant, setShowInstant] = useState(false);
+  const { businesses } = useMyBusinesses();
+  const businessId = businesses[0]?.id;
+  const { bookings, loading } = useSalonBookingsList(businessId);
+
+  const stats = useMemo(() => {
+    const completed = bookings.filter(b => b.status !== 'cancelled');
+    const lifetime = completed.reduce((s, b) => s + (b.price_cents || 0), 0);
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    const thisMonth = completed
+      .filter(b => new Date(b.scheduled_at || b.created_at).getTime() >= monthStart)
+      .reduce((s, b) => s + (b.price_cents || 0), 0);
+    const avg = completed.length ? Math.round(lifetime / completed.length) : 0;
+    const cancelled = bookings.filter(b => b.status === 'cancelled').length;
+    const cancelRate = bookings.length ? (cancelled / bookings.length) * 100 : 0;
+    return { lifetime, thisMonth, avg, cancelRate, count: completed.length, totalRows: bookings.length };
+  }, [bookings]);
+
+  const weekly = useMemo(() => weeklyBuckets(bookings), [bookings]);
+  const maxWeekly = Math.max(...weekly, 1);
+  const eightWeekTotal = weekly.reduce((s, v) => s + v, 0);
+  const eightWeekDelta = weekly[7] && weekly[0]
+    ? Math.round(((weekly[7] - weekly[0]) / Math.max(weekly[0], 1)) * 100)
+    : null;
 
   const exportCSV = () => {
-    const rows = [['Date', 'Amount', 'Bookings', 'Method', 'Status']];
-    PAYOUTS.forEach(r => rows.push([r.date, r.amount.toFixed(2), String(r.count), r.method, r.status]));
-    const csv = rows.map(r => r.map(c => /[",\n]/.test(c) ? `"${c.replace(/"/g, '""')}"` : c).join(',')).join('\n');
+    const rows = [['Date', 'Customer', 'Service', 'Amount', 'Status']];
+    for (const b of bookings) {
+      rows.push([
+        new Date(b.scheduled_at || b.created_at).toISOString().slice(0, 10),
+        b.customer_name || 'Customer',
+        (b.service_slugs || []).join(';'),
+        ((b.price_cents || 0) / 100).toFixed(2),
+        b.status,
+      ]);
+    }
+    const csv = rows.map(r => r.map(c => /[",\n]/.test(String(c)) ? `"${String(c).replace(/"/g, '""')}"` : c).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `glossi-payouts-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.href = url; a.download = `glossi-bookings-${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
-    toast(`${PAYOUTS.length} payouts exported.`, { tone: 'success' });
+    toast(`${bookings.length} bookings exported.`, { tone: 'success' });
   };
-
-  const pendingPayout = 384.20;
-  const lifetime = PAYOUTS.reduce((s, x) => s + x.amount, 0) + pendingPayout;
-  const thisMonth = PAYOUTS.filter(p => p.date.startsWith('Mar')).reduce((s, x) => s + x.amount, 0) + pendingPayout;
 
   return (
     <SalonLayout active="earnings" mobileTitle="Earnings">
@@ -45,35 +83,40 @@ export default function SalonEarnings() {
         <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>EARNINGS</div>
         <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>Your take.</h1>
 
-        {/* Pending payout hero */}
+        {/* Lifetime hero — Stripe payouts arrive in Phase 6, until then we
+            show real revenue so the salon owner has visibility on what
+            they've actually booked. */}
         <div style={{ marginTop: 22, padding: isPhone ? '24px 22px' : '32px 36px', background: p.ink, color: p.bg, borderRadius: 20, display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1fr', gap: isPhone ? 18 : 32, alignItems: 'center' }}>
           <div>
-            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>NEXT PAYOUT · MAR 22</div>
-            <div style={{ fontFamily: type.mono, fontSize: isPhone ? 52 : 72, fontWeight: 600, color: p.bg, letterSpacing: '-0.03em', lineHeight: 1, marginTop: 8 }}>${pendingPayout.toFixed(2)}</div>
-            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginTop: 8, lineHeight: 1.5 }}>4 confirmed bookings since last payout. Stripe deposits Friday morning.</div>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>LIFETIME REVENUE</div>
+            <div style={{ fontFamily: type.mono, fontSize: isPhone ? 52 : 72, fontWeight: 600, color: p.bg, letterSpacing: '-0.03em', lineHeight: 1, marginTop: 8 }}>
+              {fmtMoney(stats.lifetime)}
+            </div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginTop: 8, lineHeight: 1.5 }}>
+              {stats.count} confirmed booking{stats.count === 1 ? '' : 's'} across {bookings.length} total.
+            </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ padding: '14px 16px', background: 'rgba(255,255,255,0.06)', borderRadius: 12 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.5)' }}>BANK ON FILE</div>
-              <div style={{ fontFamily: type.mono, fontSize: 14, fontWeight: 600, marginTop: 4 }}>Chase •••• 3829</div>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.5)' }}>PAYOUTS</div>
+              <div style={{ fontSize: 13, marginTop: 4, lineHeight: 1.5, color: 'rgba(255,255,255,0.85)' }}>
+                Stripe Connect arrives in Phase 6. Until then, customers pay you directly at the appointment.
+              </div>
             </div>
-            <button onClick={() => setShowBank(true)} style={{ background: p.accent, color: p.ink, border: 0, padding: '12px 18px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Change account</button>
-            <button onClick={() => setShowInstant(true)} style={{ background: 'transparent', color: p.bg, border: '0.5px solid rgba(255,255,255,0.2)', padding: '12px 18px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Instant payout · 1% fee</button>
           </div>
         </div>
 
         {/* Stats */}
         <div style={{ marginTop: 22, display: 'grid', gridTemplateColumns: isPhone ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: isPhone ? 8 : 12 }}>
           {[
-            { k: 'This month', v: `$${thisMonth.toFixed(0)}`, c: p.accent, sub: '+18% vs Feb' },
-            { k: 'Lifetime', v: `$${lifetime.toFixed(0)}`, c: p.ink, sub: `${PAYOUTS.length} payouts` },
-            { k: 'Avg / booking', v: '$87', c: p.ink, sub: 'After Glossi 6%' },
-            { k: 'Cancel rate', v: '2.1%', c: p.success, sub: 'Top 12% local' },
+            { k: 'This month', v: fmtMoney(stats.thisMonth), c: p.accent },
+            { k: 'Lifetime', v: fmtMoney(stats.lifetime), c: p.ink },
+            { k: 'Avg / booking', v: stats.count ? fmtMoney(stats.avg) : '—', c: p.ink },
+            { k: 'Cancel rate', v: bookings.length ? `${stats.cancelRate.toFixed(1)}%` : '—', c: stats.cancelRate <= 5 ? p.success : p.accent },
           ].map((s, i) => (
             <div key={i} style={{ padding: isPhone ? 14 : 18, background: p.surface, borderRadius: 14, border: `0.5px solid ${p.line}` }}>
               <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>{s.k.toUpperCase()}</div>
               <div style={{ fontFamily: type.mono, fontSize: isPhone ? 22 : 28, fontWeight: 600, color: s.c, marginTop: 4, letterSpacing: '-0.025em' }}>{s.v}</div>
-              <div style={{ fontSize: 11, color: p.inkSoft, marginTop: 4 }}>{s.sub}</div>
             </div>
           ))}
         </div>
@@ -83,99 +126,81 @@ export default function SalonEarnings() {
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
             <div>
               <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>WEEKLY · LAST 8 WEEKS</div>
-              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, color: p.ink, marginTop: 4 }}>Trending up.</div>
+              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, color: p.ink, marginTop: 4 }}>
+                {eightWeekTotal === 0 ? 'Just getting started.' : eightWeekDelta != null && eightWeekDelta > 0 ? 'Trending up.' : 'Steady.'}
+              </div>
             </div>
-            <div style={{ fontFamily: type.mono, fontSize: 12, color: p.success, fontWeight: 600 }}>+24% / 8wk</div>
+            {eightWeekDelta != null && (
+              <div style={{ fontFamily: type.mono, fontSize: 12, color: eightWeekDelta >= 0 ? p.success : p.accent, fontWeight: 600 }}>
+                {eightWeekDelta >= 0 ? '+' : ''}{eightWeekDelta}% / 8wk
+              </div>
+            )}
           </div>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 140 }}>
-            {WEEKLY.map((v, i) => {
-              const h = (v / MAX_WEEKLY) * 100;
-              const isLatest = i === WEEKLY.length - 1;
+            {weekly.map((cents, i) => {
+              const h = (cents / maxWeekly) * 100;
+              const isLatest = i === weekly.length - 1;
               return (
                 <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                  <div style={{ fontFamily: type.mono, fontSize: 9.5, color: p.inkMuted }}>${v}</div>
+                  <div style={{ fontFamily: type.mono, fontSize: 9.5, color: p.inkMuted }}>{cents > 0 ? `$${Math.round(cents / 100)}` : '—'}</div>
                   <div style={{
-                    width: '100%', height: `${h}%`, minHeight: 4,
+                    width: '100%', height: cents > 0 ? `${h}%` : '4px', minHeight: 4,
                     background: isLatest ? p.accent : p.ink,
-                    borderRadius: '6px 6px 0 0', opacity: isLatest ? 1 : 0.85,
+                    borderRadius: '6px 6px 0 0',
+                    opacity: cents > 0 ? (isLatest ? 1 : 0.85) : 0.15,
                   }} />
                 </div>
               );
             })}
           </div>
           <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-            {WEEKLY.map((_, i) => (
+            {weekly.map((_, i) => (
               <div key={i} style={{ flex: 1, fontFamily: type.mono, fontSize: 9.5, color: p.inkMuted, textAlign: 'center' }}>
-                W{i - WEEKLY.length + 1 === 0 ? 'now' : i - WEEKLY.length + 1}
+                {i === weekly.length - 1 ? 'now' : `−${weekly.length - 1 - i}w`}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Payout history */}
+        {/* Booking history (replaces fake payout history) */}
         <div style={{ marginTop: 22 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>PAYOUT HISTORY</div>
-            <button onClick={exportCSV} style={{ background: 'transparent', border: 0, color: p.accent, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Export CSV →</button>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>BOOKING HISTORY</div>
+            {bookings.length > 0 && (
+              <button onClick={exportCSV} style={{ background: 'transparent', border: 0, color: p.accent, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Export CSV →</button>
+            )}
           </div>
           <div style={{ background: p.surface, borderRadius: 14, border: `0.5px solid ${p.line}`, overflow: 'hidden' }}>
-            {PAYOUTS.map((row, i) => (
-              <div key={i} style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, borderTop: i ? `0.5px solid ${p.line}` : 'none', flexWrap: 'wrap' }}>
-                <div style={{ flex: '1 1 120px' }}>
-                  <div style={{ fontSize: 13, color: p.ink, fontWeight: 600 }}>{row.date}</div>
-                  <div style={{ fontSize: 11, color: p.inkMuted, marginTop: 1 }}>{row.count} bookings · {row.method}</div>
+            {!isSupabaseConfigured ? (
+              <div style={{ padding: 32, textAlign: 'center', color: p.inkSoft }}>Supabase isn't configured.</div>
+            ) : loading ? (
+              <div style={{ padding: 32, textAlign: 'center', color: p.inkMuted }}>Loading…</div>
+            ) : bookings.length === 0 ? (
+              <div style={{ padding: 32, textAlign: 'center', color: p.inkSoft, lineHeight: 1.55 }}>
+                No bookings yet. Send bids from your inbox — when a customer accepts, the booking lands here.
+              </div>
+            ) : bookings.slice().reverse().map((b, i) => (
+              <div key={b.booking_id} style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, borderTop: i ? `0.5px solid ${p.line}` : 'none', flexWrap: 'wrap', opacity: b.status === 'cancelled' ? 0.6 : 1 }}>
+                <div style={{ flex: '1 1 160px' }}>
+                  <div style={{ fontSize: 13, color: p.ink, fontWeight: 600 }}>
+                    {new Date(b.scheduled_at || b.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </div>
+                  <div style={{ fontSize: 11, color: p.inkMuted, marginTop: 1 }}>
+                    {b.customer_name || 'Customer'} · {(b.service_slugs || []).map(s => s.replace('-', ' & ')).join(', ') || 'Appointment'}
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: p.success }}>
-                  <span style={{ width: 7, height: 7, borderRadius: 99, background: p.success }} />
-                  <span style={{ fontSize: 11.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Paid</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: b.status === 'cancelled' ? p.inkMuted : p.success }}>
+                  <span style={{ width: 7, height: 7, borderRadius: 99, background: b.status === 'cancelled' ? p.inkMuted : p.success }} />
+                  <span style={{ fontSize: 11.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{b.status}</span>
                 </div>
-                <div style={{ fontFamily: type.mono, fontSize: 17, fontWeight: 600, color: p.ink }}>${row.amount.toFixed(2)}</div>
+                <div style={{ fontFamily: type.mono, fontSize: 17, fontWeight: 600, color: p.ink, textDecoration: b.status === 'cancelled' ? 'line-through' : 'none' }}>
+                  {fmtMoneyDec(b.price_cents)}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-
-      <Modal open={showBank} onClose={() => setShowBank(false)} eyebrow="BANK ACCOUNT" title="Change payout destination" footer={
-        <>
-          <button onClick={() => setShowBank(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', color: p.ink }}>Cancel</button>
-          <button onClick={() => { toast('Bank verification email sent.', { tone: 'success' }); setShowBank(false); }} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Connect with Plaid</button>
-        </>
-      }>
-        <div style={{ fontSize: 13.5, color: p.inkSoft, lineHeight: 1.55 }}>
-          Glossi uses Plaid to securely link your business checking account. Routing and account numbers are never stored on our servers.
-        </div>
-        <div style={{ marginTop: 14, padding: '14px 16px', background: p.bg, borderRadius: 12, border: `0.5px solid ${p.line}` }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>CURRENT</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 6 }}>
-            <div style={{ width: 32, height: 22, background: '#117EB3', borderRadius: 4, color: '#fff', fontFamily: type.display, fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>CHASE</div>
-            <div style={{ fontFamily: type.mono, fontSize: 14, fontWeight: 600 }}>•••• 3829</div>
-          </div>
-        </div>
-      </Modal>
-
-      <Modal open={showInstant} onClose={() => setShowInstant(false)} eyebrow="INSTANT PAYOUT" title={`Send $${pendingPayout.toFixed(2)} now?`} footer={
-        <>
-          <button onClick={() => setShowInstant(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
-          <button onClick={() => { toast(`$${(pendingPayout * 0.99).toFixed(2)} on the way to Chase ••3829.`, { tone: 'success' }); setShowInstant(false); }} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Confirm · ${(pendingPayout * 0.99).toFixed(2)}</button>
-        </>
-      }>
-        <div style={{ fontSize: 13.5, color: p.inkSoft, lineHeight: 1.55 }}>
-          Skip the wait — Glossi sends your pending balance to your bank in under 30 minutes for a 1% fee.
-        </div>
-        <div style={{ marginTop: 14, padding: '14px 16px', background: p.bg, borderRadius: 12, border: `0.5px solid ${p.line}`, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {[
-            { k: 'Pending', v: `$${pendingPayout.toFixed(2)}` },
-            { k: 'Instant fee · 1%', v: `−$${(pendingPayout * 0.01).toFixed(2)}`, c: p.accent },
-            { k: 'You receive', v: `$${(pendingPayout * 0.99).toFixed(2)}`, big: true },
-          ].map((r, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <span style={{ fontSize: r.big ? 13 : 12, color: r.big ? p.ink : p.inkSoft, fontWeight: r.big ? 700 : 500 }}>{r.k}</span>
-              <span style={{ fontFamily: type.mono, fontSize: r.big ? 18 : 13, fontWeight: 600, color: r.c || p.ink }}>{r.v}</span>
-            </div>
-          ))}
-        </div>
-      </Modal>
     </SalonLayout>
   );
 }

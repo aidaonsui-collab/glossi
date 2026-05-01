@@ -279,6 +279,39 @@ export async function submitBid({ businessId, requestId, priceCents, durationMin
   return { ok: true, id: data };
 }
 
+// Hook: bookings for one of the salon owner's businesses, joined with
+// the customer (name/email/phone) and the original request
+// (service_slugs, notes, ZIP) on the server. Used by Calendar /
+// Clients / Earnings — one query feeds all three pages.
+export function useSalonBookingsList(businessId) {
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(Boolean(businessId && isSupabaseConfigured));
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured || !businessId) { setLoading(false); return; }
+    setLoading(true);
+    const { data, error } = await supabase.rpc('salon_bookings', { p_business_id: businessId });
+    if (error) { console.error('salon_bookings error', error); setBookings([]); }
+    else setBookings(data || []);
+    setLoading(false);
+  }, [businessId]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  // Realtime: refresh when a new booking lands or when an existing one
+  // changes status (cancelled, completed). Scoped to the business id.
+  useEffect(() => {
+    if (!isSupabaseConfigured || !businessId) return;
+    const ch = supabase
+      .channel(`salon-bookings-${businessId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings', filter: `business_id=eq.${businessId}` }, () => refresh())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [businessId, refresh]);
+
+  return { bookings, loading, refresh };
+}
+
 // ── Bookings (for /bookings list) ─────────────────────────────────
 
 export function useSupabaseBookings() {

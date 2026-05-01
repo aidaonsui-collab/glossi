@@ -3,18 +3,9 @@ import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
-import { Stars } from '../ios/atoms.jsx';
 import Modal from '../components/Modal.jsx';
-
-const CLIENTS = [
-  { name: 'Sofia M.', initials: 'SM', visits: 6, lastVisit: 'Today', spent: 540, top: 'Color & balayage', rating: 5, since: 'Jan 2025', notes: 'Loves caramel tones. No purple hues.' },
-  { name: 'Daniela R.', initials: 'DR', visits: 4, lastVisit: '14d ago', spent: 280, top: 'Lash · Hybrid set', rating: 4, since: 'Mar 2025', notes: 'Allergy to standard adhesive.' },
-  { name: 'Maritza C.', initials: 'MC', visits: 8, lastVisit: '5d ago', spent: 410, top: 'Gel manicure', rating: 5, since: 'Nov 2024', notes: '' },
-  { name: 'Ana V.', initials: 'AV', visits: 12, lastVisit: '2d ago', spent: 1340, top: 'Highlights', rating: 5, since: 'Aug 2024', notes: 'VIP — gets 10% off all bookings.' },
-  { name: 'Camila P.', initials: 'CP', visits: 3, lastVisit: '21d ago', spent: 410, top: 'Balayage', rating: 5, since: 'Jul 2025', notes: '' },
-  { name: 'Jasmin O.', initials: 'JO', visits: 5, lastVisit: '1mo ago', spent: 565, top: 'Brazilian blowout', rating: 4, since: 'Feb 2025', notes: '' },
-  { name: 'Carmen P.', initials: 'CA', visits: 2, lastVisit: '6mo ago', spent: 220, top: 'Cut + style', rating: 4, since: 'Sep 2024', notes: 'Needed re-do once — careful with bangs.' },
-];
+import { useMyBusinesses, useSalonBookingsList } from '../lib/quotes.js';
+import { isSupabaseConfigured } from '../lib/supabase.js';
 
 const SORTS = [
   { id: 'recent', l: 'Most recent' },
@@ -22,32 +13,90 @@ const SORTS = [
   { id: 'name', l: 'A–Z' },
 ];
 
+const initialsFrom = name => (name || 'C').split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+const fmtServices = slugs => (slugs || []).map(s => s.replace('-', ' & ')).join(', ');
+const fmtAgo = ts => {
+  if (!ts) return '—';
+  const d = Math.floor((Date.now() - new Date(ts).getTime()) / 86400000);
+  if (d <= 0) return 'today';
+  if (d === 1) return 'yesterday';
+  if (d < 30) return `${d}d ago`;
+  if (d < 365) return `${Math.floor(d / 30)}mo ago`;
+  return `${Math.floor(d / 365)}y ago`;
+};
+
+// Group bookings by customer_id and roll up the stats Clients page needs.
+function rollUpClients(bookings) {
+  const byId = new Map();
+  for (const b of bookings) {
+    const key = b.customer_id;
+    if (!byId.has(key)) {
+      byId.set(key, {
+        id: key,
+        name: b.customer_name || 'Customer',
+        email: b.customer_email,
+        phone: b.customer_phone,
+        visits: 0,
+        spent: 0,
+        services: new Map(),
+        firstAt: b.created_at,
+        lastAt: b.scheduled_at || b.created_at,
+      });
+    }
+    const c = byId.get(key);
+    c.visits += 1;
+    c.spent += (b.price_cents || 0);
+    const svc = fmtServices(b.service_slugs);
+    if (svc) c.services.set(svc, (c.services.get(svc) || 0) + 1);
+    if (new Date(b.created_at) < new Date(c.firstAt)) c.firstAt = b.created_at;
+    const lastAt = b.scheduled_at || b.created_at;
+    if (new Date(lastAt) > new Date(c.lastAt)) c.lastAt = lastAt;
+  }
+  return Array.from(byId.values()).map(c => ({
+    ...c,
+    spent: Math.round(c.spent / 100),
+    initials: initialsFrom(c.name),
+    // Most-frequent service for this customer.
+    top: [...c.services.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || '—',
+    since: c.firstAt ? new Date(c.firstAt).toLocaleString('en-US', { month: 'short', year: 'numeric' }) : '—',
+    lastVisit: fmtAgo(c.lastAt),
+  }));
+}
+
 export default function SalonClients() {
   const isPhone = useNarrow();
   const toast = useToast();
+  const { businesses } = useMyBusinesses();
+  const businessId = businesses[0]?.id;
+  const { bookings, loading } = useSalonBookingsList(businessId);
+
   const [q, setQ] = useState('');
   const [sort, setSort] = useState('recent');
   const [messageTo, setMessageTo] = useState(null);
   const [draft, setDraft] = useState('');
 
+  const clients = useMemo(() => rollUpClients(bookings), [bookings]);
+
   const sendMessage = () => {
+    // Real messaging arrives in Phase 7. Keep the toast for parity.
     if (!draft.trim()) { toast('Type a message first.', { tone: 'warn' }); return; }
-    toast(`Message sent to ${messageTo.name}.`, { tone: 'success' });
+    toast(`Message to ${messageTo.name} — coming soon.`, { tone: 'info' });
     setMessageTo(null);
     setDraft('');
   };
 
   const list = useMemo(() => {
-    let arr = CLIENTS;
-    if (q.trim()) arr = arr.filter(c => `${c.name} ${c.top}`.toLowerCase().includes(q.toLowerCase()));
+    let arr = clients;
+    if (q.trim()) arr = arr.filter(c => `${c.name} ${c.top} ${c.email || ''}`.toLowerCase().includes(q.toLowerCase()));
     if (sort === 'top') arr = [...arr].sort((a, b) => b.spent - a.spent);
-    if (sort === 'name') arr = [...arr].sort((a, b) => a.name.localeCompare(b.name));
+    else if (sort === 'name') arr = [...arr].sort((a, b) => a.name.localeCompare(b.name));
+    else arr = [...arr].sort((a, b) => new Date(b.lastAt) - new Date(a.lastAt));
     return arr;
-  }, [q, sort]);
+  }, [clients, q, sort]);
 
-  const totalClients = CLIENTS.length;
-  const totalRevenue = CLIENTS.reduce((s, c) => s + c.spent, 0);
-  const repeat = CLIENTS.filter(c => c.visits >= 3).length;
+  const totalClients = clients.length;
+  const totalRevenue = clients.reduce((s, c) => s + c.spent, 0);
+  const repeat = clients.filter(c => c.visits >= 3).length;
 
   return (
     <SalonLayout active="clients" mobileTitle="Clients">
@@ -58,7 +107,7 @@ export default function SalonClients() {
         <div style={{ marginTop: 18, display: 'grid', gridTemplateColumns: isPhone ? 'repeat(3,1fr)' : 'repeat(3, max-content)', gap: 12 }}>
           {[
             { k: 'Total clients', v: totalClients, c: p.ink },
-            { k: 'Repeat (3+)', v: `${repeat}/${totalClients}`, c: p.success },
+            { k: 'Repeat (3+)', v: totalClients ? `${repeat}/${totalClients}` : '0', c: p.success },
             { k: 'Lifetime $', v: `$${totalRevenue.toLocaleString()}`, c: p.accent },
           ].map((s, i) => (
             <div key={i} style={{ padding: '14px 18px', background: p.surface, borderRadius: 14, border: `0.5px solid ${p.line}` }}>
@@ -89,20 +138,31 @@ export default function SalonClients() {
         </div>
 
         <div style={{ marginTop: 18, background: p.surface, borderRadius: 16, border: `0.5px solid ${p.line}`, overflow: 'hidden' }}>
-          {list.map((c, i) => (
-            <div key={c.name} style={{
+          {!isSupabaseConfigured ? (
+            <div style={{ padding: 32, textAlign: 'center', color: p.inkSoft }}>Supabase isn't configured.</div>
+          ) : loading ? (
+            <div style={{ padding: 32, textAlign: 'center', color: p.inkMuted }}>Loading…</div>
+          ) : clients.length === 0 ? (
+            <div style={{ padding: 32, textAlign: 'center', color: p.inkSoft, lineHeight: 1.55 }}>
+              No clients yet. Once a customer accepts one of your bids, they'll show up here.
+            </div>
+          ) : list.length === 0 ? (
+            <div style={{ padding: 32, textAlign: 'center', color: p.inkMuted }}>No clients match "{q}"</div>
+          ) : list.map((c, i) => (
+            <div key={c.id} style={{
               padding: isPhone ? '14px 16px' : '18px 22px',
               borderTop: i ? `0.5px solid ${p.line}` : 'none',
               display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap',
             }}>
               <div style={{ width: 44, height: 44, borderRadius: 999, flexShrink: 0, background: p.accentSoft, color: p.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontSize: 14, fontWeight: 700 }}>{c.initials}</div>
               <div style={{ flex: '1 1 180px', minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                  <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 17, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.01em' }}>{c.name}</div>
-                  <Stars n={c.rating} color={p.accent} size={11} />
+                <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 17, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.01em' }}>{c.name}</div>
+                <div style={{ fontSize: 11.5, color: p.inkMuted, marginTop: 2 }}>
+                  {c.top}{c.since !== '—' ? ` · client since ${c.since}` : ''}
                 </div>
-                <div style={{ fontSize: 11.5, color: p.inkMuted, marginTop: 2 }}>{c.top} · client since {c.since}</div>
-                {c.notes && <div style={{ fontSize: 12, color: p.inkSoft, marginTop: 6, fontStyle: 'italic', maxWidth: 380 }}>"{c.notes}"</div>}
+                {(c.email || c.phone) && (
+                  <div style={{ fontSize: 12, color: p.inkSoft, marginTop: 4 }}>{c.email}{c.phone ? ` · ${c.phone}` : ''}</div>
+                )}
               </div>
               <div style={{ minWidth: 70 }}>
                 <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>VISITS</div>
@@ -116,12 +176,9 @@ export default function SalonClients() {
                 <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>LAST</div>
                 <div style={{ fontSize: 12.5, fontWeight: 600, color: p.ink, marginTop: 1 }}>{c.lastVisit}</div>
               </div>
-              <button onClick={() => { setMessageTo(c); setDraft(`Hi ${c.name.split(' ')[0]} — `); }} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, cursor: 'pointer', fontSize: 12, fontWeight: 600, color: p.ink, fontFamily: 'inherit' }}>Message</button>
+              <button onClick={() => { setMessageTo(c); setDraft(`Hi ${c.name.split(' ')[0] || ''} — `); }} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, cursor: 'pointer', fontSize: 12, fontWeight: 600, color: p.ink, fontFamily: 'inherit' }}>Message</button>
             </div>
           ))}
-          {list.length === 0 && (
-            <div style={{ padding: 32, textAlign: 'center', color: p.inkMuted }}>No clients match "{q}"</div>
-          )}
         </div>
       </div>
 
@@ -134,7 +191,7 @@ export default function SalonClients() {
         {messageTo && (
           <div>
             <div style={{ padding: '10px 12px', background: p.bg, borderRadius: 10, fontSize: 12, color: p.inkSoft, marginBottom: 12 }}>
-              Last visit: {messageTo.lastVisit} · {messageTo.visits} visits · {messageTo.top}
+              {messageTo.visits} visit{messageTo.visits === 1 ? '' : 's'} · last {messageTo.lastVisit} · {messageTo.top}
             </div>
             <textarea
               value={draft}
