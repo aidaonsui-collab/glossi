@@ -64,6 +64,11 @@ export default function RequestQuote() {
   const submit = async e => {
     e?.preventDefault();
     setSubmitting(true);
+    // Hard 15s ceiling so the button can't get truly stuck if the RPC hangs.
+    const watchdog = setTimeout(() => {
+      setSubmitting(false);
+      toast('Posting is taking too long. Check your connection and try again.', { tone: 'warn' });
+    }, 15000);
     try {
       const result = await createQuoteRequest({
         serviceSlugs: Array.from(picked),
@@ -73,13 +78,18 @@ export default function RequestQuote() {
         earliestDate: earliestDate || null,
         latestDate: latestDate || null,
       });
-      if (!result.ok) { toast(result.error, { tone: 'warn' }); return; }
+      if (!result.ok) {
+        console.error('createQuoteRequest failed:', result.error);
+        toast(result.error || 'Could not post request.', { tone: 'warn' });
+        return;
+      }
       toast('Request posted — salons within your radius will see it shortly.', { tone: 'success' });
       navigate(`/quotes/${result.id}`);
     } catch (err) {
-      console.error(err);
+      console.error('submit error:', err);
       toast(err?.message || 'Something went wrong.', { tone: 'warn' });
     } finally {
+      clearTimeout(watchdog);
       setSubmitting(false);
     }
   };

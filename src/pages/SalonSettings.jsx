@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
@@ -6,6 +6,16 @@ import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
 import Modal from '../components/Modal.jsx';
 import { useAuth, useSalonProfile } from '../store.jsx';
+import { useMyBusinessProfile } from '../lib/quotes.js';
+import { isSupabaseConfigured } from '../lib/supabase.js';
+
+// Fields that come from Supabase (the real businesses row). Other sections
+// of this page — hours, services, photos, payouts, notifications — are
+// still localStorage stubs in useSalonProfile.
+const EMPTY_BIZ_DRAFT = {
+  name: '', bio_en: '', address_line1: '', city: '', postal_code: '',
+  phone: '', website: '', instagram: '', price_tier: '$$',
+};
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -22,6 +32,7 @@ export default function SalonSettings() {
   const toast = useToast();
   const { signOut } = useAuth();
   const { profile, update, updateHours, updateService, addService, removeService, updateNotifications, addPhoto, removePhoto, movePhoto, setCoverPhoto } = useSalonProfile();
+  const { business, loading: bizLoading, save: saveBiz, refresh: refreshBiz } = useMyBusinessProfile();
   const photoInputRef = useRef(null);
 
   const onPhotoPick = e => {
@@ -38,14 +49,49 @@ export default function SalonSettings() {
   const photoUrl = item => item.kind === 'upload' ? item.value : PHOTOS[item.value % PHOTOS.length];
 
   const [draft, setDraft] = useState(profile);
+  const [bizDraft, setBizDraft] = useState(EMPTY_BIZ_DRAFT);
+  const [saving, setSaving] = useState(false);
   const [serviceDraft, setServiceDraft] = useState({ name: '', from: 50, to: 90, dur: '1 hr' });
   const [showAddService, setShowAddService] = useState(false);
   const [showBank, setShowBank] = useState(false);
 
-  const dirty = JSON.stringify(draft) !== JSON.stringify(profile);
-  const save = () => {
-    update(draft);
-    toast('Salon settings saved.', { tone: 'success' });
+  // Hydrate Business info section from the live row whenever it (re)loads
+  useEffect(() => {
+    if (!business) return;
+    setBizDraft({
+      name: business.name || '',
+      bio_en: business.bio_en || '',
+      address_line1: business.address_line1 || '',
+      city: business.city || '',
+      postal_code: business.postal_code || '',
+      phone: business.phone || '',
+      website: business.website || '',
+      instagram: business.instagram || '',
+      price_tier: business.price_tier || '$$',
+    });
+  }, [business]);
+
+  const localDirty = JSON.stringify(draft) !== JSON.stringify(profile);
+  const bizDirty = business ? Object.keys(bizDraft).some(k => (bizDraft[k] || '') !== (business[k] || (k === 'price_tier' ? '$$' : ''))) : false;
+  const dirty = localDirty || bizDirty;
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      if (localDirty) update(draft);
+      if (bizDirty && business) {
+        const result = await saveBiz(bizDraft);
+        if (!result.ok) { toast(result.error || 'Could not save business info.', { tone: 'warn' }); return; }
+      }
+      toast('Salon settings saved.', { tone: 'success' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onDiscard = () => {
+    setDraft(profile);
+    if (business) refreshBiz();
   };
 
   const Section = ({ title, eyebrow, children }) => (
@@ -77,45 +123,72 @@ export default function SalonSettings() {
           Everything customers see on your profile + how Glossi pays you.
         </p>
 
-        {/* Hero */}
+        {/* Hero — pulls from the live businesses row, not localStorage */}
         <div style={{ marginTop: 22, padding: '20px', background: p.surface, borderRadius: 16, border: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ width: 60, height: 60, borderRadius: 99, background: 'linear-gradient(135deg,#C28A6B,#8B4F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 22, fontWeight: 700 }}>
-            {draft.name.split(' ').map(s => s[0]).slice(0, 2).join('').toUpperCase()}
+            {(bizDraft.name || '?').split(' ').map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.015em' }}>{draft.name}</div>
-            <div style={{ fontSize: 12.5, color: p.inkMuted, marginTop: 2 }}>{draft.address} · {draft.city}</div>
+            <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.015em' }}>
+              {bizLoading ? 'Loading…' : (bizDraft.name || 'Set up your salon')}
+            </div>
+            <div style={{ fontSize: 12.5, color: p.inkMuted, marginTop: 2 }}>
+              {[bizDraft.address_line1, bizDraft.city, bizDraft.postal_code].filter(Boolean).join(' · ') || '—'}
+            </div>
           </div>
-          <button onClick={() => navigate('/salon/b1')} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>View public profile →</button>
+          {business?.slug && (
+            <button onClick={() => navigate(`/salon/${business.slug}`)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>View public profile →</button>
+          )}
         </div>
+
+        {!isSupabaseConfigured ? (
+          <div style={{ marginTop: 18, padding: 16, background: p.surface, borderRadius: 12, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13 }}>
+            Supabase isn't configured — Business info needs a backend.
+          </div>
+        ) : !bizLoading && !business ? (
+          <div style={{ marginTop: 18, padding: 16, background: p.surface, borderRadius: 12, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13 }}>
+            No salon listing yet. <button onClick={() => navigate('/onboarding/salon')} style={{ background: 'transparent', border: 0, color: p.accent, cursor: 'pointer', fontWeight: 600, padding: 0 }}>Create one →</button>
+          </div>
+        ) : null}
 
         <Section title="Business info" eyebrow="01 · BASICS">
           <Field label="Salon name">
-            <input value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })} style={input} />
-          </Field>
-          <Field label="Owner / primary stylist">
-            <input value={draft.ownerName} onChange={e => setDraft({ ...draft, ownerName: e.target.value })} style={input} />
-          </Field>
-          <Field label="Email">
-            <input type="email" value={draft.email} onChange={e => setDraft({ ...draft, email: e.target.value })} style={input} />
+            <input value={bizDraft.name} onChange={e => setBizDraft({ ...bizDraft, name: e.target.value })} disabled={!business} style={input} />
           </Field>
           <Field label="Phone">
-            <input value={draft.phone} onChange={e => setDraft({ ...draft, phone: e.target.value })} style={input} />
+            <input value={bizDraft.phone} onChange={e => setBizDraft({ ...bizDraft, phone: e.target.value })} disabled={!business} style={input} />
           </Field>
           <Field label="Address">
-            <input value={draft.address} onChange={e => setDraft({ ...draft, address: e.target.value })} style={input} />
+            <input value={bizDraft.address_line1} onChange={e => setBizDraft({ ...bizDraft, address_line1: e.target.value })} disabled={!business} style={input} />
           </Field>
-          <Field label="City / ZIP">
-            <input value={draft.city} onChange={e => setDraft({ ...draft, city: e.target.value })} style={input} />
+          <Field label="City">
+            <input value={bizDraft.city} onChange={e => setBizDraft({ ...bizDraft, city: e.target.value })} disabled={!business} style={input} />
           </Field>
-          <Field label="Service radius">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <input type="range" min={1} max={20} value={draft.serviceRadius} onChange={e => setDraft({ ...draft, serviceRadius: Number(e.target.value) })} style={{ flex: 1, accentColor: p.accent }} />
-              <span style={{ fontFamily: type.mono, fontSize: 14, fontWeight: 600, color: p.ink, minWidth: 50, textAlign: 'right' }}>{draft.serviceRadius} mi</span>
+          <Field label="ZIP">
+            <input value={bizDraft.postal_code} onChange={e => setBizDraft({ ...bizDraft, postal_code: e.target.value.replace(/\D/g, '').slice(0, 5) })} inputMode="numeric" disabled={!business} style={{ ...input, fontFamily: type.mono, letterSpacing: '0.1em' }} />
+          </Field>
+          <Field label="Website">
+            <input value={bizDraft.website} onChange={e => setBizDraft({ ...bizDraft, website: e.target.value })} placeholder="https://…" disabled={!business} style={input} />
+          </Field>
+          <Field label="Instagram">
+            <input value={bizDraft.instagram} onChange={e => setBizDraft({ ...bizDraft, instagram: e.target.value })} placeholder="@handle" disabled={!business} style={input} />
+          </Field>
+          <Field label="Price tier">
+            <div style={{ display: 'inline-flex', background: p.bg, borderRadius: 99, border: `0.5px solid ${p.line}`, padding: 3 }}>
+              {['$', '$$', '$$$', '$$$$'].map(t => {
+                const a = bizDraft.price_tier === t;
+                return (
+                  <button key={t} type="button" onClick={() => setBizDraft({ ...bizDraft, price_tier: t })} disabled={!business} style={{
+                    padding: '7px 14px', borderRadius: 99, border: 0,
+                    background: a ? p.ink : 'transparent', color: a ? p.bg : p.ink,
+                    fontFamily: type.mono, fontSize: 12.5, fontWeight: 600, cursor: business ? 'pointer' : 'not-allowed',
+                  }}>{t}</button>
+                );
+              })}
             </div>
           </Field>
           <Field label="Bio" last>
-            <textarea value={draft.bio} onChange={e => setDraft({ ...draft, bio: e.target.value })} rows={3} style={{ ...input, resize: 'vertical', lineHeight: 1.5 }} />
+            <textarea value={bizDraft.bio_en} onChange={e => setBizDraft({ ...bizDraft, bio_en: e.target.value })} rows={3} disabled={!business} style={{ ...input, resize: 'vertical', lineHeight: 1.5 }} />
           </Field>
         </Section>
 
@@ -270,8 +343,8 @@ export default function SalonSettings() {
         {dirty && (
           <div style={{ position: 'sticky', bottom: 16, marginTop: 24, padding: '14px 18px', background: p.ink, color: p.bg, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 18px 40px rgba(0,0,0,0.18)' }}>
             <div style={{ flex: 1, fontFamily: type.body, fontSize: 13.5, fontWeight: 500 }}>Unsaved changes</div>
-            <button onClick={() => setDraft(profile)} style={{ background: 'transparent', border: `0.5px solid rgba(255,255,255,0.2)`, padding: '8px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, color: p.bg, cursor: 'pointer', fontFamily: 'inherit' }}>Discard</button>
-            <button onClick={save} style={{ background: p.accent, color: p.ink, border: 0, padding: '9px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Save changes</button>
+            <button onClick={onDiscard} disabled={saving} style={{ background: 'transparent', border: `0.5px solid rgba(255,255,255,0.2)`, padding: '8px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, color: p.bg, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}>Discard</button>
+            <button onClick={save} disabled={saving} style={{ background: p.accent, color: p.ink, border: 0, padding: '9px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit', opacity: saving ? 0.7 : 1 }}>{saving ? 'Saving…' : 'Save changes'}</button>
           </div>
         )}
 

@@ -5,6 +5,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from './supabase.js';
 import { geocodeZip } from './geocode.js';
 
+const VALID_PRICE_TIERS = new Set(['$', '$$', '$$$', '$$$$']);
+
 // ── Customer side ─────────────────────────────────────────────────
 
 // Create a new quote request. Returns { ok: true, id } or { ok: false, error }.
@@ -104,9 +106,15 @@ export function useMyBusinesses() {
   const refresh = useCallback(async () => {
     if (!isSupabaseConfigured) { setLoading(false); return; }
     setLoading(true);
+    // RLS lets anyone read published businesses (the public Explore page needs that),
+    // so we have to filter to the caller explicitly here — otherwise the inbox switcher
+    // shows every salon in the DB.
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setBusinesses([]); setLoading(false); return; }
     const { data } = await supabase
       .from('businesses')
       .select('id, slug, name, city, hero_image_url, published, verified')
+      .eq('owner_id', user.id)
       .order('created_at', { ascending: true });
     setBusinesses(data || []);
     setLoading(false);
@@ -115,6 +123,64 @@ export function useMyBusinesses() {
   useEffect(() => { refresh(); }, [refresh]);
 
   return { businesses, loading, refresh };
+}
+
+// Hook: full row for the salon owner's primary business — used by Settings.
+// Returns the row, a save() that calls update_business, plus loading/error state.
+export function useMyBusinessProfile() {
+  const [business, setBusiness] = useState(null);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
+  const [error, setError] = useState(null);
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured) { setLoading(false); return; }
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setBusiness(null); setLoading(false); return; }
+    const { data, error } = await supabase
+      .from('businesses')
+      .select('id, slug, name, bio_en, address_line1, city, state, postal_code, phone, website, instagram, price_tier, hero_image_url, published, verified')
+      .eq('owner_id', user.id)
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (error) { setError(error.message); setBusiness(null); }
+    else { setError(null); setBusiness(data || null); }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  // Save name/bio/address/contact/price_tier. Geocodes the postal_code so the
+  // PostGIS location stays consistent — same approach as create_business.
+  const save = useCallback(async patch => {
+    if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+    if (!business?.id) return { ok: false, error: 'No business to update.' };
+    const next = { ...business, ...patch };
+    if (!next.name?.trim()) return { ok: false, error: 'Salon name required.' };
+    const tier = next.price_tier && VALID_PRICE_TIERS.has(next.price_tier) ? next.price_tier : '$$';
+    const centroid = next.postal_code ? geocodeZip(next.postal_code) : null;
+    if (next.postal_code && !centroid) return { ok: false, error: 'ZIP must be inside Texas (Dallas, Austin, San Antonio, RGV).' };
+    const { error } = await supabase.rpc('update_business', {
+      p_business_id: business.id,
+      p_name: next.name.trim(),
+      p_bio: next.bio_en ?? null,
+      p_address: next.address_line1 ?? null,
+      p_city: next.city ?? null,
+      p_postal_code: next.postal_code ?? null,
+      p_lat: centroid?.lat ?? 0,
+      p_lng: centroid?.lng ?? 0,
+      p_phone: next.phone ?? null,
+      p_website: next.website ?? null,
+      p_instagram: next.instagram ?? null,
+      p_price_tier: tier,
+    });
+    if (error) return { ok: false, error: error.message };
+    await refresh();
+    return { ok: true };
+  }, [business, refresh]);
+
+  return { business, loading, error, save, refresh };
 }
 
 // Hook: a salon's inbox of nearby quote requests with their bid status.

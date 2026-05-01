@@ -77,7 +77,9 @@ export default function SalonInboxDetail() {
   const onRevealContact = async () => {
     const { data, error } = await supabase.rpc('request_customer_contact', { p_request_id: id });
     if (error) { toast(error.message, { tone: 'warn' }); return; }
-    setContact(data?.[0] || null);
+    const row = data?.[0];
+    if (!row) { toast('Send a bid first to unlock customer contact.', { tone: 'warn' }); return; }
+    setContact(row);
   };
 
   const onSubmit = async e => {
