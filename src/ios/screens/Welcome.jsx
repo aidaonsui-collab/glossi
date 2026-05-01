@@ -41,22 +41,14 @@ export default function Welcome({ p, type, lang, onComplete, onSkip }) {
       return;
     }
     const providerKey = provider === 'apple' ? 'apple' : provider === 'google' ? 'google' : 'facebook';
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: providerKey,
-      options: { skipBrowserRedirect: true, redirectTo: `${window.location.origin}/ios` },
+      options: { redirectTo: `${window.location.origin}/ios` },
     });
-    if (error || !data?.url) {
-      toast(lang === 'en' ? `${provider} sign-in isn't enabled yet.` : `${provider} no habilitado.`, { tone: 'warn' });
-      return;
+    if (error) {
+      const enabled = !/provider is not enabled|Unsupported provider/i.test(error.message);
+      toast(enabled ? error.message : (lang === 'en' ? `${provider} sign-in isn't enabled yet.` : `${provider} no habilitado.`), { tone: 'warn' });
     }
-    try {
-      const probe = await fetch(data.url, { method: 'HEAD', redirect: 'manual' });
-      if (probe.status >= 400 && probe.status < 500) {
-        toast(lang === 'en' ? `${provider} sign-in isn't enabled yet.` : `${provider} no habilitado.`, { tone: 'warn' });
-        return;
-      }
-    } catch { /* fall through */ }
-    window.location.href = data.url;
   };
 
   const submit = async () => {

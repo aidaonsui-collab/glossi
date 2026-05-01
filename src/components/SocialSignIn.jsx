@@ -18,24 +18,20 @@ export default function SocialSignIn({ redirectTo = '/quotes', compact = false }
       toast(`Single sign-on with ${s.l} requires a connected provider. Use email to continue.`, { tone: 'warn' });
       return;
     }
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    // Let Supabase do the redirect itself. Disabled providers will show
+    // Supabase's JSON error page on the callback URL — annoying but rare,
+    // and the previous HEAD pre-flight caused false-positive failures for
+    // *enabled* providers because /authorize returns 405 to HEAD.
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: PROVIDER_KEY[s.id],
-      options: { skipBrowserRedirect: true, redirectTo: `${window.location.origin}${redirectTo}` },
+      options: { redirectTo: `${window.location.origin}${redirectTo}` },
     });
-    if (error || !data?.url) {
-      toast(`${s.l} sign-in isn't enabled yet. Ask the Glossi team to turn it on.`, { tone: 'warn' });
-      return;
+    if (error) {
+      const msg = /provider is not enabled|Unsupported provider/i.test(error.message)
+        ? `${s.l} sign-in isn't enabled yet. Ask the Glossi team to turn it on.`
+        : error.message;
+      toast(msg, { tone: 'warn' });
     }
-    try {
-      const probe = await fetch(data.url, { method: 'HEAD', redirect: 'manual' });
-      if (probe.status >= 400 && probe.status < 500) {
-        toast(`${s.l} sign-in isn't enabled yet. Ask the Glossi team to turn it on.`, { tone: 'warn' });
-        return;
-      }
-    } catch {
-      // Network/CORS — fall through and let the redirect happen
-    }
-    window.location.href = data.url;
   };
 
   return (
