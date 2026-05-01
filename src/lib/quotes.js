@@ -480,16 +480,13 @@ export function useSupabaseBookings() {
   const refresh = useCallback(async () => {
     if (!isSupabaseConfigured) { setLoading(false); return; }
     setLoading(true);
-    // Join bid → request so the row carries service_slugs (the original
-    // request) — Bookings.jsx needs this to render "Color, Nails" etc.
-    // RLS gates everything via bookings_customer_read on the parent row.
-    // reviews(id, rating, body) is left-joined so the customer-side
-    // booking row knows whether they've already reviewed (hides the
-    // "Leave a review" prompt) without a second round trip.
-    const { data } = await supabase
-      .from('bookings')
-      .select('id, scheduled_at, duration_min, price_cents, deposit_cents, status, payment_status, completed_at, no_show_at, refunded_amount_cents, created_at, business_id, businesses(name, slug, city, hero_image_url), quote_bids(quote_requests(service_slugs)), reviews(id, rating, body)')
-      .order('scheduled_at', { ascending: false });
+    // SECURITY DEFINER RPC bundles the booking + business + service +
+    // review joins in one round trip. Replaces a PostgREST embed that
+    // silently returned empty review arrays when the schema-cache
+    // FK lookup misfired, leaving 'Leave a review' stuck on already-
+    // reviewed bookings.
+    const { data, error } = await supabase.rpc('my_bookings');
+    if (error) console.error('my_bookings error', error);
     setBookings(data || []);
     setLoading(false);
   }, []);
@@ -515,8 +512,8 @@ export function useSupabaseBookings() {
   // refresh after a review submit — the BookingLifecycleModal calls
   // this with { bookingId, rating, body } the moment the RPC succeeds.
   const applyLocalReview = useCallback(({ bookingId, rating, body }) => {
-    setBookings(curr => curr.map(b => b.id === bookingId
-      ? { ...b, reviews: [{ id: 'local', rating, body }] }
+    setBookings(curr => curr.map(b => b.booking_id === bookingId
+      ? { ...b, review_id: b.review_id || 'local', review_rating: rating, review_body: body }
       : b
     ));
   }, []);

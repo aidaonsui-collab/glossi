@@ -25,21 +25,23 @@ function fmt(ts) {
 // Map a Supabase bookings row → the shape BookingRow expects. Mood is a
 // stable hash of the business id so the same salon always shows the
 // same placeholder photo across the list.
+// Maps a my_bookings() RPC row → BookingRow shape. Flat fields, no
+// nested embeds. Same prop names as before so the BookingRow JSX
+// didn't have to change.
 function fromSupabase(row) {
-  const slugSeed = row.businesses?.slug || row.business_id || '';
+  const slugSeed = row.business_slug || row.business_id || '';
   const mood = [...slugSeed].reduce((a, c) => a + c.charCodeAt(0), 0) % 6;
-  const services = row.quote_bids?.quote_requests?.service_slugs || [];
+  const services = row.service_slugs || [];
   const service = services.length
     ? services.map(s => s.replace('-', ' & ')).join(', ')
     : 'Appointment';
   const ts = row.scheduled_at ? new Date(row.scheduled_at).getTime() : new Date(row.created_at).getTime();
   const isPast = row.status === 'completed' || row.status === 'no_show'
     || (row.status === 'confirmed' && ts < Date.now());
-  const review = (row.reviews || [])[0];
   return {
-    id: row.id,
-    salonId: row.businesses?.slug,
-    salonName: row.businesses?.name || '—',
+    id: row.booking_id,
+    salonId: row.business_slug,
+    salonName: row.business_name || '—',
     mood,
     service,
     serviceSlugs: services,
@@ -54,8 +56,8 @@ function fromSupabase(row) {
     isNoShow: row.status === 'no_show',
     refundCents: row.refunded_amount_cents || 0,
     paymentStatus: row.payment_status,
-    rating: review?.rating,
-    reviewBody: review?.body,
+    rating: row.review_rating,
+    reviewBody: row.review_body,
     fromSupabase: true,
   };
 }
