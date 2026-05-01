@@ -155,7 +155,7 @@ export default function Marketing() {
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>SALONS — READ THIS</div>
             <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 0.98, margin: '10px 0 0', textWrap: 'balance' }}>You set your floor. We bring the chair.</h2>
             <p style={{ fontSize: isPhone ? 14 : 16, color: p.inkSoft, lineHeight: 1.55, margin: '14px 0 0', maxWidth: 480 }}>
-              No subscription. No lead fees. Pay 8% only when you win a booking. Set your minimum price, your service area, your hours — we route requests that match.
+              No subscription. No lead fees. Pay 7% only when you win a booking. Set your minimum price, your service area, your hours — we route requests that match.
             </p>
             <button onClick={() => navigate('/signup?role=salon')} style={{ marginTop: 18, background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 20px' : '15px 24px', borderRadius: 99, fontSize: isPhone ? 13.5 : 15, fontWeight: 600, cursor: 'pointer' }}>Apply for salons →</button>
           </div>
@@ -164,7 +164,7 @@ export default function Marketing() {
               { k: 'Avg. response', v: '11 min' },
               { k: 'Win rate', v: '34%' },
               { k: 'No-show rate', v: '2.1%' },
-              { k: 'Glossi fee', v: '8%' },
+              { k: 'Glossi fee', v: '7%' },
             ].map((s, i) => (
               <div key={i} style={{ padding: '18px 18px', background: p.bg, borderRadius: 14, border: `0.5px solid ${p.line}` }}>
                 <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>{s.k.toUpperCase()}</div>

@@ -125,7 +125,7 @@ export default function MarketingC() {
             <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>FOR SALON OWNERS</div>
             <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 28 : 42, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, marginTop: 8, textWrap: 'balance' }}>Fill empty chairs. Set your floor.</div>
           </div>
-          <button onClick={() => navigate('/onboarding/salon')} style={{ background: p.accent, color: p.ink, border: 0, cursor: 'pointer', padding: isPhone ? '13px 20px' : '15px 26px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, fontFamily: 'inherit' }}>Apply for Glossi Pro →</button>
+          <button onClick={() => navigate('/onboarding/salon')} style={{ background: p.accent, color: p.ink, border: 0, cursor: 'pointer', padding: isPhone ? '13px 20px' : '15px 26px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, fontFamily: 'inherit' }}>Apply for Glossi →</button>
         </div>
       </div>
 

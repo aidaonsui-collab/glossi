@@ -64,7 +64,7 @@ export function Terms() {
         <H>4. Reviews & content</H>
         <p>Reviews must reflect a real visit. We remove reviews that contain hate speech, personal information about stylists, or are clearly fake. Photos you upload to a review can be displayed publicly on the salon's profile.</p>
         <H>5. Salons</H>
-        <p>Salons set their own prices, hours, and service area. Glossi takes a percentage of confirmed bookings (8% Starter, 6% Pro). Salons are responsible for their own licensing, insurance, and tax obligations. Glossi is not an employer.</p>
+        <p>Salons set their own prices, hours, and service area. Glossi takes 7% of each confirmed booking. Salons are responsible for their own licensing, insurance, and tax obligations. Glossi is not an employer.</p>
         <H>6. What we won't do</H>
         <p>Glossi will not share your email or phone with salons until you book. We don't sell your data. We don't show ads inside the app. If we ever change either of those, we'll tell you first and give you a way out.</p>
         <H>7. Changes</H>

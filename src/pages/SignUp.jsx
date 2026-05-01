@@ -197,7 +197,7 @@ export default function SignUp() {
                 <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: p.accent }}>WHAT YOU GET</div>
                 <ul style={{ margin: '8px 0 0', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {[
-                    role === 'salon' ? '6–8% per booking · no monthly fee' : 'Bids in your inbox in 5–15 min',
+                    role === 'salon' ? '7% per booking · no monthly fee' : 'Bids in your inbox in 5–15 min',
                     role === 'salon' ? 'Stripe payouts within 2 days' : 'Save 20–40% off menu prices',
                     role === 'salon' ? 'Real chair-fillers, not "leads"' : 'Real slots, real prices, real people',
                   ].map(line => (

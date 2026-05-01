@@ -134,7 +134,7 @@ export default function MarketingA() {
             { k: 'Avg. response time', v: '11 min' },
             { k: 'Win rate', v: '34%' },
             { k: 'Booking value', v: '$92' },
-            { k: 'Glossi fee', v: '8%' },
+            { k: 'Glossi fee', v: '7%' },
           ].map((s, i) => (
             <div key={i} style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 14, padding: '14px 16px', border: '0.5px solid rgba(255,255,255,0.08)' }}>
               <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.5)' }}>{s.k.toUpperCase()}</div>
