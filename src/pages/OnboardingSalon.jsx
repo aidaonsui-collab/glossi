@@ -1,28 +1,78 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import Modal from '../components/Modal.jsx';
 import { useToast } from '../components/Toast.jsx';
+import { useAuth } from '../store.jsx';
+import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
+import { geocodeZip, ZIP_CENTROIDS } from '../lib/geocode.js';
+
+// Canonical service catalog slugs (mirrors supabase/migrations/...service_catalog.sql)
+const SERVICE_SLUGS = [
+  { slug: 'haircut', l: 'Haircut' },
+  { slug: 'hairstyle', l: 'Hairstyle' },
+  { slug: 'color', l: 'Color' },
+  { slug: 'nails', l: 'Nails' },
+  { slug: 'lashes-brows', l: 'Lashes & Brows' },
+  { slug: 'hair-removal', l: 'Hair Removal' },
+  { slug: 'facials', l: 'Facials' },
+  { slug: 'massage', l: 'Massage' },
+  { slug: 'med-spa', l: 'Med Spa' },
+  { slug: 'makeup', l: 'Makeup' },
+  { slug: 'tanning', l: 'Tanning' },
+];
 
 const initialServices = [
-  { name: 'Color & balayage', from: 90, to: 160, dur: '2–3 hrs', sel: true },
-  { name: 'Cut & style', from: 45, to: 75, dur: '45 min', sel: true },
-  { name: 'Hybrid lash set', from: 120, to: 180, dur: '2 hrs', sel: false },
-  { name: 'Brow lamination', from: 65, to: 95, dur: '45 min', sel: false },
+  { name: 'Color & balayage', slug: 'color', from: 90, to: 160, durMin: 150, sel: true },
+  { name: 'Cut & style', slug: 'haircut', from: 45, to: 75, durMin: 45, sel: true },
+  { name: 'Hybrid lash set', slug: 'lashes-brows', from: 120, to: 180, durMin: 120, sel: false },
+  { name: 'Brow lamination', slug: 'lashes-brows', from: 65, to: 95, durMin: 45, sel: false },
 ];
+
+const slugify = s => (s || '')
+  .toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'salon';
 
 export default function OnboardingSalon() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const toast = useToast();
+  const { user } = useAuth();
   const step = 2;
 
+  // Business basics
+  const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [zip, setZip] = useState('');
+  const [phone, setPhone] = useState('');
+  const [instagram, setInstagram] = useState('');
+  const [priceTier, setPriceTier] = useState('$$');
+
+  // Prefill name from auth user once loaded
+  useEffect(() => {
+    if (!name && user?.name && user.name !== 'Casa de Belleza') setName(user.name);
+  }, [user, name]);
+
+  // Auto-fill city when ZIP resolves
+  useEffect(() => {
+    if (!zip || zip.length !== 5) return;
+    const c = ZIP_CENTROIDS[zip];
+    if (c && !city) setCity(c.city);
+  }, [zip, city]);
+
+  // Services
   const [items, setItems] = useState(initialServices);
   const [showAdd, setShowAdd] = useState(false);
-  const [draft, setDraft] = useState({ name: '', from: 50, to: 90, dur: '1 hr' });
+  const [draft, setDraft] = useState({ name: '', slug: 'haircut', from: 50, to: 90, durMin: 60 });
+
+  // Photos
   const [photos, setPhotos] = useState([]);
   const photoInputRef = useRef(null);
+
+  const [submitting, setSubmitting] = useState(false);
 
   const onPhotoPick = e => {
     const files = Array.from(e.target.files || []);
@@ -41,7 +91,7 @@ export default function OnboardingSalon() {
   const toggle = i => setItems(curr => curr.map((it, idx) => idx === i ? { ...it, sel: !it.sel } : it));
   const updateField = (i, field, value) => setItems(curr => curr.map((it, idx) => idx === i ? { ...it, [field]: value } : it));
   const updatePrice = (i, field, raw) => {
-    const n = raw === '' ? '' : Math.max(0, parseInt(raw.replace(/\D/g, ''), 10) || 0);
+    const n = raw === '' ? 0 : Math.max(0, parseInt(raw.replace(/\D/g, ''), 10) || 0);
     updateField(i, field, n);
   };
   const addService = () => {
@@ -50,20 +100,71 @@ export default function OnboardingSalon() {
     setItems(curr => [...curr, { ...draft, sel: true }]);
     toast(`${draft.name} added.`, { tone: 'success' });
     setShowAdd(false);
-    setDraft({ name: '', from: 50, to: 90, dur: '1 hr' });
+    setDraft({ name: '', slug: 'haircut', from: 50, to: 90, durMin: 60 });
   };
 
-  const onContinue = () => {
+  const onContinue = async () => {
+    if (!name.trim()) { toast('Salon name required.', { tone: 'warn' }); return; }
+    if (!address.trim()) { toast('Address required.', { tone: 'warn' }); return; }
+    if (!city.trim()) { toast('City required.', { tone: 'warn' }); return; }
+    const centroid = geocodeZip(zip);
+    if (!centroid) { toast('ZIP must be in TX (Dallas, Austin, San Antonio, RGV).', { tone: 'warn' }); return; }
     const selected = items.filter(i => i.sel);
     if (selected.length === 0) { toast('Pick at least one service.', { tone: 'warn' }); return; }
-    if (photos.length === 0) {
-      // Open the file picker for the first time. The next click of this button (with photos chosen) will navigate.
-      photoInputRef.current?.click();
+
+    if (!isSupabaseConfigured) {
+      toast('Supabase not configured — listing saved locally only.', { tone: 'warn' });
+      try { localStorage.setItem('glossi.salon.gallery', JSON.stringify(photos)); } catch { /* noop */ }
+      navigate('/salon');
       return;
     }
-    toast(`${selected.length} service${selected.length === 1 ? '' : 's'} and ${photos.length} photo${photos.length === 1 ? '' : 's'} saved.`, { tone: 'success' });
-    try { localStorage.setItem('glossi.salon.gallery', JSON.stringify(photos)); } catch { /* noop */ }
-    navigate('/salon');
+
+    setSubmitting(true);
+    try {
+      // Pick a unique slug. The RPC will fail if it collides; append a short suffix on retry.
+      const baseSlug = slugify(name);
+      const trySlug = baseSlug + '-' + Math.random().toString(36).slice(2, 6);
+
+      const { data: bizId, error } = await supabase.rpc('create_business', {
+        p_slug: trySlug,
+        p_name: name.trim(),
+        p_bio: bio || null,
+        p_address: address.trim(),
+        p_city: city.trim(),
+        p_postal_code: zip,
+        p_lat: centroid.lat,
+        p_lng: centroid.lng,
+        p_phone: phone || null,
+        p_website: null,
+        p_instagram: instagram || null,
+        p_price_tier: priceTier || null,
+        p_service_slugs: selected.map(s => s.slug),
+        p_service_prices_cents: selected.map(s => Math.max(0, s.from || 0) * 100),
+        p_service_durations: selected.map(s => Math.max(15, s.durMin || 60)),
+      });
+
+      if (error) {
+        console.error('create_business error', error);
+        toast(error.message || 'Failed to create salon listing.', { tone: 'warn' });
+        return;
+      }
+
+      // Photos are still local-only for now (no Storage bucket wired yet).
+      try { localStorage.setItem(`glossi.salon.gallery.${bizId}`, JSON.stringify(photos)); } catch { /* noop */ }
+      toast(`${name} is live. ${selected.length} service${selected.length === 1 ? '' : 's'} listed.`, { tone: 'success' });
+      navigate('/salon/inbox');
+    } catch (err) {
+      console.error(err);
+      toast(err?.message || 'Something went wrong creating your salon.', { tone: 'warn' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const inputStyle = {
+    width: '100%', padding: '12px 14px', borderRadius: 12,
+    border: `0.5px solid ${p.line}`, background: p.surface,
+    fontFamily: type.body, fontSize: 14, color: p.ink, outline: 'none', boxSizing: 'border-box',
   };
 
   return (
@@ -78,93 +179,121 @@ export default function OnboardingSalon() {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1fr', alignItems: 'stretch' }}>
-        <div style={{ padding: isPhone ? '28px 18px' : '70px 64px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>SERVICES & PRICING</div>
-          <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 40 : 60, fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.95, margin: '12px 0 0' }}>What do you offer?</h1>
-          <p style={{ fontSize: isPhone ? 15 : 16, color: p.inkSoft, lineHeight: 1.55, margin: '12px 0 0', maxWidth: 480 }}>Add your menu — clients see your typical price next to every bid you send. You can adjust per-bid at the moment of quoting.</p>
+      <div style={{ padding: isPhone ? '28px 18px 60px' : '60px 64px 80px', maxWidth: 760, margin: '0 auto', width: '100%' }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>YOUR SALON</div>
+        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 40 : 60, fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.95, margin: '12px 0 0' }}>Set up your listing.</h1>
+        <p style={{ fontSize: isPhone ? 15 : 16, color: p.inkSoft, lineHeight: 1.55, margin: '12px 0 0', maxWidth: 540 }}>
+          Customers within 5–25 miles will see your salon and your services when they post a request. You can edit anything later.
+        </p>
 
-          <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {/* Business basics */}
+        <section style={{ marginTop: 28 }}>
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>01 · BASICS</div>
+          <div style={{ marginTop: 10, display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1fr', gap: 12 }}>
+            <label style={{ gridColumn: '1 / -1' }}>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Salon name</div>
+              <input value={name} onChange={e => setName(e.target.value)} placeholder="Casa de Belleza" style={inputStyle} />
+            </label>
+            <label style={{ gridColumn: '1 / -1' }}>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Address</div>
+              <input value={address} onChange={e => setAddress(e.target.value)} placeholder="1612 N Cage Blvd" style={inputStyle} />
+            </label>
+            <label>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>City</div>
+              <input value={city} onChange={e => setCity(e.target.value)} placeholder="Pharr" style={inputStyle} />
+            </label>
+            <label>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>ZIP</div>
+              <input value={zip} onChange={e => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))} inputMode="numeric" placeholder="78577" style={{ ...inputStyle, fontFamily: type.mono, letterSpacing: '0.1em' }} />
+            </label>
+            <label>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Phone (optional)</div>
+              <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="(956) 555-0124" style={inputStyle} />
+            </label>
+            <label>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Instagram (optional)</div>
+              <input value={instagram} onChange={e => setInstagram(e.target.value.replace(/^@/, ''))} placeholder="casadebelleza" style={inputStyle} />
+            </label>
+            <label style={{ gridColumn: '1 / -1' }}>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Bio (optional)</div>
+              <textarea value={bio} onChange={e => setBio(e.target.value)} rows={3} placeholder="Two chairs, real warmth, twelve years of color in Pharr." style={{ ...inputStyle, fontFamily: type.body, lineHeight: 1.5, resize: 'vertical' }} />
+            </label>
+            <div>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Price tier</div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {['$', '$$', '$$$', '$$$$'].map(t => {
+                  const a = priceTier === t;
+                  return (
+                    <button key={t} type="button" onClick={() => setPriceTier(t)} style={{
+                      flex: 1, padding: '11px 8px', borderRadius: 10,
+                      background: a ? p.ink : p.surface, color: a ? p.bg : p.ink,
+                      border: `0.5px solid ${a ? p.ink : p.line}`,
+                      cursor: 'pointer', fontFamily: type.mono, fontSize: 13, fontWeight: 600,
+                    }}>{t}</button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Services */}
+        <section style={{ marginTop: 32 }}>
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>02 · SERVICES</div>
+          <p style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.5, margin: '6px 0 14px', maxWidth: 560 }}>Pick the services you offer. Customers see your starting price next to every bid you send.</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {items.map((s, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderRadius: 12, background: s.sel ? p.surface : 'transparent', border: `0.5px solid ${s.sel ? p.ink : p.line}`, color: p.ink, width: '100%' }}>
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 12, background: s.sel ? p.surface : 'transparent', border: `0.5px solid ${s.sel ? p.ink : p.line}`, color: p.ink }}>
                 <button onClick={() => toggle(i)} aria-label={s.sel ? 'Unselect' : 'Select'} style={{ width: 22, height: 22, borderRadius: 4, background: s.sel ? p.ink : 'transparent', border: `1.5px solid ${s.sel ? p.ink : p.inkMuted}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.bg, flexShrink: 0, cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>
                   {s.sel && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M5 13l4 4L19 7" /></svg>}
                 </button>
-                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <input value={s.name} onChange={e => updateField(i, 'name', e.target.value)} style={{ background: 'transparent', border: 0, outline: 0, fontSize: 14, fontWeight: 600, fontFamily: type.body, color: p.ink, padding: 0, width: '100%' }} />
-                  <input value={s.dur} onChange={e => updateField(i, 'dur', e.target.value)} placeholder={isPhone ? 'Duration' : 'e.g. 1 hr'} style={{ background: 'transparent', border: 0, outline: 0, fontSize: 11, color: p.inkMuted, padding: 0, fontFamily: type.body, width: '100%' }} />
+                  <select value={s.slug} onChange={e => updateField(i, 'slug', e.target.value)} style={{ marginTop: 4, background: 'transparent', border: 0, outline: 0, fontSize: 11, color: p.inkMuted, padding: 0, fontFamily: type.body, cursor: 'pointer' }}>
+                    {SERVICE_SLUGS.map(o => <option key={o.slug} value={o.slug}>{o.l}</option>)}
+                  </select>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontFamily: type.mono, fontSize: 13, fontWeight: 600, color: s.sel ? p.ink : p.inkMuted, flexShrink: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontFamily: type.mono, fontSize: 13, fontWeight: 600, color: p.ink, flexShrink: 0 }}>
                   <span>$</span>
-                  <input
-                    inputMode="numeric"
-                    value={s.from}
-                    onChange={e => updatePrice(i, 'from', e.target.value)}
-                    placeholder="—"
-                    style={{ width: 44, background: p.bg, border: `0.5px solid ${p.line}`, borderRadius: 6, outline: 0, padding: '4px 6px', textAlign: 'right', fontFamily: type.mono, fontSize: 13, fontWeight: 600, color: p.ink }}
-                  />
-                  <span style={{ color: p.inkMuted }}>–$</span>
-                  <input
-                    inputMode="numeric"
-                    value={s.to}
-                    onChange={e => updatePrice(i, 'to', e.target.value)}
-                    placeholder="—"
-                    style={{ width: 44, background: p.bg, border: `0.5px solid ${p.line}`, borderRadius: 6, outline: 0, padding: '4px 6px', textAlign: 'right', fontFamily: type.mono, fontSize: 13, fontWeight: 600, color: p.ink }}
-                  />
+                  <input inputMode="numeric" value={s.from} onChange={e => updatePrice(i, 'from', e.target.value)} style={{ width: 50, background: p.bg, border: `0.5px solid ${p.line}`, borderRadius: 6, outline: 0, padding: '4px 6px', textAlign: 'right', fontFamily: type.mono, fontSize: 13, fontWeight: 600, color: p.ink }} />
+                  <span style={{ color: p.inkMuted }}>·</span>
+                  <input inputMode="numeric" value={s.durMin} onChange={e => updatePrice(i, 'durMin', e.target.value)} style={{ width: 38, background: p.bg, border: `0.5px solid ${p.line}`, borderRadius: 6, outline: 0, padding: '4px 6px', textAlign: 'right', fontFamily: type.mono, fontSize: 12, fontWeight: 600, color: p.ink }} />
+                  <span style={{ color: p.inkMuted, fontSize: 11 }}>min</span>
                 </div>
               </div>
             ))}
             <button onClick={() => setShowAdd(true)} style={{ alignSelf: 'flex-start', background: 'transparent', border: `0.5px dashed ${p.inkMuted}`, color: p.inkSoft, cursor: 'pointer', padding: '10px 16px', borderRadius: 12, fontSize: 13, fontWeight: 500, fontFamily: 'inherit' }}>+ Add another service</button>
           </div>
+        </section>
 
-          {/* Photos */}
-          <div style={{ marginTop: 28 }}>
-            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>02 · PHOTOS · {photos.length}/8</div>
-            <p style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.5, margin: '6px 0 12px' }}>Add a few shots of your space and recent work — the more the better. Up to 8.</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: 8 }}>
-              {photos.map((src, i) => (
-                <div key={i} style={{ position: 'relative', aspectRatio: '1/1', borderRadius: 10, overflow: 'hidden', backgroundImage: `url(${src})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                  <button onClick={() => setPhotos(curr => curr.filter((_, idx) => idx !== i))} aria-label="Remove photo" style={{ position: 'absolute', top: 4, right: 4, width: 22, height: 22, borderRadius: 99, border: 0, background: 'rgba(0,0,0,0.55)', color: '#fff', cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
-                </div>
-              ))}
-              {photos.length < 8 && (
-                <button onClick={() => photoInputRef.current?.click()} style={{ aspectRatio: '1/1', borderRadius: 10, background: p.surface, border: `0.5px dashed ${p.inkMuted}`, color: p.inkSoft, cursor: 'pointer', fontSize: 11, fontWeight: 600, fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+ Add</button>
-              )}
-            </div>
-            <input ref={photoInputRef} type="file" accept="image/*" multiple onChange={onPhotoPick} style={{ display: 'none' }} />
+        {/* Photos */}
+        <section style={{ marginTop: 32 }}>
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>03 · PHOTOS · {photos.length}/8</div>
+          <p style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.5, margin: '6px 0 12px' }}>Add a few shots of your space and recent work — the more the better.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: 8 }}>
+            {photos.map((src, i) => (
+              <div key={i} style={{ position: 'relative', aspectRatio: '1/1', borderRadius: 10, overflow: 'hidden', backgroundImage: `url(${src})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <button type="button" onClick={() => setPhotos(curr => curr.filter((_, idx) => idx !== i))} aria-label="Remove photo" style={{ position: 'absolute', top: 4, right: 4, width: 22, height: 22, borderRadius: 99, border: 0, background: 'rgba(0,0,0,0.55)', color: '#fff', cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+              </div>
+            ))}
+            {photos.length < 8 && (
+              <button type="button" onClick={() => photoInputRef.current?.click()} style={{ aspectRatio: '1/1', borderRadius: 10, background: p.surface, border: `0.5px dashed ${p.inkMuted}`, color: p.inkSoft, cursor: 'pointer', fontSize: 11, fontWeight: 600, fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+ Add</button>
+            )}
           </div>
+          <input ref={photoInputRef} type="file" accept="image/*" multiple onChange={onPhotoPick} style={{ display: 'none' }} />
+        </section>
 
-          <div style={{ marginTop: 28, display: 'flex', gap: 10, alignItems: 'center' }}>
-            <button onClick={() => navigate(-1)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, cursor: 'pointer', padding: '14px 18px', borderRadius: 99, fontSize: 13.5, fontWeight: 600, fontFamily: 'inherit', color: p.ink }}>← Back</button>
-            <button onClick={onContinue} style={{ background: p.accent, color: p.ink, border: 0, padding: '14px 22px', borderRadius: 99, fontSize: 14.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>{photos.length === 0 ? 'Continue · upload photos' : `Continue · ${photos.length} photo${photos.length === 1 ? '' : 's'} →`}</button>
-          </div>
+        {/* CTA */}
+        <div style={{ marginTop: 32, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <button onClick={() => navigate(-1)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, cursor: 'pointer', padding: '14px 18px', borderRadius: 99, fontSize: 13.5, fontWeight: 600, fontFamily: 'inherit', color: p.ink }}>← Back</button>
+          <button onClick={onContinue} disabled={submitting} style={{ background: submitting ? p.line : p.accent, color: p.ink, border: 0, padding: '14px 22px', borderRadius: 99, fontSize: 14.5, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>
+            {submitting ? 'Publishing…' : 'Publish salon →'}
+          </button>
         </div>
-
-        {!isPhone && (
-          <div style={{ background: p.ink, color: p.bg, padding: '70px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>HOW YOUR BIDS WILL LOOK</div>
-            <div style={{ marginTop: 24, padding: 24, background: 'rgba(255,255,255,0.05)', borderRadius: 18, border: '0.5px solid rgba(255,255,255,0.1)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 99, background: 'linear-gradient(135deg,#C28A6B,#8B4F3A)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontStyle: 'italic', fontSize: 14, fontWeight: type.displayWeight, border: `1.5px solid ${p.accent}` }}>CB</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 18, fontWeight: type.displayWeight }}>Casa de Belleza</div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>★ 4.9 · 0.8 mi · Fast reply</div>
-                </div>
-              </div>
-              <div style={{ marginTop: 14, padding: '12px 14px', background: 'rgba(255,255,255,0.05)', borderRadius: 10, fontStyle: 'italic', fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5 }}>
-                "{items[0]?.name} is my specialty — low maintenance, rich tones."
-              </div>
-              <div style={{ marginTop: 14, display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                <span style={{ fontFamily: type.mono, fontSize: 34, fontWeight: 600, letterSpacing: '-0.02em' }}>${items[0]?.from + 20 || 110}</span>
-                <span style={{ fontFamily: type.mono, fontSize: 12, color: p.accent, fontWeight: 600 }}>{items[0]?.dur || '3 hr'} · Today 4pm</span>
-              </div>
-            </div>
-            <div style={{ marginTop: 18, fontFamily: type.mono, fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>PREVIEW · UPDATES IN REAL TIME</div>
-          </div>
-        )}
       </div>
 
-      <Modal open={showAdd} onClose={() => setShowAdd(false)} eyebrow="ADD SERVICE" title="New menu item" footer={
+      {/* Add service modal */}
+      <Modal open={showAdd} onClose={() => setShowAdd(false)} title="Add a service" eyebrow="MENU" footer={
         <>
           <button onClick={() => setShowAdd(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, cursor: 'pointer', padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, fontFamily: 'inherit', color: p.ink }}>Cancel</button>
           <button onClick={addService} style={{ background: p.accent, color: p.ink, border: 0, cursor: 'pointer', padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, fontFamily: 'inherit' }}>Add</button>
@@ -172,23 +301,29 @@ export default function OnboardingSalon() {
       }>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <label>
-            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>SERVICE NAME</div>
-            <input value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })} placeholder="e.g. Keratin treatment" style={{ marginTop: 6, width: '100%', padding: '12px 14px', border: `0.5px solid ${p.line}`, borderRadius: 10, background: p.bg, fontFamily: type.body, fontSize: 14, color: p.ink, outline: 'none' }} />
+            <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Service name</div>
+            <input value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })} placeholder="Brazilian blowout" style={inputStyle} />
           </label>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <label>
+            <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Category</div>
+            <select value={draft.slug} onChange={e => setDraft({ ...draft, slug: e.target.value })} style={inputStyle}>
+              {SERVICE_SLUGS.map(o => <option key={o.slug} value={o.slug}>{o.l}</option>)}
+            </select>
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
             <label>
-              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>FROM ${draft.from}</div>
-              <input type="range" min={20} max={300} value={draft.from} onChange={e => setDraft({ ...draft, from: Number(e.target.value) })} style={{ marginTop: 8, width: '100%', accentColor: p.accent }} />
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>From $</div>
+              <input inputMode="numeric" value={draft.from} onChange={e => setDraft({ ...draft, from: parseInt(e.target.value.replace(/\D/g, ''), 10) || 0 })} style={{ ...inputStyle, fontFamily: type.mono }} />
             </label>
             <label>
-              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>TO ${draft.to}</div>
-              <input type="range" min={20} max={400} value={draft.to} onChange={e => setDraft({ ...draft, to: Number(e.target.value) })} style={{ marginTop: 8, width: '100%', accentColor: p.accent }} />
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>To $</div>
+              <input inputMode="numeric" value={draft.to} onChange={e => setDraft({ ...draft, to: parseInt(e.target.value.replace(/\D/g, ''), 10) || 0 })} style={{ ...inputStyle, fontFamily: type.mono }} />
+            </label>
+            <label>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Min</div>
+              <input inputMode="numeric" value={draft.durMin} onChange={e => setDraft({ ...draft, durMin: parseInt(e.target.value.replace(/\D/g, ''), 10) || 0 })} style={{ ...inputStyle, fontFamily: type.mono }} />
             </label>
           </div>
-          <label>
-            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>DURATION</div>
-            <input value={draft.dur} onChange={e => setDraft({ ...draft, dur: e.target.value })} placeholder="e.g. 1 hr" style={{ marginTop: 6, width: '100%', padding: '12px 14px', border: `0.5px solid ${p.line}`, borderRadius: 10, background: p.bg, fontFamily: type.body, fontSize: 14, color: p.ink, outline: 'none' }} />
-          </label>
         </div>
       </Modal>
     </div>
