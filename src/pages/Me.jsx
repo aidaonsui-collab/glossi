@@ -65,7 +65,7 @@ export default function Me() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 24, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.02em' }}>{user?.name || 'Guest'}</div>
               <div style={{ fontSize: 12.5, color: p.inkMuted, marginTop: 2 }}>{user?.email}{user?.city ? ` · ${user.city}` : ''}</div>
-              <div style={{ fontSize: 11.5, color: p.inkSoft, marginTop: 6 }}>Member since 2024</div>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginTop: 6 }}>Member since {user?.createdAt ? new Date(user.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) : '—'}</div>
             </div>
             <Link to="/settings" style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, textDecoration: 'none' }}>Edit profile</Link>
           </div>
