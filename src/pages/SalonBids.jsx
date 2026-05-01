@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
@@ -61,6 +62,7 @@ const toRow = row => {
   return {
     id: row.bid_id,
     raw: row,
+    bookingId: row.booking_id,
     client: label,
     customerEmail: row.customer_email,
     customerPhone: row.customer_phone,
@@ -82,6 +84,7 @@ const toRow = row => {
 
 export default function SalonBids() {
   const isPhone = useNarrow();
+  const navigate = useNavigate();
   const toast = useToast();
   const [tab, setTab] = useState('all');
   const { bids: rawBids, loading, refresh } = useMyBids();
@@ -103,7 +106,14 @@ export default function SalonBids() {
   const winRate = bids.length === 0 ? 0 : Math.round((counts.won / bids.length) * 100);
   const totalEarned = bids.filter(b => b.status === 'won').reduce((sum, b) => sum + b.bid, 0);
 
-  const openModal = bid => {
+  // Won bids skip the legacy edit modal and route straight to the
+  // Phase-7 booking detail page (where Mark complete / No-show /
+  // Cancel live). Pending + lost still open the modal.
+  const openRow = bid => {
+    if (bid.status === 'won' && bid.bookingId) {
+      navigate(`/salon/booking/${bid.bookingId}`);
+      return;
+    }
     setOpenBid(bid);
     setEditDraft({ ...bid });
     // Countered bids land on the Accept / Decline / Counter-back chooser
@@ -249,8 +259,8 @@ export default function SalonBids() {
                   </span>
                 </div>
               </div>
-              <button onClick={() => openModal(b)} style={{ background: b.isCountered ? p.accent : 'transparent', border: `0.5px solid ${b.isCountered ? p.accent : p.line}`, padding: '8px 14px', borderRadius: 99, cursor: 'pointer', fontSize: 12, fontWeight: 600, color: b.isCountered ? p.ink : p.ink, fontFamily: 'inherit' }}>
-                {b.isCountered ? 'Respond' : b.status === 'pending' ? 'Edit' : 'View'}
+              <button onClick={() => openRow(b)} style={{ background: b.isCountered ? p.accent : 'transparent', border: `0.5px solid ${b.isCountered ? p.accent : p.line}`, padding: '8px 14px', borderRadius: 99, cursor: 'pointer', fontSize: 12, fontWeight: 600, color: b.isCountered ? p.ink : p.ink, fontFamily: 'inherit' }}>
+                {b.isCountered ? 'Respond' : b.status === 'won' ? 'Open booking →' : b.status === 'pending' ? 'Edit' : 'View'}
               </button>
             </div>
           ))}
