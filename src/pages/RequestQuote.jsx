@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
@@ -31,8 +31,13 @@ export default function RequestQuote() {
   const toast = useToast();
   const { user } = useAuth();
   const { profile } = useCustomerProfile();
+  const [params] = useSearchParams();
 
-  const [picked, setPicked] = useState(new Set());
+  const [picked, setPicked] = useState(() => {
+    const slugs = (params.get('services') || '').split(',').map(s => s.trim()).filter(Boolean);
+    const valid = new Set(SERVICES.map(s => s.slug));
+    return new Set(slugs.filter(s => valid.has(s)));
+  });
   const [zip, setZip] = useState('');
   const [radius, setRadius] = useState(10);
   const [notes, setNotes] = useState('');

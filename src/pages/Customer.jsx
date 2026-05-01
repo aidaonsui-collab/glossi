@@ -18,7 +18,14 @@ const navItems = [
   { l: 'Editorial', i: 'M4 4h16v4H4zM4 12h10v8H4zM18 12h2v8h-2z', to: '/editorial' },
 ];
 
-const SERVICES = ['Color', 'Cut & style', 'Lashes', 'Nails', 'Brows', 'Barber'];
+const SERVICES = [
+  { l: 'Color', slug: 'color' },
+  { l: 'Cut & style', slug: 'haircut' },
+  { l: 'Lashes', slug: 'lashes-brows' },
+  { l: 'Nails', slug: 'nails' },
+  { l: 'Brows', slug: 'lashes-brows' },
+  { l: 'Barber', slug: 'haircut' },
+];
 const SORTS = ['Price', 'Rating', 'Soonest'];
 
 const initialBids = [
@@ -36,7 +43,12 @@ export default function Customer() {
   const { user } = useAuth();
   const { lang: storedLang, toggle: toggleLang } = useLang();
   const lang = storedLang === 'es' ? 'ES' : 'EN';
-  const [activeService, setActiveService] = useState('Color');
+  const [pickedServices, setPickedServices] = useState(new Set(['Color']));
+  const togglePicked = label => setPickedServices(curr => {
+    const next = new Set(curr);
+    if (next.has(label)) next.delete(label); else next.add(label);
+    return next;
+  });
   const [sort, setSort] = useState('Price');
   const [showNotifs, setShowNotifs] = useState(false);
   const { unreadCount } = useNotifications();
@@ -103,23 +115,27 @@ export default function Customer() {
         <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 0.95, marginTop: 8, textWrap: 'balance' }}>What are you looking for, <span style={{ color: p.accent }}>today?</span></div>
         <div style={{ marginTop: isPhone ? 14 : 18, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {SERVICES.map(s => {
-            const active = activeService === s;
+            const active = pickedServices.has(s.l);
             return (
-              <button key={s} onClick={() => setActiveService(s)} style={{
+              <button key={s.l} onClick={() => togglePicked(s.l)} style={{
                 padding: '7px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600,
                 background: active ? p.accent : 'rgba(255,255,255,0.08)', color: active ? p.ink : p.bg,
                 cursor: 'pointer', border: 0, fontFamily: 'inherit',
-              }}>{s}</button>
+              }}>{s.l}</button>
             );
           })}
         </div>
       </div>
-      <button onClick={() => navigate('/request')} style={{
+      <button onClick={() => {
+        const slugs = Array.from(new Set(SERVICES.filter(s => pickedServices.has(s.l)).map(s => s.slug)));
+        const qs = slugs.length ? `?services=${slugs.join(',')}` : '';
+        navigate(`/request${qs}`);
+      }} style={{
         background: p.accent, color: p.ink, border: 0, cursor: 'pointer',
         padding: isPhone ? '14px 18px' : '16px 20px', borderRadius: 14,
         fontSize: isPhone ? 14 : 15, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'inherit',
       }}>
-        <span>Start a request · {activeService}</span>
+        <span>{pickedServices.size === 0 ? 'Pick at least one service' : `Start a request · ${pickedServices.size} service${pickedServices.size === 1 ? '' : 's'}`}</span>
         <span>→</span>
       </button>
     </div>
