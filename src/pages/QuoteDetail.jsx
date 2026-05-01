@@ -44,12 +44,13 @@ export default function QuoteDetail() {
   }, [id]);
 
   const onAccept = async bid => {
-    if (!confirm(`Accept ${bid.businesses?.name || 'this salon'}'s bid for ${fmtPrice(bid.price_cents)}? This will book your appointment.`)) return;
+    const name = bid.businesses?.name || 'this salon';
+    if (!confirm(`Accept ${name}'s bid for ${fmtPrice(bid.price_cents)}? They'll reach out to confirm a time, then we'll send a deposit link.`)) return;
     setAccepting(bid.id);
     const result = await acceptBid(bid.id);
     setAccepting(null);
     if (!result.ok) { toast(result.error, { tone: 'warn' }); return; }
-    toast(`Booked with ${bid.businesses?.name}.`, { tone: 'success' });
+    toast(`Accepted ${name}'s bid. They'll text you to lock in a time.`, { tone: 'success' });
     await refresh();
     navigate('/bookings');
   };

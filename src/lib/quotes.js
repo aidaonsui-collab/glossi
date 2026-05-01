@@ -108,13 +108,15 @@ export function useMyBusinesses() {
     setLoading(true);
     // RLS lets anyone read published businesses (the public Explore page needs that),
     // so we have to filter to the caller explicitly here — otherwise the inbox switcher
-    // shows every salon in the DB.
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setBusinesses([]); setLoading(false); return; }
+    // shows every salon in the DB. Use getSession() (local cache) instead of getUser()
+    // (network call) so the inbox isn't blocked by a slow/stuck token-refresh round trip.
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id;
+    if (!userId) { setBusinesses([]); setLoading(false); return; }
     const { data } = await supabase
       .from('businesses')
       .select('id, slug, name, city, hero_image_url, published, verified')
-      .eq('owner_id', user.id)
+      .eq('owner_id', userId)
       .order('created_at', { ascending: true });
     setBusinesses(data || []);
     setLoading(false);
@@ -135,12 +137,13 @@ export function useMyBusinessProfile() {
   const refresh = useCallback(async () => {
     if (!isSupabaseConfigured) { setLoading(false); return; }
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setBusiness(null); setLoading(false); return; }
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id;
+    if (!userId) { setBusiness(null); setLoading(false); return; }
     const { data, error } = await supabase
       .from('businesses')
       .select('id, slug, name, bio_en, address_line1, city, state, postal_code, phone, website, instagram, price_tier, hero_image_url, published, verified')
-      .eq('owner_id', user.id)
+      .eq('owner_id', userId)
       .order('created_at', { ascending: true })
       .limit(1)
       .maybeSingle();
