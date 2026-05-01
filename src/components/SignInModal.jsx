@@ -5,6 +5,7 @@ import Modal from './Modal.jsx';
 import { useAuth } from '../store.jsx';
 import { useToast } from './Toast.jsx';
 import { isSupabaseConfigured } from '../lib/supabase.js';
+import SocialSignIn from './SocialSignIn.jsx';
 
 export default function SignInModal({ open, onClose, defaultRole = 'customer' }) {
   const { signInWithEmail, user } = useAuth();
@@ -89,6 +90,7 @@ export default function SignInModal({ open, onClose, defaultRole = 'customer' })
             Demo · click "Sign in" with any email. Your booking history and saved salons are stored locally on this device.
           </div>
         )}
+        <SocialSignIn redirectTo={role === 'salon' ? '/salon' : '/quotes'} compact />
         <div style={{ marginTop: 4, paddingTop: 12, borderTop: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
           <span style={{ fontSize: 12.5, color: p.inkSoft }}>Don't have an account?</span>
           <button onClick={() => { onClose?.(); navigate(`/signup${role === 'salon' ? '?role=salon' : ''}`); }} style={{ background: 'transparent', border: 0, fontSize: 13, color: p.accent, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>

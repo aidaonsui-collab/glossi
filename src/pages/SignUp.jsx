@@ -4,9 +4,7 @@ import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useAuth } from '../store.jsx';
 import { useToast } from '../components/Toast.jsx';
-import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
-
-const OAUTH_PROVIDER = { apple: 'apple', google: 'google', fb: 'facebook' };
+import SocialSignIn from '../components/SocialSignIn.jsx';
 
 const PASSWORD_MIN = 8;
 
@@ -180,58 +178,7 @@ export default function SignUp() {
               {!submitting && <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>}
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '6px 0', fontFamily: type.body, fontSize: 10, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.14em' }}>
-              <span style={{ flex: 1, height: 0.5, background: p.line }} />
-              <span>OR</span>
-              <span style={{ flex: 1, height: 0.5, background: p.line }} />
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-              {[
-                { id: 'apple', l: 'Apple', svg: <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="currentColor" /> },
-                { id: 'google', l: 'Google', svg: <><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" /></> },
-                { id: 'fb', l: 'Facebook', svg: <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z" fill="#1877F2" /> },
-              ].map(s => (
-                <button key={s.id} type="button" onClick={async () => {
-                  if (!isSupabaseConfigured) {
-                    toast(`Single sign-on with ${s.l} requires a connected provider. Use email to continue.`, { tone: 'warn' });
-                    return;
-                  }
-                  // Get the OAuth URL but don't redirect yet — pre-flight it so we can
-                  // catch a "provider not enabled" 400 and show a friendly toast
-                  // instead of dumping users on a raw JSON error page.
-                  const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider: OAUTH_PROVIDER[s.id],
-                    options: { skipBrowserRedirect: true, redirectTo: `${window.location.origin}/onboarding/${role}` },
-                  });
-                  if (error || !data?.url) {
-                    toast(`${s.l} sign-in isn't enabled yet. Ask the Glossi team to turn it on.`, { tone: 'warn' });
-                    return;
-                  }
-                  try {
-                    const probe = await fetch(data.url, { method: 'HEAD', redirect: 'manual' });
-                    // Supabase /authorize returns 400 when the provider is disabled.
-                    // A successful flow returns either an opaque-redirect (status 0)
-                    // or a 3xx — anything 4xx means the provider isn't ready.
-                    if (probe.status >= 400 && probe.status < 500) {
-                      toast(`${s.l} sign-in isn't enabled yet. Ask the Glossi team to turn it on.`, { tone: 'warn' });
-                      return;
-                    }
-                  } catch {
-                    // Network error / CORS — fall through and let the redirect happen
-                  }
-                  window.location.href = data.url;
-                }} style={{
-                  padding: '12px 14px', borderRadius: 12,
-                  border: `0.5px solid ${p.line}`, background: p.surface, cursor: 'pointer',
-                  fontFamily: type.body, fontSize: 13, fontWeight: 600, color: p.ink,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24">{s.svg}</svg>
-                  <span>{s.l}</span>
-                </button>
-              ))}
-            </div>
+            <SocialSignIn redirectTo={`/onboarding/${role}`} />
           </form>
         </div>
 

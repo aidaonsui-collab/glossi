@@ -140,8 +140,14 @@ export function AuthProvider({ children }) {
   }, [setDemoUser]);
 
   const signOut = useCallback(async () => {
-    if (isSupabaseConfigured) await supabase.auth.signOut();
-    else setDemoUser(null);
+    if (isSupabaseConfigured) {
+      // Clear local state immediately so the UI updates even if callers
+      // don't await — Supabase's signOut RPC is fire-and-forget for our purposes.
+      setSupaUser(null);
+      await supabase.auth.signOut();
+    } else {
+      setDemoUser(null);
+    }
   }, [setDemoUser]);
 
   const value = useMemo(() => ({
