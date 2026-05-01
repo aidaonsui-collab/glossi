@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomerLayout from '../components/CustomerLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
@@ -25,6 +25,18 @@ export default function CustomerSettings() {
 
   const { bookings } = useBookings();
   const [draft, setDraft] = useState(profile);
+
+  // Re-sync the draft whenever the underlying profile changes (e.g. once
+  // the auth user hydrates after initial mount). Without this, the form
+  // captures the demo Sofia placeholder and never updates.
+  const [draftDirty, setDraftDirty] = useState(false);
+  useEffect(() => {
+    if (!draftDirty) setDraft(profile);
+  }, [profile, draftDirty]);
+  const editDraft = patch => {
+    setDraftDirty(true);
+    setDraft(prev => ({ ...prev, ...patch }));
+  };
   const [showDelete, setShowDelete] = useState(false);
   const [confirmText, setConfirmText] = useState('');
   const [showCard, setShowCard] = useState(false);
@@ -82,6 +94,7 @@ export default function CustomerSettings() {
 
   const save = () => {
     update(draft);
+    setDraftDirty(false);
     toast('Profile saved.', { tone: 'success' });
   };
 
@@ -137,19 +150,19 @@ export default function CustomerSettings() {
 
         <Section title="Personal info" eyebrow="01 · CONTACT">
           <Field label="Name">
-            <input value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })} style={input} />
+            <input value={draft.name} onChange={e => editDraft({ name: e.target.value })} style={input} />
           </Field>
           <Field label="Email">
-            <input type="email" value={draft.email} onChange={e => setDraft({ ...draft, email: e.target.value })} style={input} />
+            <input type="email" value={draft.email} onChange={e => editDraft({ email: e.target.value })} style={input} />
           </Field>
           <Field label="Phone">
-            <input value={draft.phone} onChange={e => setDraft({ ...draft, phone: e.target.value })} style={input} />
+            <input value={draft.phone} onChange={e => editDraft({ phone: e.target.value })} style={input} />
           </Field>
           <Field label="ZIP">
-            <input value={draft.zip} onChange={e => setDraft({ ...draft, zip: e.target.value.replace(/\D/g, '').slice(0, 5) })} inputMode="numeric" style={{ ...input, fontFamily: type.mono, letterSpacing: '0.1em', maxWidth: 140 }} />
+            <input value={draft.zip} onChange={e => editDraft({ zip: e.target.value.replace(/\D/g, '').slice(0, 5) })} inputMode="numeric" style={{ ...input, fontFamily: type.mono, letterSpacing: '0.1em', maxWidth: 140 }} />
           </Field>
           <Field label="City" last>
-            <input value={draft.city} onChange={e => setDraft({ ...draft, city: e.target.value })} style={input} />
+            <input value={draft.city} onChange={e => editDraft({ city: e.target.value })} style={input} />
           </Field>
         </Section>
 
@@ -219,7 +232,7 @@ export default function CustomerSettings() {
             display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 18px 40px rgba(0,0,0,0.18)',
           }}>
             <div style={{ flex: 1, fontFamily: type.body, fontSize: 13.5, fontWeight: 500 }}>Unsaved changes</div>
-            <button onClick={() => setDraft(profile)} style={{ background: 'transparent', border: `0.5px solid rgba(255,255,255,0.2)`, padding: '8px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, color: p.bg, cursor: 'pointer', fontFamily: 'inherit' }}>Discard</button>
+            <button onClick={() => { setDraft(profile); setDraftDirty(false); }} style={{ background: 'transparent', border: `0.5px solid rgba(255,255,255,0.2)`, padding: '8px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, color: p.bg, cursor: 'pointer', fontFamily: 'inherit' }}>Discard</button>
             <button onClick={save} style={{ background: p.accent, color: p.ink, border: 0, padding: '9px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Save changes</button>
           </div>
         )}
