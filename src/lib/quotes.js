@@ -64,7 +64,7 @@ export function useBidsForQuote(requestId) {
     setLoading(true);
     const { data } = await supabase
       .from('quote_bids')
-      .select('id, price_cents, estimated_duration, earliest_slot, message, status, created_at, business_id, businesses(name, slug, city, price_tier, hero_image_url, verified)')
+      .select('id, price_cents, estimated_duration, earliest_slot, message, status, created_at, business_id, counter_offer_cents, counter_message, counter_at, businesses(name, slug, city, price_tier, hero_image_url, verified)')
       .eq('request_id', requestId)
       .neq('status', 'withdrawn')
       .order('price_cents', { ascending: true });
@@ -91,6 +91,19 @@ export function useBidsForQuote(requestId) {
 export async function acceptBid(bidId) {
   if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
   const { error } = await supabase.rpc('accept_bid', { p_bid_id: bidId });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+// Customer proposes a different price on a salon's bid.
+export async function counterBid({ bidId, counterCents, message }) {
+  if (!isSupabaseConfigured) return { ok: false, error: 'Supabase not configured.' };
+  if (counterCents == null || counterCents < 0) return { ok: false, error: 'Enter a counter price.' };
+  const { error } = await supabase.rpc('counter_bid', {
+    p_bid_id: bidId,
+    p_counter_cents: counterCents,
+    p_counter_message: message || null,
+  });
   if (error) return { ok: false, error: error.message };
   return { ok: true };
 }

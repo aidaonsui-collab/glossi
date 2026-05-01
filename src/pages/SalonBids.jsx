@@ -30,11 +30,12 @@ const fmtAgo = ts => {
 const fmtSlot = ts => ts ? new Date(ts).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : null;
 
 // active → pending (still in bidding window)
+// countered → pending (customer proposed a different price — needs salon response)
 // accepted → won (customer chose us)
 // rejected → lost (customer chose someone else)
 // withdrawn → lost (we backed out — kept under Lost so the salon can see the audit trail)
 // expired → lost
-const mapStatus = s => s === 'accepted' ? 'won' : s === 'active' ? 'pending' : 'lost';
+const mapStatus = s => s === 'accepted' ? 'won' : (s === 'active' || s === 'countered') ? 'pending' : 'lost';
 
 // Derive a fallback label when the RPC didn't reveal the name (rejected
 // or withdrawn bids). "Customer · #abc123" gives the salon a stable
@@ -66,6 +67,11 @@ const toRow = row => {
     service,
     bid: Math.round((row.price_cents || 0) / 100),
     status,
+    rawStatus: row.status,
+    isCountered: row.status === 'countered',
+    counterPrice: row.counter_offer_cents != null ? Math.round(row.counter_offer_cents / 100) : null,
+    counterMessage: row.counter_message,
+    counterAt: row.counter_at,
     sent: fmtAgo(row.created_at),
     slot: fmtSlot(row.earliest_slot),
     initials: initialsFromLabel(label),
@@ -100,7 +106,9 @@ export default function SalonBids() {
   const openModal = bid => {
     setOpenBid(bid);
     setEditDraft({ ...bid });
-    setEditing(bid.status === 'pending');
+    // Countered bids land on the Accept / Decline / Counter-back chooser
+    // first; the salon opts into the edit form by tapping Counter back.
+    setEditing(bid.status === 'pending' && !bid.isCountered);
     setConfirmWithdraw(false);
   };
 
@@ -139,6 +147,28 @@ export default function SalonBids() {
     setActing(false);
     if (error) { toast(error.message, { tone: 'warn' }); return; }
     toast(`Bid withdrawn from ${openBid.client}.`);
+    setOpenBid(null);
+    refresh();
+  };
+
+  const acceptCounter = async () => {
+    if (!isSupabaseConfigured || !openBid?.raw) return;
+    setActing(true);
+    const { error } = await supabase.rpc('accept_counter', { p_bid_id: openBid.raw.bid_id });
+    setActing(false);
+    if (error) { toast(error.message, { tone: 'warn' }); return; }
+    toast(`Counter accepted · $${openBid.counterPrice}.`, { tone: 'success' });
+    setOpenBid(null);
+    refresh();
+  };
+
+  const rejectCounter = async () => {
+    if (!isSupabaseConfigured || !openBid?.raw) return;
+    setActing(true);
+    const { error } = await supabase.rpc('reject_counter', { p_bid_id: openBid.raw.bid_id });
+    setActing(false);
+    if (error) { toast(error.message, { tone: 'warn' }); return; }
+    toast(`Counter declined · your $${openBid.bid} stands.`);
     setOpenBid(null);
     refresh();
   };
@@ -195,7 +225,7 @@ export default function SalonBids() {
             </div>
           ) : null}
           {list.map((b, i) => (
-            <div key={i} style={{ padding: '14px 18px', background: p.surface, borderRadius: 14, border: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <div key={i} style={{ padding: '14px 18px', background: p.surface, borderRadius: 14, border: `0.5px solid ${b.isCountered ? p.accent : p.line}`, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
               <div style={{ width: 38, height: 38, borderRadius: 999, flexShrink: 0, background: p.accentSoft, color: p.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontSize: 13, fontWeight: 700 }}>{b.initials}</div>
               <div style={{ flex: '1 1 200px', minWidth: 0 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: p.ink }}>{b.client}</div>
@@ -204,18 +234,23 @@ export default function SalonBids() {
               <div style={{ minWidth: 100 }}>
                 <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>BID</div>
                 <div style={{ fontFamily: type.mono, fontSize: 17, fontWeight: 600, color: p.ink, marginTop: 1 }}>${b.bid}</div>
+                {b.isCountered && (
+                  <div style={{ fontFamily: type.mono, fontSize: 12, fontWeight: 600, color: p.accent, marginTop: 2 }}>
+                    counter ${b.counterPrice}
+                  </div>
+                )}
               </div>
               <div style={{ minWidth: 130 }}>
                 <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>{b.status === 'won' ? 'BOOKED' : 'STATUS'}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: 99, background: STATUS_COLOR(p, b.status) }} />
-                  <span style={{ fontSize: 12, fontWeight: 600, color: STATUS_COLOR(p, b.status), textTransform: 'capitalize' }}>
-                    {b.status === 'won' ? b.slot : b.status === 'pending' ? `${b.competing} competing` : 'Lost · ' + b.sent}
+                  <span style={{ width: 7, height: 7, borderRadius: 99, background: b.isCountered ? p.accent : STATUS_COLOR(p, b.status) }} />
+                  <span style={{ fontSize: 12, fontWeight: 600, color: b.isCountered ? p.accent : STATUS_COLOR(p, b.status), textTransform: 'capitalize' }}>
+                    {b.isCountered ? 'Countered' : b.status === 'won' ? b.slot : b.status === 'pending' ? 'Pending' : 'Lost · ' + b.sent}
                   </span>
                 </div>
               </div>
-              <button onClick={() => openModal(b)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, cursor: 'pointer', fontSize: 12, fontWeight: 600, color: p.ink, fontFamily: 'inherit' }}>
-                {b.status === 'pending' ? 'Edit' : 'View'}
+              <button onClick={() => openModal(b)} style={{ background: b.isCountered ? p.accent : 'transparent', border: `0.5px solid ${b.isCountered ? p.accent : p.line}`, padding: '8px 14px', borderRadius: 99, cursor: 'pointer', fontSize: 12, fontWeight: 600, color: b.isCountered ? p.ink : p.ink, fontFamily: 'inherit' }}>
+                {b.isCountered ? 'Respond' : b.status === 'pending' ? 'Edit' : 'View'}
               </button>
             </div>
           ))}
@@ -235,10 +270,19 @@ export default function SalonBids() {
       <Modal
         open
         onClose={() => setOpenBid(null)}
-        eyebrow={openBid.status === 'pending' ? (editing ? 'EDIT BID' : 'BID DETAIL') : openBid.status === 'won' ? 'WON · BOOKED' : 'BID DETAIL'}
+        eyebrow={openBid.isCountered ? 'CUSTOMER COUNTERED' : openBid.status === 'pending' ? (editing ? 'EDIT BID' : 'BID DETAIL') : openBid.status === 'won' ? 'WON · BOOKED' : 'BID DETAIL'}
         title={`${headerName} · ${openBid.service}`}
         width={520}
-        footer={openBid?.status === 'pending' ? (
+        footer={confirmWithdraw ? null : openBid.isCountered && !editing ? (
+          <>
+            <button onClick={rejectCounter} disabled={acting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 16px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: acting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>Decline</button>
+            <div style={{ flex: 1 }} />
+            <button onClick={() => setEditing(true)} disabled={acting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 16px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: acting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>Counter back</button>
+            <button onClick={acceptCounter} disabled={acting} style={{ background: p.success, color: '#fff', border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: acting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>
+              {acting ? 'Accepting…' : `Accept · $${openBid.counterPrice}`}
+            </button>
+          </>
+        ) : openBid?.status === 'pending' ? (
           editing ? (
             <>
               <button onClick={() => setConfirmWithdraw(true)} style={{ background: 'transparent', border: `0.5px solid ${p.accent}`, padding: '11px 16px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.accent, cursor: 'pointer', fontFamily: 'inherit' }}>Withdraw</button>
@@ -280,6 +324,29 @@ export default function SalonBids() {
             <div style={{ padding: '12px 14px', background: p.bg, borderRadius: 12, border: `0.5px solid ${p.line}`, fontSize: 13, color: p.inkSoft, lineHeight: 1.5, fontStyle: 'italic' }}>
               "{openBid.note}"
             </div>
+
+            {openBid.isCountered && !editing && (
+              <div style={{ padding: '14px 16px', background: p.bg, borderRadius: 12, border: `0.5px solid ${p.accent}` }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12 }}>
+                  <div>
+                    <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.accent }}>CUSTOMER OFFERS</div>
+                    <div style={{ fontFamily: type.mono, fontSize: 32, fontWeight: 600, color: p.ink, marginTop: 4, letterSpacing: '-0.025em' }}>${openBid.counterPrice}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>YOUR ASK</div>
+                    <div style={{ fontFamily: type.mono, fontSize: 18, color: p.inkSoft, marginTop: 4, textDecoration: 'line-through' }}>${openBid.bid}</div>
+                  </div>
+                </div>
+                {openBid.counterMessage && (
+                  <div style={{ marginTop: 10, fontSize: 13, color: p.inkSoft, lineHeight: 1.5, fontStyle: 'italic' }}>
+                    "{openBid.counterMessage}"
+                  </div>
+                )}
+                <div style={{ marginTop: 8, fontSize: 11.5, color: p.inkMuted }}>
+                  Counter sent {fmtAgo(openBid.counterAt)}
+                </div>
+              </div>
+            )}
 
             {editing && openBid.status === 'pending' ? (
               <>
