@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SalonLayout from '../components/SalonLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
@@ -83,6 +83,24 @@ export default function SalonBids() {
   const [editDraft, setEditDraft] = useState(null);
   const [confirmWithdraw, setConfirmWithdraw] = useState(false);
   const [acting, setActing] = useState(false);
+  // Cache resolved customer contact info per request_id so we don't
+  // re-fetch every time the salon opens the same modal.
+  const [contacts, setContacts] = useState({});
+
+  // When the salon opens a modal, fetch the real customer contact via
+  // request_customer_contact (RPC gates on the bid being active or
+  // accepted, so it works for both pending and won bids in this view).
+  useEffect(() => {
+    if (!isSupabaseConfigured || !openBid?.raw) return;
+    const requestId = openBid.raw.quote_requests?.id;
+    if (!requestId || contacts[requestId] !== undefined) return;
+    let cancelled = false;
+    supabase.rpc('request_customer_contact', { p_request_id: requestId }).then(({ data }) => {
+      if (cancelled) return;
+      setContacts(curr => ({ ...curr, [requestId]: data?.[0] || null }));
+    });
+    return () => { cancelled = true; };
+  }, [openBid, contacts]);
 
   const bids = useMemo(() => rawBids.map(toRow), [rawBids]);
   const list = bids.filter(b => tab === 'all' || b.status === tab);
@@ -221,11 +239,25 @@ export default function SalonBids() {
         </div>
       </div>
 
+      {(() => null)()}
+      {openBid && (() => {
+        // Resolve customer name/email/phone from the contact cache.
+        // request_customer_contact (post-migration 0501_002) reveals
+        // on any active or accepted bid by the caller; rejected bids
+        // get the masked label only.
+        const requestId = openBid.raw?.quote_requests?.id;
+        const contact = requestId ? contacts[requestId] : null;
+        const showContact = openBid.status !== 'lost' && contact;
+        const headerName = showContact && contact.full_name ? contact.full_name : openBid.client;
+        const headerInitials = showContact && contact.full_name
+          ? contact.full_name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase()
+          : openBid.initials;
+        return (
       <Modal
-        open={!!openBid}
+        open
         onClose={() => setOpenBid(null)}
-        eyebrow={openBid?.status === 'pending' ? (editing ? 'EDIT BID' : 'BID DETAIL') : openBid?.status === 'won' ? 'WON · BOOKED' : 'BID DETAIL'}
-        title={openBid ? `${openBid.client} · ${openBid.service}` : ''}
+        eyebrow={openBid.status === 'pending' ? (editing ? 'EDIT BID' : 'BID DETAIL') : openBid.status === 'won' ? 'WON · BOOKED' : 'BID DETAIL'}
+        title={`${headerName} · ${openBid.service}`}
         width={520}
         footer={openBid?.status === 'pending' ? (
           editing ? (
@@ -245,19 +277,24 @@ export default function SalonBids() {
           <button onClick={() => setOpenBid(null)} style={{ background: p.ink, color: p.bg, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Close</button>
         )}
       >
-        {openBid && !confirmWithdraw && (
+        {!confirmWithdraw && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {/* Client header */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 999, background: p.accentSoft, color: p.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontSize: 14, fontWeight: 700 }}>{openBid.initials}</div>
+              <div style={{ width: 44, height: 44, borderRadius: 999, background: p.accentSoft, color: p.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontSize: 14, fontWeight: 700 }}>{headerInitials}</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: type.body, fontSize: 14, fontWeight: 600 }}>{openBid.client}</div>
+                <div style={{ fontFamily: type.body, fontSize: 14, fontWeight: 600 }}>{headerName}</div>
                 <div style={{ fontFamily: type.body, fontSize: 11.5, color: p.inkMuted, marginTop: 1, display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ width: 6, height: 6, borderRadius: 99, background: STATUS_COLOR(p, openBid.status) }} />
                   <span style={{ color: STATUS_COLOR(p, openBid.status), fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{openBid.status}</span>
                   <span>· sent {openBid.sent}</span>
                   {openBid.competing && <span>· {openBid.competing} competing</span>}
                 </div>
+                {showContact && (contact.email || contact.phone) && (
+                  <div style={{ fontSize: 12, color: p.inkSoft, marginTop: 4 }}>
+                    {contact.email}{contact.phone ? ` · ${contact.phone}` : ''}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -303,13 +340,13 @@ export default function SalonBids() {
             )}
           </div>
         )}
-        {openBid && confirmWithdraw && (
+        {confirmWithdraw && (
           <div>
             <div style={{ fontSize: 14, color: p.ink, lineHeight: 1.5, fontWeight: 500 }}>
-              Withdraw your bid for {openBid.client}?
+              Withdraw your bid for {headerName}?
             </div>
             <div style={{ marginTop: 8, fontSize: 12.5, color: p.inkSoft, lineHeight: 1.5 }}>
-              {openBid.client} won't see your offer anymore. You can re-bid if the request is still open.
+              {headerName} won't see your offer anymore. You can re-bid if the request is still open.
             </div>
             <div style={{ marginTop: 16, display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button onClick={() => setConfirmWithdraw(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '10px 16px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Keep bid</button>
@@ -318,6 +355,8 @@ export default function SalonBids() {
           </div>
         )}
       </Modal>
+        );
+      })()}
     </SalonLayout>
   );
 }
