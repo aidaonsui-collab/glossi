@@ -11,10 +11,42 @@ import {
 } from '../lib/quotes.js';
 
 const fmtMoney = cents => `$${((cents || 0) / 100).toFixed(2)}`;
+const fmtPriceShort = cents => `$${Math.round((cents || 0) / 100)}`;
 const fmtHours = h => h == null ? '—'
   : h < 1 ? `${Math.round(h * 60)} min`
   : h < 48 ? `${h.toFixed(1)} hr`
   : `${Math.floor(h / 24)} day${Math.floor(h / 24) === 1 ? '' : 's'}`;
+const fmtServices = slugs => (slugs || []).map(s => s.replace('-', ' & ')).join(', ');
+const fmtWhen = ts => ts
+  ? new Date(ts).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+  : null;
+
+// Compact card every confirmation modal renders so the user can
+// double-check what they're acting on before tapping the verb.
+// callerRole='salon' shows customerName; 'customer' shows salonName.
+function BookingSummary({ booking, callerRole }) {
+  const headline = callerRole === 'salon'
+    ? (booking.customerName || 'Customer')
+    : (booking.salonName || 'Salon');
+  const service = booking.serviceSummary || fmtServices(booking.serviceSlugs);
+  const when = fmtWhen(booking.scheduledAt);
+  return (
+    <div style={{ padding: '14px 16px', background: p.bg, borderRadius: 12, border: `0.5px solid ${p.line}` }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'baseline' }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 18, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.01em' }}>{headline}</div>
+          {service && <div style={{ fontSize: 12.5, color: p.inkSoft, marginTop: 2 }}>{service}</div>}
+          {when && <div style={{ fontSize: 12, color: p.inkMuted, marginTop: 2 }}>{when}</div>}
+        </div>
+        {booking.priceCents != null && (
+          <div style={{ fontFamily: type.mono, fontSize: 18, fontWeight: 600, color: p.ink, letterSpacing: '-0.02em' }}>
+            {fmtPriceShort(booking.priceCents)}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // Drives all post-payment booking actions for whichever side is open.
 //
@@ -100,8 +132,8 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
       <Modal
         open
         onClose={() => !submitting && close(false)}
-        eyebrow="CANCEL APPOINTMENT"
-        title={booking.salonName || booking.customerName || 'Booking'}
+        eyebrow="CANCEL"
+        title="Cancel this booking?"
         width={520}
         footer={(
           <>
@@ -129,6 +161,7 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
         )}
         {preview && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <BookingSummary booking={booking} callerRole={callerRole} />
             <div style={{
               padding: '14px 16px', borderRadius: 12,
               background: eligible ? p.success + '14' : p.accent + '1f',
@@ -137,15 +170,15 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ width: 8, height: 8, borderRadius: 99, background: eligible ? p.success : p.accent }} />
                 <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: '0.12em', color: eligible ? p.success : p.accent }}>
-                  {eligible ? (isSalon ? 'SALON CANCEL · FULL REFUND' : 'FREE CANCEL') : 'LATE CANCEL · NO REFUND'}
+                  {eligible ? (isSalon ? 'FULL REFUND' : 'FREE CANCEL') : 'NO REFUND'}
                 </div>
               </div>
               <div style={{ marginTop: 8, fontSize: 12.5, color: p.inkSoft, lineHeight: 1.5 }}>
                 {isSalon
-                  ? `Salon-initiated cancellations always refund the customer in full (${fmtMoney(preview.price_cents)}). Both your destination payout and Glossi's fee are reversed.`
+                  ? `Salon cancels always refund the customer in full — ${fmtMoney(preview.price_cents)} back to their card.`
                   : eligible
-                    ? `Appointment is in ${fmtHours(hours)}. Full ${fmtMoney(preview.price_cents)} returns to your card in 1–2 business days.`
-                    : `Appointment is in ${fmtHours(hours)} — under our 24-hour window. No refund will be issued.`
+                    ? `Appointment is in ${fmtHours(hours)}. ${fmtMoney(preview.price_cents)} returns to your card in 1–2 business days.`
+                    : `Appointment is in ${fmtHours(hours)} — under our 24-hour window, so no refund can be issued.`
                 }
               </div>
             </div>
@@ -173,7 +206,7 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
         open
         onClose={() => !submitting && close(false)}
         eyebrow="MARK COMPLETE"
-        title={booking.customerName || 'Booking'}
+        title="Confirm appointment"
         width={460}
         footer={(
           <>
@@ -184,8 +217,11 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
           </>
         )}
       >
-        <div style={{ fontSize: 13.5, color: p.inkSoft, lineHeight: 1.55 }}>
-          Marking this appointment complete unlocks the customer's review prompt. Funds already settled to your account when the booking was paid (Phase 6 destination charge), so this is just the lifecycle flip — no Stripe action runs.
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <BookingSummary booking={booking} callerRole={callerRole} />
+          <div style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.55 }}>
+            The customer will be invited to leave a review. This can't be undone.
+          </div>
         </div>
       </Modal>
     );
@@ -198,7 +234,7 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
         open
         onClose={() => !submitting && close(false)}
         eyebrow="NO-SHOW"
-        title={booking.customerName || 'Booking'}
+        title="Customer didn't show?"
         width={460}
         footer={(
           <>
@@ -209,8 +245,11 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
           </>
         )}
       >
-        <div style={{ fontSize: 13.5, color: p.inkSoft, lineHeight: 1.55 }}>
-          Flag this customer as a no-show. You keep the full payment — there's no refund. The customer sees the booking marked "No-show" in their history. Use sparingly; abuse can affect your verification.
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <BookingSummary booking={booking} callerRole={callerRole} />
+          <div style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.55 }}>
+            You keep the full {fmtPriceShort(booking.priceCents)} — no refund. Use this sparingly; flagged no-shows are tracked.
+          </div>
         </div>
       </Modal>
     );

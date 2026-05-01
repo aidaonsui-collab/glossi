@@ -68,6 +68,7 @@ export default function SalonBookingDetail() {
     salonName: businesses.find(x => x.id === businessId)?.name,
     scheduledAt: booking.scheduled_at,
     priceCents: booking.price_cents,
+    serviceSlugs: booking.service_slugs,
   };
   const openAction = mode => setLifecycleAction({ booking: lifecycleBooking, mode });
 

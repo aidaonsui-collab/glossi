@@ -42,6 +42,9 @@ function fromSupabase(row) {
     salonName: row.businesses?.name || '—',
     mood,
     service,
+    serviceSlugs: services,
+    priceCents: row.price_cents || 0,
+    scheduledAt: row.scheduled_at,
     total: (row.price_cents || 0) / 100,
     slot: row.scheduled_at ? fmt(row.scheduled_at) : null,
     createdAt: new Date(row.created_at).getTime(),
@@ -98,7 +101,18 @@ export default function Bookings() {
                 <BookingRow key={b.id} b={b} navigate={navigate} accent
                   onAction={action => {
                     if (b.fromSupabase && action === 'cancel') {
-                      setLifecycleAction({ booking: b, mode: 'cancel' });
+                      // Adapt the BookingRow shape (dollars + pre-formatted
+                      // strings) to what BookingLifecycleModal expects.
+                      setLifecycleAction({
+                        booking: {
+                          id: b.id,
+                          salonName: b.salonName,
+                          serviceSummary: b.service,
+                          scheduledAt: b.scheduledAt,
+                          priceCents: b.priceCents,
+                        },
+                        mode: 'cancel',
+                      });
                     } else {
                       setActionFor({ ...b, _action: action });
                     }
@@ -115,7 +129,16 @@ export default function Bookings() {
             <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
               {past.map(b => (
                 <BookingRow key={b.id} b={b} navigate={navigate}
-                  onReview={() => setLifecycleAction({ booking: b, mode: 'review' })}
+                  onReview={() => setLifecycleAction({
+                    booking: {
+                      id: b.id,
+                      salonName: b.salonName,
+                      serviceSummary: b.service,
+                      scheduledAt: b.scheduledAt,
+                      priceCents: b.priceCents,
+                    },
+                    mode: 'review',
+                  })}
                 />
               ))}
             </div>
