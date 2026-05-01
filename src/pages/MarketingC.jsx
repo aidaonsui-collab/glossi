@@ -40,7 +40,7 @@ export default function MarketingC() {
           <div style={{ position: 'absolute', top: isPhone ? 16 : 28, right: isPhone ? 16 : 32, color: p.bg, fontFamily: type.mono, fontSize: isPhone ? 10 : 12, fontWeight: 600, letterSpacing: '0.18em' }}>VOL. 1 · BEAUTY MARKETPLACE</div>
           <div style={{ position: 'absolute', left: isPhone ? 20 : 48, right: isPhone ? 20 : 48, bottom: isPhone ? 22 : 42, color: p.bg }}>
             <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? '13vw' : '8.5vw', fontWeight: type.displayWeight, letterSpacing: '-0.04em', lineHeight: 0.9, textWrap: 'balance', margin: 0 }}>
-              Beauty,<br />negotiated.
+              They bid.<br />You book.
             </div>
             <div style={{ marginTop: isPhone ? 12 : 18, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
               <button onClick={() => navigate('/onboarding/customer')} style={{ background: p.bg, color: p.ink, border: 0, cursor: 'pointer', padding: isPhone ? '12px 18px' : '14px 22px', borderRadius: 99, fontSize: isPhone ? 13.5 : 14, fontWeight: 600, fontFamily: 'inherit' }}>Post a request</button>

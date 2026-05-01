@@ -43,7 +43,7 @@ export default function MarketingA() {
             fontFamily: type.display, fontStyle: 'italic',
             fontSize: isPhone ? 54 : 92, fontWeight: type.displayWeight,
             letterSpacing: '-0.035em', lineHeight: 0.92, margin: '14px 0 0', textWrap: 'balance',
-          }}>Beauty,<br /><span style={{ color: p.accent }}>on your terms.</span></h1>
+          }}>They bid.<br /><span style={{ color: p.accent }}>You book.</span></h1>
           <p style={{ fontSize: isPhone ? 15 : 18, color: p.inkSoft, lineHeight: 1.55, margin: '18px 0 0', maxWidth: 520, textWrap: 'pretty' }}>
             Post what you want, name your price. Local salons compete for your booking. The best offer wins — usually within an hour.
           </p>

@@ -191,7 +191,7 @@ export default function SignUp() {
             </div>
             <div style={{ position: 'absolute', left: 36, right: 36, bottom: 40, color: p.bg }}>
               <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 64, fontWeight: type.displayWeight, lineHeight: 0.95, letterSpacing: '-0.03em', textWrap: 'balance' }}>
-                Beauty,<br />negotiated.
+                They bid.<br />You book.
               </div>
               <div style={{ marginTop: 18, padding: '14px 16px', background: 'rgba(255,255,255,0.10)', backdropFilter: 'blur(12px)', borderRadius: 12, border: '0.5px solid rgba(255,255,255,0.15)' }}>
                 <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: p.accent }}>WHAT YOU GET</div>

@@ -99,7 +99,7 @@ export default function Welcome({ p, type, lang, onComplete, onSkip }) {
         </div>
         <div style={{ padding: '0 22px 28px', flex: 1, display: 'flex', flexDirection: 'column', marginTop: -100, position: 'relative', zIndex: 2 }}>
           <div style={{ fontFamily: type.display, fontSize: 46, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.03em', fontStyle: 'italic', lineHeight: 0.95 }}>
-            {lang === 'en' ? <>Beauty,<br />on your terms.</> : <>Belleza,<br />a tu manera.</>}
+            {lang === 'en' ? <>They bid.<br />You book.</> : <>Ofertan.<br />Tú reservas.</>}
           </div>
           <div style={{ fontFamily: type.body, fontSize: 14, color: p.inkSoft, lineHeight: 1.5, marginTop: 16, maxWidth: 340 }}>
             {lang === 'en' ? 'Post what you want, name your price. Local salons compete for your booking — the best offer wins.' : 'Pide lo que quieras, pon tu precio. Salones locales compiten por tu cita — la mejor gana.'}
