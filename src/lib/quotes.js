@@ -226,17 +226,14 @@ export function useMyBids() {
   const refresh = useCallback(async () => {
     if (!isSupabaseConfigured) { setLoading(false); return; }
     setLoading(true);
-    const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
-    if (!userId) { setBids([]); setLoading(false); return; }
-    // Pull every bid where the bid's business is owned by the caller.
-    // RLS quote_bids_business_all already enforces this on the server,
-    // we just include the businesses!inner join so PostgREST surfaces
-    // an empty list rather than a 403 if the policy filters it out.
+    // RLS quote_bids_business_all already restricts SELECT to bids on
+    // businesses the caller owns — we trust the policy here instead of
+    // adding an .eq('businesses.owner_id', ...) filter, because the
+    // embedded-filter syntax was returning zero rows for some salons
+    // even when the data was clearly there.
     const { data, error } = await supabase
       .from('quote_bids')
-      .select('id, price_cents, estimated_duration, earliest_slot, message, status, created_at, business_id, businesses!inner(id, name, owner_id), quote_requests(id, status, service_slugs, search_zip, notes, created_at, expires_at)')
-      .eq('businesses.owner_id', userId)
+      .select('id, price_cents, estimated_duration, earliest_slot, message, status, created_at, business_id, businesses(id, name), quote_requests(id, status, service_slugs, search_zip, notes, created_at, expires_at)')
       .order('created_at', { ascending: false });
     if (error) { console.error('useMyBids error', error); setBids([]); }
     else setBids(data || []);

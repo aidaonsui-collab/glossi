@@ -6,8 +6,10 @@ import { useToast } from './Toast.jsx';
 import { useAuth } from '../store.jsx';
 import SignInModal from './SignInModal.jsx';
 
+// Sidebar nav. Badge counts come from real Supabase reads in the
+// pages themselves — the layout doesn't fake numbers anymore.
 const NAV = [
-  { id: 'inbox', l: 'Inbox', badge: 4, to: '/salon/inbox' },
+  { id: 'inbox', l: 'Inbox', to: '/salon/inbox' },
   { id: 'bids', l: 'My bids', to: '/salon/bids' },
   { id: 'calendar', l: 'Calendar', to: '/salon/calendar' },
   { id: 'clients', l: 'Clients', to: '/salon/clients' },

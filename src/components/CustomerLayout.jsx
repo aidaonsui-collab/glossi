@@ -6,12 +6,15 @@ import { useToast } from './Toast.jsx';
 import { useAuth } from '../store.jsx';
 import SignInModal from './SignInModal.jsx';
 
+// Sidebar nav. Badges removed — they were hardcoded fake counts that
+// claimed activity that didn't exist. When we add unread tracking
+// (Phase 7 / messaging) these can come back wired to real data.
 const NAV = [
   { id: 'home', l: 'Home', i: 'M3 11l9-8 9 8M5 10v10h14V10', to: '/quotes' },
   { id: 'explore', l: 'Explore', i: 'M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z', to: '/explore' },
-  { id: 'quotes', l: 'My quotes', badge: 3, i: 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11', to: '/quotes' },
+  { id: 'quotes', l: 'My quotes', i: 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11', to: '/quotes' },
   { id: 'bookings', l: 'Bookings', i: 'M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM16 2v4M8 2v4M3 10h18', to: '/bookings' },
-  { id: 'inbox', l: 'Inbox', badge: 2, i: 'M4 4h16v16H4zM4 4l8 8 8-8', to: '/inbox' },
+  { id: 'inbox', l: 'Inbox', i: 'M4 4h16v16H4zM4 4l8 8 8-8', to: '/inbox' },
   { id: 'saved', l: 'Saved', i: 'M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z', to: '/saved' },
   { id: 'editorial', l: 'Editorial', i: 'M4 4h16v4H4zM4 12h10v8H4zM18 12h2v8h-2z', to: '/editorial' },
 ];

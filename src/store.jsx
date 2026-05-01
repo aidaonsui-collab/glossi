@@ -231,7 +231,7 @@ function parseSlotToTimestamp(slot) {
 
 export function useBookings() {
   const [bookings, setBookings] = useLocalState('glossi.bookings', []);
-  const [, setNotifs] = useLocalState('glossi.notifications', SEED_NOTIFICATIONS);
+  const [, setNotifs] = useLocalState('glossi.notifications.v2', SEED_NOTIFICATIONS);
   const pushNotif = (notif) => setNotifs(curr => [{ id: `n_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, ts: Date.now(), read: false, ...notif }, ...curr].slice(0, 50));
 
   const add = useCallback(record => {
@@ -296,14 +296,13 @@ export function useBookings() {
 }
 
 // ── Notifications ──────────────────────────────────────────────────
-const SEED_NOTIFICATIONS = [
-  { id: 'n_seed1', type: 'bid', title: 'New bid from Studio Onyx', body: '$108 for Color & balayage · Tomorrow 11:30 AM', ts: Date.now() - 2 * 60 * 1000, read: false, link: '/salon/b2' },
-  { id: 'n_seed2', type: 'message', title: 'Casa de Belleza confirmed your slot', body: 'See you today at 4:00 PM. Parking on the side.', ts: Date.now() - 14 * 60 * 1000, read: false, link: '/inbox/b1' },
-  { id: 'n_seed3', type: 'promo', title: 'La Reina · 30% off this week', body: 'New on Glossi · introductory promo expires tonight', ts: Date.now() - 60 * 60 * 1000, read: true, link: '/salon/b3' },
-];
+// Real notifications land here when the customer's request gets a bid
+// or a salon confirms a booking. Empty by default — no demo seeds —
+// so the bell-icon unread count reflects actual activity.
+const SEED_NOTIFICATIONS = [];
 
 export function useNotifications() {
-  const [items, setItems] = useLocalState('glossi.notifications', SEED_NOTIFICATIONS);
+  const [items, setItems] = useLocalState('glossi.notifications.v2', SEED_NOTIFICATIONS);
   const unreadCount = items.filter(n => !n.read).length;
 
   const push = useCallback(notif => {
