@@ -241,6 +241,75 @@ export async function markReviewsSeen(businessId) {
   return { ok: true };
 }
 
+// ── Notifications (Phase 9) ───────────────────────────────────────
+
+// Hook: small unread-count read for the bell badge. Realtime
+// subscribed so a new notification ticks the badge live.
+export function useUnreadNotifications() {
+  const [count, setCount] = useState(0);
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) { setCount(0); return; }
+    const { data, error } = await supabase.rpc('unread_notifications_count');
+    if (error) { console.error('unread_notifications_count error', error); return; }
+    setCount(typeof data === 'number' ? data : 0);
+  }, []);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    const ch = supabase
+      .channel('my-notifications-count')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => refresh())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [refresh]);
+
+  return { count, refresh };
+}
+
+// Hook: full notification list for /notifications + the bell dropdown.
+export function useNotifications(limit = 30) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
+
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured) { setLoading(false); return; }
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('id, kind, title, body, link, read_at, created_at')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    if (error) { console.error('notifications read error', error); setItems([]); }
+    else setItems(data || []);
+    setLoading(false);
+  }, [limit]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    const ch = supabase
+      .channel('my-notifications-list')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => refresh())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [refresh]);
+
+  return { items, loading, refresh };
+}
+
+export async function markNotificationsRead(ids) {
+  if (!isSupabaseConfigured) return { ok: false };
+  const { error } = await supabase.rpc('mark_notifications_read', { p_ids: ids ?? null });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
 // Hook: anon-callable list for the public salon profile page.
 export function usePublicBusinessReviews(businessId) {
   const [reviews, setReviews] = useState([]);

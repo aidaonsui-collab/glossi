@@ -5,6 +5,7 @@ import { useNarrow } from '../hooks.js';
 import { useToast } from './Toast.jsx';
 import { useAuth } from '../store.jsx';
 import SignInModal from './SignInModal.jsx';
+import NotificationsBell from './NotificationsBell.jsx';
 
 // Sidebar nav. Badges removed — they were hardcoded fake counts that
 // claimed activity that didn't exist. When we add unread tracking
@@ -43,7 +44,10 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
       width: 240, padding: '24px 18px', borderRight: `0.5px solid ${p.line}`, background: p.surface,
       display: 'flex', flexDirection: 'column', gap: 6, minHeight: '100vh', position: 'sticky', top: 0, flexShrink: 0,
     }}>
-      <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', padding: '4px 12px 18px', color: p.accent, textDecoration: 'none' }}>glossi</Link>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 12px 18px' }}>
+        <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
+        {user && <NotificationsBell tone="light" />}
+      </div>
       {NAV.map(it => {
         const isActive = it.id === resolved;
         return (
@@ -94,8 +98,9 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
           <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
           {mobileTitle && <span style={{ fontSize: 12, color: p.inkMuted, marginLeft: 8 }}>· {mobileTitle}</span>}
           <div style={{ flex: 1 }} />
+          {user && <NotificationsBell tone="light" />}
           {user ? (
-            <button onClick={() => setMenuOpen(v => !v)} style={{ width: 34, height: 34, borderRadius: 99, background: user.avatar, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, border: 0, cursor: 'pointer', fontFamily: 'inherit' }}>{user.initials}</button>
+            <button onClick={() => setMenuOpen(v => !v)} style={{ width: 34, height: 34, borderRadius: 99, background: user.avatar, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, border: 0, cursor: 'pointer', fontFamily: 'inherit', marginLeft: 8 }}>{user.initials}</button>
           ) : (
             <button onClick={() => setSignInOpen(true)} style={{ padding: '7px 14px', borderRadius: 99, background: p.ink, color: p.bg, border: 0, cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'inherit' }}>Sign in</button>
           )}

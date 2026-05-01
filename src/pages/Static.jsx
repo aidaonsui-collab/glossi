@@ -58,7 +58,7 @@ export function Terms() {
         <H>1. The marketplace</H>
         <p>Glossi is a marketplace that connects customers with independent salons in the Rio Grande Valley. Glossi is not a salon and does not perform beauty services. Bookings, services, and the relationship around them are between you and the salon.</p>
         <H>2. Your account</H>
-        <p>You're responsible for keeping your password confidential and for everything that happens on your account. Tell us right away if anyone uses your account without permission. Email <span style={{ color: p.ink, fontWeight: 600 }}>support@glossi.app</span>.</p>
+        <p>You're responsible for keeping your password confidential and for everything that happens on your account. Tell us right away if anyone uses your account without permission. Email <span style={{ color: p.ink, fontWeight: 600 }}>support@glossi.cc</span>.</p>
         <H>3. Bookings & payments</H>
         <p>When you book through Glossi, you authorize us to charge your card the day of your appointment. Free cancellation up to 24 hours before; same-day cancels forfeit a 50% deposit. Refunds for service quality issues are handled case by case — reach out within 7 days.</p>
         <H>4. Reviews & content</H>
@@ -106,14 +106,14 @@ export function Help() {
     { q: 'When am I charged?', a: 'When the appointment happens, not when you book. We pre-authorize the card amount to confirm the booking, then charge after the appointment is complete.' },
     { q: 'Can I cancel?', a: 'Free cancellation up to 24 hours before your appointment. Same-day cancels forfeit a 50% deposit; the salon keeps that to cover the held slot.' },
     { q: 'How do I reschedule?', a: 'Open Bookings, tap Reschedule on your upcoming appointment, pick a new slot. Free up to the 24-hour window — within that window, the salon may decline.' },
-    { q: 'What if my hair / nails / lashes are bad?', a: 'Reach out within 7 days at support@glossi.app. We mediate with the salon — most issues end with a partial refund or a free fix-up.' },
+    { q: 'What if my hair / nails / lashes are bad?', a: 'Reach out within 7 days at support@glossi.cc. We mediate with the salon — most issues end with a partial refund or a free fix-up.' },
     { q: 'Is there a tip on the price?', a: 'Tip is added at checkout and goes 100% to the stylist. Glossi never takes a cut of tip.' },
     { q: 'Is Glossi available outside the Valley?', a: 'Right now it\'s the Rio Grande Valley only — Pharr, McAllen, Edinburg, Mission, Weslaco, and Brownsville. We\'ll expand once these cities are saturated.' },
     { q: 'I\'m a salon — how do I sign up?', a: 'Tap "Apply for salons" on the homepage or sign up at /signup as Salon. Approval is usually 1–2 business days.' },
   ];
   return (
     <Shell>
-      <Hero eyebrow="HELP CENTER" title="How can we help?" sub="The questions we hear the most. If yours isn't here, email support@glossi.app — we answer in under 4 hours weekdays." />
+      <Hero eyebrow="HELP CENTER" title="How can we help?" sub="The questions we hear the most. If yours isn't here, email support@glossi.cc — we answer in under 4 hours weekdays." />
       <Body>
         {FAQ.map((f, i) => (
           <div key={i} style={{ paddingTop: 24, marginTop: 24, borderTop: i ? `0.5px solid ${p.line}` : 'none' }}>
@@ -125,7 +125,7 @@ export function Help() {
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>STILL STUCK?</div>
           <h3 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 24, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.02em', margin: '8px 0 6px' }}>Email us — we read every message.</h3>
           <p style={{ margin: '0 0 14px' }}>Average response time: 3h 42m. We're a small team based in McAllen.</p>
-          <a href="mailto:support@glossi.app" style={{ display: 'inline-block', background: p.ink, color: p.bg, padding: '11px 20px', borderRadius: 99, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>support@glossi.app</a>
+          <a href="mailto:support@glossi.cc" style={{ display: 'inline-block', background: p.ink, color: p.bg, padding: '11px 20px', borderRadius: 99, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>support@glossi.cc</a>
         </div>
       </Body>
     </Shell>
