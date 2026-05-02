@@ -5,7 +5,7 @@ import SalonPhoto from '../components/SalonPhoto.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useBookings, useLang } from '../store.jsx';
-import { useT } from '../lib/i18n.js';
+import { useT, fmtSlugs } from '../lib/i18n.js';
 import { Stars } from '../ios/atoms.jsx';
 import { BIDS } from '../ios/data.js';
 import BookingActions from '../components/BookingActions.jsx';
@@ -29,13 +29,13 @@ function fmt(ts, locale = 'en-US') {
 // Maps a my_bookings() RPC row → BookingRow shape. Flat fields, no
 // nested embeds. Same prop names as before so the BookingRow JSX
 // didn't have to change.
-function fromSupabase(row) {
+function fromSupabase(row, lang) {
   const slugSeed = row.business_slug || row.business_id || '';
   const mood = [...slugSeed].reduce((a, c) => a + c.charCodeAt(0), 0) % 6;
   const services = row.service_slugs || [];
   const service = services.length
-    ? services.map(s => s.replace('-', ' & ')).join(', ')
-    : 'Appointment';
+    ? fmtSlugs(services, lang)
+    : (lang === 'es' ? 'Cita' : 'Appointment');
   const ts = row.scheduled_at ? new Date(row.scheduled_at).getTime() : new Date(row.created_at).getTime();
   const isPast = row.status === 'completed' || row.status === 'no_show'
     || (row.status === 'confirmed' && ts < Date.now());
@@ -80,7 +80,7 @@ export default function Bookings() {
   // mixed in with their actual appointments. The localStorage path
   // remains for the no-backend dev fallback.
   const merged = isSupabaseConfigured
-    ? supaBookings.map(fromSupabase)
+    ? supaBookings.map(row => fromSupabase(row, lang))
     : [...localBookings, ...FALLBACK];
 
   const upcoming = merged.filter(b => b.status === 'upcoming');

@@ -5,7 +5,7 @@ import { useNarrow } from '../hooks.js';
 import NotificationsPanel from '../components/NotificationsPanel.jsx';
 import CustomerLayout from '../components/CustomerLayout.jsx';
 import { useAuth, useLang, useNotifications } from '../store.jsx';
-import { useT } from '../lib/i18n.js';
+import { useT, fmtSlugs } from '../lib/i18n.js';
 import { useMyQuotes } from '../lib/quotes.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
 
@@ -27,10 +27,6 @@ const fmtAgo = (ts, isEs) => {
   const d = Math.floor(h / 24);
   return isEs ? `hace ${d}d` : `${d}d ago`;
 };
-
-const fmtServices = slugs => (slugs || [])
-  .map(s => s.replace('-', ' & '))
-  .join(', ');
 
 export default function Customer() {
   const isPhone = useNarrow();
@@ -134,7 +130,7 @@ export default function Customer() {
               }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: type.display, fontStyle: 'italic', fontSize: 18, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.01em' }}>
-                    <span>{fmtServices(q.service_slugs) || '—'}</span>
+                    <span>{fmtSlugs(q.service_slugs, storedLang) || '—'}</span>
                     {q.status === 'booked' && <span style={{ fontSize: 9, color: p.accent, fontWeight: 700, letterSpacing: '0.12em', fontStyle: 'normal' }}>· {t('BOOKED', 'RESERVADA')}</span>}
                     {q.status === 'closed' && <span style={{ fontSize: 9, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.12em', fontStyle: 'normal' }}>· {t('CLOSED', 'CERRADA')}</span>}
                     {expired && q.status === 'open' && <span style={{ fontSize: 9, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.12em', fontStyle: 'normal' }}>· {t('EXPIRED', 'EXPIRADA')}</span>}
