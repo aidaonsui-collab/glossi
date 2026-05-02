@@ -155,31 +155,33 @@ export default function Customer() {
               {lang === 'EN' ? `Hi ${user?.name?.split(' ')[0] || 'there'}.` : `Hola ${user?.name?.split(' ')[0] || 'amiga'}.`}
             </h1>
           </div>
-          {!isPhone && (
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center', position: 'relative' }}>
-              <button onClick={() => toggleLang()} style={{ background: p.surface, border: `0.5px solid ${p.line}`, padding: '10px 14px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-                <span style={{ color: lang === 'EN' ? p.ink : p.inkMuted }}>EN</span> · <span style={{ color: lang === 'ES' ? p.ink : p.inkMuted }}>ES</span>
-              </button>
-              <button onClick={() => setShowNotifs(v => !v)} style={{ background: p.surface, border: `0.5px solid ${p.line}`, width: 42, height: 42, borderRadius: 99, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={p.ink} strokeWidth="1.7"><path d="M15 17h5l-1.4-1.4A6.7 6.7 0 0 0 18 12V8a6 6 0 1 0-12 0v4a6.7 6.7 0 0 0-.6 3.6L4 17h5m6 0a3 3 0 1 1-6 0" /></svg>
-                {unreadCount > 0 && (
-                  <span style={{
-                    position: 'absolute', top: 4, right: 4,
-                    minWidth: 16, height: 16, padding: '0 4px',
-                    borderRadius: 99, background: p.accent, color: p.ink,
-                    fontFamily: type.mono, fontSize: 9.5, fontWeight: 700,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    border: `1.5px solid ${p.surface}`,
-                  }}>{unreadCount > 9 ? '9+' : unreadCount}</span>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', position: 'relative' }}>
+            <button onClick={() => toggleLang()} style={{ background: p.surface, border: `0.5px solid ${p.line}`, padding: isPhone ? '8px 12px' : '10px 14px', borderRadius: 99, fontSize: isPhone ? 12 : 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+              <span style={{ color: lang === 'EN' ? p.ink : p.inkMuted }}>EN</span> · <span style={{ color: lang === 'ES' ? p.ink : p.inkMuted }}>ES</span>
+            </button>
+            {!isPhone && (
+              <>
+                <button onClick={() => setShowNotifs(v => !v)} style={{ background: p.surface, border: `0.5px solid ${p.line}`, width: 42, height: 42, borderRadius: 99, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={p.ink} strokeWidth="1.7"><path d="M15 17h5l-1.4-1.4A6.7 6.7 0 0 0 18 12V8a6 6 0 1 0-12 0v4a6.7 6.7 0 0 0-.6 3.6L4 17h5m6 0a3 3 0 1 1-6 0" /></svg>
+                  {unreadCount > 0 && (
+                    <span style={{
+                      position: 'absolute', top: 4, right: 4,
+                      minWidth: 16, height: 16, padding: '0 4px',
+                      borderRadius: 99, background: p.accent, color: p.ink,
+                      fontFamily: type.mono, fontSize: 9.5, fontWeight: 700,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      border: `1.5px solid ${p.surface}`,
+                    }}>{unreadCount > 9 ? '9+' : unreadCount}</span>
+                  )}
+                </button>
+                {showNotifs && (
+                  <div style={{ position: 'absolute', top: 50, right: 0 }}>
+                    <NotificationsPanel variant="dropdown" onClose={() => setShowNotifs(false)} />
+                  </div>
                 )}
-              </button>
-              {showNotifs && (
-                <div style={{ position: 'absolute', top: 50, right: 0 }}>
-                  <NotificationsPanel variant="dropdown" onClose={() => setShowNotifs(false)} />
-                </div>
-              )}
-            </div>
-          )}
+              </>
+            )}
+          </div>
         </div>
         {compose}
         {quotesSection}

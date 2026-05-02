@@ -166,13 +166,17 @@ export default function CustomerSettings() {
           </Field>
         </Section>
 
-        <Section title="Language" eyebrow="02 · PREFERENCES">
-          <Field label="Display language" last>
+        <Section title={lang === 'es' ? 'Idioma' : 'Language'} eyebrow="02 · PREFERENCES">
+          <Field label={lang === 'es' ? 'Idioma de la app' : 'Display language'} last>
             <div style={{ display: 'inline-flex', background: p.bg, borderRadius: 99, border: `0.5px solid ${p.line}`, padding: 3 }}>
               {[{ id: 'en', l: 'English' }, { id: 'es', l: 'Español' }].map(o => {
                 const a = lang === o.id;
                 return (
-                  <button key={o.id} onClick={() => setLang(o.id)} style={{
+                  <button key={o.id} onClick={() => {
+                    if (lang === o.id) return;
+                    setLang(o.id);
+                    toast(o.id === 'es' ? 'Idioma cambiado a Español.' : 'Language switched to English.', { tone: 'success' });
+                  }} style={{
                     padding: '7px 16px', borderRadius: 99, border: 0,
                     background: a ? p.ink : 'transparent', color: a ? p.bg : p.ink,
                     fontFamily: type.body, fontSize: 13, fontWeight: 600, cursor: 'pointer',
