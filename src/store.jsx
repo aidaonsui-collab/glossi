@@ -2,6 +2,11 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { supabase, isSupabaseConfigured } from './lib/supabase.js';
 
 // ── Generic localStorage hook ──────────────────────────────────────
+// Same-tab subscribers — `storage` events only fire across tabs, so when
+// two components in the same page call useLocalState(SAME_KEY) they were
+// drifting out of sync. Module-level pubsub fans the change out.
+const localStateSubs = new Map(); // key → Set<setter>
+
 export function useLocalState(key, defaultValue) {
   const [value, setValue] = useState(() => {
     try {
@@ -16,8 +21,18 @@ export function useLocalState(key, defaultValue) {
     setValue(prev => {
       const next = typeof v === 'function' ? v(prev) : v;
       try { localStorage.setItem(key, JSON.stringify(next)); } catch { /* noop */ }
+      const subs = localStateSubs.get(key);
+      if (subs) subs.forEach(s => { if (s !== setValue) s(next); });
       return next;
     });
+  }, [key]);
+
+  // Same-tab sync
+  useEffect(() => {
+    let subs = localStateSubs.get(key);
+    if (!subs) { subs = new Set(); localStateSubs.set(key, subs); }
+    subs.add(setValue);
+    return () => { subs.delete(setValue); };
   }, [key]);
 
   // Cross-tab sync
