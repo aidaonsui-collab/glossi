@@ -6,13 +6,14 @@ import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
 import Modal from '../components/Modal.jsx';
 import { useAuth, useBookings, useCustomerProfile, useLang } from '../store.jsx';
+import { useT } from '../lib/i18n.js';
 
 const NOTIFICATION_LABELS = {
-  bids: { l: 'New bids on my requests', d: 'Real-time push when salons respond' },
-  reminders: { l: 'Booking reminders', d: '24 h and 1 h before your appointment' },
-  drops: { l: 'Price drops near me', d: 'When a saved salon offers a deal' },
-  news: { l: 'Glossi guides & tips', d: 'Editorial picks, weekly' },
-  sound: { l: 'Sound', d: 'Ping when a bid arrives' },
+  bids: { l: 'New bids on my requests', es: 'Nuevas ofertas en mis solicitudes', d: 'Real-time push when salons respond', dEs: 'Aviso al instante cuando los salones respondan' },
+  reminders: { l: 'Booking reminders', es: 'Recordatorios de reserva', d: '24 h and 1 h before your appointment', dEs: '24 h y 1 h antes de tu cita' },
+  drops: { l: 'Price drops near me', es: 'Bajadas de precio cerca de ti', d: 'When a saved salon offers a deal', dEs: 'Cuando un salón guardado ofrece una promoción' },
+  news: { l: 'Glossi guides & tips', es: 'Guías y consejos Glossi', d: 'Editorial picks, weekly', dEs: 'Selecciones editoriales, semanal' },
+  sound: { l: 'Sound', es: 'Sonido', d: 'Ping when a bid arrives', dEs: 'Aviso sonoro al recibir oferta' },
 };
 
 export default function CustomerSettings() {
@@ -22,6 +23,7 @@ export default function CustomerSettings() {
   const { user, signOut } = useAuth();
   const { profile, update, updateNotifications } = useCustomerProfile();
   const { lang, setLang } = useLang();
+  const t = useT();
 
   const { bookings } = useBookings();
   const [draft, setDraft] = useState(profile);
@@ -50,7 +52,7 @@ export default function CustomerSettings() {
     const reader = new FileReader();
     reader.onload = () => {
       setAvatarPhoto(reader.result);
-      toast('Avatar updated. Save to keep it.', { tone: 'success' });
+      toast(t('Avatar updated. Save to keep it.', 'Avatar actualizado. Guarda para conservarlo.'), { tone: 'success' });
     };
     reader.readAsDataURL(file);
     e.target.value = '';
@@ -58,10 +60,10 @@ export default function CustomerSettings() {
 
   const submitCard = () => {
     const last4 = card.number.replace(/\s/g, '').slice(-4);
-    if (card.number.replace(/\s/g, '').length < 12) { toast('Card number looks too short.', { tone: 'warn' }); return; }
-    if (!/^\d{2}\/\d{2}$/.test(card.exp)) { toast('Use MM/YY for expiry.', { tone: 'warn' }); return; }
-    if (card.cvc.length < 3) { toast('CVC needs 3+ digits.', { tone: 'warn' }); return; }
-    toast(`Card on file replaced — •••• ${last4}.`, { tone: 'success' });
+    if (card.number.replace(/\s/g, '').length < 12) { toast(t('Card number looks too short.', 'El número de tarjeta parece corto.'), { tone: 'warn' }); return; }
+    if (!/^\d{2}\/\d{2}$/.test(card.exp)) { toast(t('Use MM/YY for expiry.', 'Usa MM/AA para la expiración.'), { tone: 'warn' }); return; }
+    if (card.cvc.length < 3) { toast(t('CVC needs 3+ digits.', 'El CVC necesita 3+ dígitos.'), { tone: 'warn' }); return; }
+    toast(t(`Card on file replaced — •••• ${last4}.`, `Tarjeta reemplazada — •••• ${last4}.`), { tone: 'success' });
     setShowCard(false);
     setCard({ name: '', number: '', exp: '', cvc: '' });
   };
@@ -87,7 +89,12 @@ export default function CustomerSettings() {
     a.href = url; a.download = `glossi-receipts-${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
-    toast(`Downloaded ${bookings.length} booking${bookings.length === 1 ? '' : 's'}.`, { tone: 'success' });
+    toast(
+      lang === 'es'
+        ? `Se descargaron ${bookings.length} reserva${bookings.length === 1 ? '' : 's'}.`
+        : `Downloaded ${bookings.length} booking${bookings.length === 1 ? '' : 's'}.`,
+      { tone: 'success' }
+    );
   };
 
   const dirty = JSON.stringify(draft) !== JSON.stringify(profile);
@@ -95,16 +102,16 @@ export default function CustomerSettings() {
   const save = () => {
     update(draft);
     setDraftDirty(false);
-    toast('Profile saved.', { tone: 'success' });
+    toast(t('Profile saved.', 'Perfil guardado.'), { tone: 'success' });
   };
 
   const onDelete = () => {
-    if (confirmText !== 'DELETE') { toast('Type DELETE to confirm.', { tone: 'warn' }); return; }
+    if (confirmText !== 'DELETE') { toast(t('Type DELETE to confirm.', 'Escribe DELETE para confirmar.'), { tone: 'warn' }); return; }
     signOut();
     try {
       ['glossi.bookings', 'glossi.saved', 'glossi.reviews', 'glossi.profile.customer'].forEach(k => localStorage.removeItem(k));
     } catch { /* noop */ }
-    toast('Account deleted.', { tone: 'success' });
+    toast(t('Account deleted.', 'Cuenta eliminada.'), { tone: 'success' });
     navigate('/');
   };
 
@@ -129,12 +136,12 @@ export default function CustomerSettings() {
   };
 
   return (
-    <CustomerLayout active="settings" mobileTitle="Settings">
+    <CustomerLayout active="settings" mobileTitle={t('Settings', 'Configuración')}>
       <div style={{ padding: isPhone ? '20px 18px 32px' : '34px 40px 60px', maxWidth: 760 }}>
-        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>SETTINGS</div>
-        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 38 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>Profile.</h1>
+        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('SETTINGS', 'CONFIGURACIÓN')}</div>
+        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 38 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>{t('Profile.', 'Perfil.')}</h1>
         <p style={{ fontSize: isPhone ? 14 : 15, color: p.inkSoft, lineHeight: 1.55, margin: '10px 0 0', maxWidth: 560 }}>
-          How Glossi knows you. Updates apply across web and iOS.
+          {t('How Glossi knows you. Updates apply across web and iOS.', 'Así te conoce Glossi. Los cambios se aplican en web e iOS.')}
         </p>
 
         {/* Account header */}
@@ -144,24 +151,24 @@ export default function CustomerSettings() {
             <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.015em' }}>{draft.name}</div>
             <div style={{ fontSize: 12.5, color: p.inkMuted, marginTop: 2 }}>{draft.email} · {draft.city}</div>
           </div>
-          <button onClick={() => photoInputRef.current?.click()} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Change photo</button>
+          <button onClick={() => photoInputRef.current?.click()} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Change photo', 'Cambiar foto')}</button>
           <input ref={photoInputRef} type="file" accept="image/*" onChange={onPhotoPick} style={{ display: 'none' }} />
         </div>
 
-        <Section title="Personal info" eyebrow="01 · CONTACT">
-          <Field label="Name">
+        <Section title={t('Personal info', 'Información personal')} eyebrow={t('01 · CONTACT', '01 · CONTACTO')}>
+          <Field label={t('Name', 'Nombre')}>
             <input value={draft.name} onChange={e => editDraft({ name: e.target.value })} style={input} />
           </Field>
-          <Field label="Email">
+          <Field label={t('Email', 'Correo')}>
             <input type="email" value={draft.email} onChange={e => editDraft({ email: e.target.value })} style={input} />
           </Field>
-          <Field label="Phone">
+          <Field label={t('Phone', 'Teléfono')}>
             <input value={draft.phone} onChange={e => editDraft({ phone: e.target.value })} style={input} />
           </Field>
-          <Field label="ZIP">
+          <Field label={t('ZIP', 'Código postal')}>
             <input value={draft.zip} onChange={e => editDraft({ zip: e.target.value.replace(/\D/g, '').slice(0, 5) })} inputMode="numeric" style={{ ...input, fontFamily: type.mono, letterSpacing: '0.1em', maxWidth: 140 }} />
           </Field>
-          <Field label="City" last>
+          <Field label={t('City', 'Ciudad')} last>
             <input value={draft.city} onChange={e => editDraft({ city: e.target.value })} style={input} />
           </Field>
         </Section>
@@ -187,11 +194,11 @@ export default function CustomerSettings() {
           </Field>
         </Section>
 
-        <Section title="Notifications" eyebrow="03 · ALERTS">
+        <Section title={t('Notifications', 'Notificaciones')} eyebrow={t('03 · ALERTS', '03 · ALERTAS')}>
           {Object.entries(NOTIFICATION_LABELS).map(([k, v], i, arr) => (
-            <Field key={k} label={v.l} last={i === arr.length - 1}>
+            <Field key={k} label={t(v.l, v.es)} last={i === arr.length - 1}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
-                <span style={{ fontSize: 12, color: p.inkMuted, lineHeight: 1.45 }}>{v.d}</span>
+                <span style={{ fontSize: 12, color: p.inkMuted, lineHeight: 1.45 }}>{t(v.d, v.dEs)}</span>
                 <button onClick={() => updateNotifications({ [k]: !profile.notifications[k] })} style={{
                   width: 42, height: 24, borderRadius: 99, position: 'relative', cursor: 'pointer',
                   background: profile.notifications[k] ? p.success : p.line, transition: 'background 0.2s',
@@ -204,27 +211,27 @@ export default function CustomerSettings() {
           ))}
         </Section>
 
-        <Section title="Payment" eyebrow="04 · BILLING">
-          <Field label="Card on file">
+        <Section title={t('Payment', 'Pago')} eyebrow={t('04 · BILLING', '04 · FACTURACIÓN')}>
+          <Field label={t('Card on file', 'Tarjeta archivada')}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 40, height: 28, borderRadius: 6, background: 'linear-gradient(135deg, #1A1614 0%, #3A2A24 100%)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontSize: 10, fontStyle: 'italic', fontWeight: 700 }}>VISA</div>
               <span style={{ fontFamily: type.mono, fontSize: 14, fontWeight: 600 }}>•••• 4729</span>
-              <span style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted }}>Exp 09/27</span>
+              <span style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted }}>{t('Exp', 'Vence')} 09/27</span>
               <div style={{ flex: 1 }} />
-              <button onClick={() => setShowCard(true)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Replace</button>
+              <button onClick={() => setShowCard(true)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Replace', 'Reemplazar')}</button>
             </div>
           </Field>
-          <Field label="Receipts" last>
-            <button onClick={downloadReceipts} disabled={bookings.length === 0} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: bookings.length ? 'pointer' : 'not-allowed', fontFamily: 'inherit', opacity: bookings.length ? 1 : 0.5 }}>Download all (CSV)</button>
+          <Field label={t('Receipts', 'Recibos')} last>
+            <button onClick={downloadReceipts} disabled={bookings.length === 0} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: bookings.length ? 'pointer' : 'not-allowed', fontFamily: 'inherit', opacity: bookings.length ? 1 : 0.5 }}>{t('Download all (CSV)', 'Descargar todo (CSV)')}</button>
           </Field>
         </Section>
 
-        <Section title="Account" eyebrow="05 · DANGER ZONE">
-          <Field label="Sign out">
-            <button onClick={() => { signOut(); toast('Signed out.'); navigate('/'); }} style={{ background: p.surface, border: `0.5px solid ${p.line}`, padding: '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Sign out</button>
+        <Section title={t('Account', 'Cuenta')} eyebrow={t('05 · DANGER ZONE', '05 · ZONA DE PELIGRO')}>
+          <Field label={t('Sign out', 'Cerrar sesión')}>
+            <button onClick={() => { signOut(); toast(t('Signed out.', 'Sesión cerrada.')); navigate('/'); }} style={{ background: p.surface, border: `0.5px solid ${p.line}`, padding: '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Sign out', 'Cerrar sesión')}</button>
           </Field>
-          <Field label="Delete account" last>
-            <button onClick={() => setShowDelete(true)} style={{ background: 'transparent', border: `0.5px solid ${p.accent}`, padding: '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.accent, cursor: 'pointer', fontFamily: 'inherit' }}>Delete account →</button>
+          <Field label={t('Delete account', 'Eliminar cuenta')} last>
+            <button onClick={() => setShowDelete(true)} style={{ background: 'transparent', border: `0.5px solid ${p.accent}`, padding: '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.accent, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Delete account →', 'Eliminar cuenta →')}</button>
           </Field>
         </Section>
 
@@ -235,37 +242,41 @@ export default function CustomerSettings() {
             padding: '14px 18px', background: p.ink, color: p.bg, borderRadius: 14,
             display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 18px 40px rgba(0,0,0,0.18)',
           }}>
-            <div style={{ flex: 1, fontFamily: type.body, fontSize: 13.5, fontWeight: 500 }}>Unsaved changes</div>
-            <button onClick={() => { setDraft(profile); setDraftDirty(false); }} style={{ background: 'transparent', border: `0.5px solid rgba(255,255,255,0.2)`, padding: '8px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, color: p.bg, cursor: 'pointer', fontFamily: 'inherit' }}>Discard</button>
-            <button onClick={save} style={{ background: p.accent, color: p.ink, border: 0, padding: '9px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Save changes</button>
+            <div style={{ flex: 1, fontFamily: type.body, fontSize: 13.5, fontWeight: 500 }}>{t('Unsaved changes', 'Cambios sin guardar')}</div>
+            <button onClick={() => { setDraft(profile); setDraftDirty(false); }} style={{ background: 'transparent', border: `0.5px solid rgba(255,255,255,0.2)`, padding: '8px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, color: p.bg, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Discard', 'Descartar')}</button>
+            <button onClick={save} style={{ background: p.accent, color: p.ink, border: 0, padding: '9px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Save changes', 'Guardar cambios')}</button>
           </div>
         )}
 
-        <Modal open={showDelete} onClose={() => setShowDelete(false)} eyebrow="DELETE ACCOUNT" title="This can't be undone." footer={
+        <Modal open={showDelete} onClose={() => setShowDelete(false)} eyebrow={t('DELETE ACCOUNT', 'ELIMINAR CUENTA')} title={t("This can't be undone.", 'Esto no se puede deshacer.')} footer={
           <>
-            <button onClick={() => setShowDelete(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', color: p.ink }}>Cancel</button>
-            <button onClick={onDelete} disabled={confirmText !== 'DELETE'} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: confirmText === 'DELETE' ? 'pointer' : 'not-allowed', fontFamily: 'inherit', opacity: confirmText === 'DELETE' ? 1 : 0.5 }}>Delete forever</button>
+            <button onClick={() => setShowDelete(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', color: p.ink }}>{t('Cancel', 'Cancelar')}</button>
+            <button onClick={onDelete} disabled={confirmText !== 'DELETE'} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: confirmText === 'DELETE' ? 'pointer' : 'not-allowed', fontFamily: 'inherit', opacity: confirmText === 'DELETE' ? 1 : 0.5 }}>{t('Delete forever', 'Eliminar para siempre')}</button>
           </>
         }>
           <div style={{ fontSize: 13.5, color: p.inkSoft, lineHeight: 1.55 }}>
-            Deleting your account removes your bookings, saved salons, reviews, and contact info from this device. To confirm, type <span style={{ fontFamily: type.mono, fontWeight: 700, color: p.ink }}>DELETE</span> below.
+            {lang === 'es' ? (
+              <>Al eliminar tu cuenta se borran tus reservas, salones guardados, reseñas y contacto en este dispositivo. Para confirmar, escribe <span style={{ fontFamily: type.mono, fontWeight: 700, color: p.ink }}>DELETE</span> abajo.</>
+            ) : (
+              <>Deleting your account removes your bookings, saved salons, reviews, and contact info from this device. To confirm, type <span style={{ fontFamily: type.mono, fontWeight: 700, color: p.ink }}>DELETE</span> below.</>
+            )}
           </div>
           <input value={confirmText} onChange={e => setConfirmText(e.target.value)} placeholder="DELETE" style={{ ...input, marginTop: 14, fontFamily: type.mono, letterSpacing: '0.16em' }} />
         </Modal>
 
-        <Modal open={showCard} onClose={() => setShowCard(false)} eyebrow="REPLACE PAYMENT METHOD" title="Add a new card" footer={
+        <Modal open={showCard} onClose={() => setShowCard(false)} eyebrow={t('REPLACE PAYMENT METHOD', 'REEMPLAZAR MÉTODO DE PAGO')} title={t('Add a new card', 'Agregar una nueva tarjeta')} footer={
           <>
-            <button onClick={() => setShowCard(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
-            <button onClick={submitCard} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Save card</button>
+            <button onClick={() => setShowCard(false)} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Cancel', 'Cancelar')}</button>
+            <button onClick={submitCard} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Save card', 'Guardar tarjeta')}</button>
           </>
         }>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <label>
-              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>CARDHOLDER</div>
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{t('CARDHOLDER', 'TITULAR')}</div>
               <input value={card.name} onChange={e => setCard(c => ({ ...c, name: e.target.value }))} placeholder="Sofia Martinez" autoFocus style={input} />
             </label>
             <label>
-              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>CARD NUMBER</div>
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{t('CARD NUMBER', 'NÚMERO DE TARJETA')}</div>
               <input
                 value={card.number}
                 onChange={e => {
@@ -279,7 +290,7 @@ export default function CustomerSettings() {
             </label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <label>
-                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>EXPIRES</div>
+                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{t('EXPIRES', 'VENCE')}</div>
                 <input
                   value={card.exp}
                   onChange={e => {
@@ -287,7 +298,7 @@ export default function CustomerSettings() {
                     if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
                     setCard(c => ({ ...c, exp: v }));
                   }}
-                  inputMode="numeric" placeholder="MM/YY"
+                  inputMode="numeric" placeholder={t('MM/YY', 'MM/AA')}
                   style={{ ...input, fontFamily: type.mono }}
                 />
               </label>
@@ -302,7 +313,10 @@ export default function CustomerSettings() {
               </label>
             </div>
             <div style={{ fontSize: 11, color: p.inkMuted, lineHeight: 1.5, marginTop: 4 }}>
-              Demo · the prototype doesn't store card data. Real Glossi sends this through Stripe Elements with PCI-compliant tokenization.
+              {t(
+                "Demo · the prototype doesn't store card data. Real Glossi sends this through Stripe Elements with PCI-compliant tokenization.",
+                'Demo · el prototipo no guarda datos de tarjeta. El Glossi real envía esto a Stripe Elements con tokenización conforme a PCI.'
+              )}
             </div>
           </div>
         </Modal>

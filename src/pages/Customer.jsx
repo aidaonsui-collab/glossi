@@ -5,25 +5,27 @@ import { useNarrow } from '../hooks.js';
 import NotificationsPanel from '../components/NotificationsPanel.jsx';
 import CustomerLayout from '../components/CustomerLayout.jsx';
 import { useAuth, useLang, useNotifications } from '../store.jsx';
+import { useT } from '../lib/i18n.js';
 import { useMyQuotes } from '../lib/quotes.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
 
 const SERVICES = [
-  { l: 'Color', slug: 'color' },
-  { l: 'Cut & style', slug: 'haircut' },
-  { l: 'Lashes', slug: 'lashes-brows' },
-  { l: 'Nails', slug: 'nails' },
-  { l: 'Brows', slug: 'lashes-brows' },
-  { l: 'Barber', slug: 'haircut' },
+  { l: 'Color', es: 'Color', slug: 'color' },
+  { l: 'Cut & style', es: 'Corte y estilo', slug: 'haircut' },
+  { l: 'Lashes', es: 'Pestañas', slug: 'lashes-brows' },
+  { l: 'Nails', es: 'Uñas', slug: 'nails' },
+  { l: 'Brows', es: 'Cejas', slug: 'lashes-brows' },
+  { l: 'Barber', es: 'Barbería', slug: 'haircut' },
 ];
 
-const fmtAgo = ts => {
+const fmtAgo = (ts, isEs) => {
   const m = Math.floor((Date.now() - new Date(ts).getTime()) / 60000);
-  if (m < 1) return 'just now';
-  if (m < 60) return `${m}m ago`;
+  if (m < 1) return isEs ? 'ahora' : 'just now';
+  if (m < 60) return isEs ? `hace ${m}m` : `${m}m ago`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
+  if (h < 24) return isEs ? `hace ${h}h` : `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return isEs ? `hace ${d}d` : `${d}d ago`;
 };
 
 const fmtServices = slugs => (slugs || [])
@@ -36,6 +38,8 @@ export default function Customer() {
   const { user } = useAuth();
   const { lang: storedLang, toggle: toggleLang } = useLang();
   const lang = storedLang === 'es' ? 'ES' : 'EN';
+  const isEs = storedLang === 'es';
+  const t = useT();
   const [pickedServices, setPickedServices] = useState(new Set(['Color']));
   const togglePicked = label => setPickedServices(curr => {
     const next = new Set(curr);
@@ -52,8 +56,10 @@ export default function Customer() {
       display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1.4fr 1fr', gap: isPhone ? 20 : 32, alignItems: 'center',
     }}>
       <div>
-        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>POST A REQUEST</div>
-        <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 0.95, marginTop: 8, textWrap: 'balance' }}>What are you looking for, <span style={{ color: p.accent }}>today?</span></div>
+        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>{t('POST A REQUEST', 'PUBLICA UNA SOLICITUD')}</div>
+        <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 0.95, marginTop: 8, textWrap: 'balance' }}>
+          {isEs ? <>¿Qué buscas, <span style={{ color: p.accent }}>hoy?</span></> : <>What are you looking for, <span style={{ color: p.accent }}>today?</span></>}
+        </div>
         <div style={{ marginTop: isPhone ? 14 : 18, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {SERVICES.map(s => {
             const active = pickedServices.has(s.l);
@@ -62,7 +68,7 @@ export default function Customer() {
                 padding: '7px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600,
                 background: active ? p.accent : 'rgba(255,255,255,0.08)', color: active ? p.ink : p.bg,
                 cursor: 'pointer', border: 0, fontFamily: 'inherit',
-              }}>{s.l}</button>
+              }}>{t(s.l, s.es)}</button>
             );
           })}
         </div>
@@ -76,7 +82,11 @@ export default function Customer() {
         padding: isPhone ? '14px 18px' : '16px 20px', borderRadius: 14,
         fontSize: isPhone ? 14 : 15, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'inherit',
       }}>
-        <span>{pickedServices.size === 0 ? 'Pick at least one service' : `Start a request · ${pickedServices.size} service${pickedServices.size === 1 ? '' : 's'}`}</span>
+        <span>{pickedServices.size === 0
+          ? t('Pick at least one service', 'Elige al menos un servicio')
+          : isEs
+            ? `Iniciar solicitud · ${pickedServices.size} servicio${pickedServices.size === 1 ? '' : 's'}`
+            : `Start a request · ${pickedServices.size} service${pickedServices.size === 1 ? '' : 's'}`}</span>
         <span>→</span>
       </button>
     </div>
@@ -86,22 +96,27 @@ export default function Customer() {
     <div>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
         <div>
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>YOUR REQUESTS · {quotes.length}</div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('YOUR REQUESTS', 'TUS SOLICITUDES')} · {quotes.length}</div>
           <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 28 : 38, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>
-            {quotes.some(q => (q.quote_bids?.[0]?.count ?? 0) > 0) ? 'Bids rolling in.' : 'Open requests.'}
+            {quotes.some(q => (q.quote_bids?.[0]?.count ?? 0) > 0)
+              ? t('Bids rolling in.', 'Llegan ofertas.')
+              : t('Open requests.', 'Solicitudes abiertas.')}
           </h2>
         </div>
       </div>
 
       {!isSupabaseConfigured ? (
         <div style={{ marginTop: 18, padding: 22, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5, lineHeight: 1.5 }}>
-          Supabase isn't configured — quote requests need a backend.
+          {t("Supabase isn't configured — quote requests need a backend.", 'Supabase no está configurado — las solicitudes necesitan un backend.')}
         </div>
       ) : loading ? (
-        <div style={{ marginTop: 18, padding: 22, color: p.inkMuted, fontSize: 13.5 }}>Loading…</div>
+        <div style={{ marginTop: 18, padding: 22, color: p.inkMuted, fontSize: 13.5 }}>{t('Loading…', 'Cargando…')}</div>
       ) : quotes.length === 0 ? (
         <div style={{ marginTop: 18, padding: 22, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5, lineHeight: 1.5 }}>
-          No requests yet. Pick a service above and post one — salons within your radius will see it for 72 hours.
+          {t(
+            'No requests yet. Pick a service above and post one — salons within your radius will see it for 72 hours.',
+            'Aún no hay solicitudes. Elige un servicio arriba y publica — los salones dentro de tu radio la verán por 72 horas.'
+          )}
         </div>
       ) : (
         <div style={{ marginTop: 18, display: 'grid', gap: 10 }}>
@@ -120,12 +135,12 @@ export default function Customer() {
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: type.display, fontStyle: 'italic', fontSize: 18, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.01em' }}>
                     <span>{fmtServices(q.service_slugs) || '—'}</span>
-                    {q.status === 'booked' && <span style={{ fontSize: 9, color: p.accent, fontWeight: 700, letterSpacing: '0.12em', fontStyle: 'normal' }}>· BOOKED</span>}
-                    {q.status === 'closed' && <span style={{ fontSize: 9, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.12em', fontStyle: 'normal' }}>· CLOSED</span>}
-                    {expired && q.status === 'open' && <span style={{ fontSize: 9, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.12em', fontStyle: 'normal' }}>· EXPIRED</span>}
+                    {q.status === 'booked' && <span style={{ fontSize: 9, color: p.accent, fontWeight: 700, letterSpacing: '0.12em', fontStyle: 'normal' }}>· {t('BOOKED', 'RESERVADA')}</span>}
+                    {q.status === 'closed' && <span style={{ fontSize: 9, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.12em', fontStyle: 'normal' }}>· {t('CLOSED', 'CERRADA')}</span>}
+                    {expired && q.status === 'open' && <span style={{ fontSize: 9, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.12em', fontStyle: 'normal' }}>· {t('EXPIRED', 'EXPIRADA')}</span>}
                   </div>
                   <div style={{ fontSize: 11.5, color: p.inkMuted, marginTop: 4 }}>
-                    {q.search_zip || '—'} · {q.radius_miles ?? 10} mi · {fmtAgo(q.created_at)}
+                    {q.search_zip || '—'} · {q.radius_miles ?? 10} mi · {fmtAgo(q.created_at, isEs)}
                   </div>
                   {q.notes && (
                     <div style={{ fontSize: 12.5, color: p.inkSoft, marginTop: 6, lineHeight: 1.4, fontStyle: 'italic', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
@@ -134,7 +149,7 @@ export default function Customer() {
                   )}
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 9.5, color: bidCount > 0 ? p.accent : p.inkMuted, fontWeight: 700, letterSpacing: '0.14em' }}>BIDS</div>
+                  <div style={{ fontSize: 9.5, color: bidCount > 0 ? p.accent : p.inkMuted, fontWeight: 700, letterSpacing: '0.14em' }}>{t('BIDS', 'OFERTAS')}</div>
                   <div style={{ fontFamily: type.mono, fontSize: 22, fontWeight: 600, color: p.ink, marginTop: 2 }}>{bidCount}</div>
                 </div>
               </button>
@@ -146,7 +161,7 @@ export default function Customer() {
   );
 
   return (
-    <CustomerLayout active="quotes" mobileTitle="My quotes">
+    <CustomerLayout active="quotes" mobileTitle={t('My quotes', 'Mis solicitudes')}>
       <div style={{ padding: isPhone ? '18px' : '34px 40px', display: 'flex', flexDirection: 'column', gap: isPhone ? 20 : 28 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 }}>
           <div>

@@ -4,7 +4,8 @@ import CustomerLayout from '../components/CustomerLayout.jsx';
 import SalonPhoto from '../components/SalonPhoto.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
-import { useBookings } from '../store.jsx';
+import { useBookings, useLang } from '../store.jsx';
+import { useT } from '../lib/i18n.js';
 import { Stars } from '../ios/atoms.jsx';
 import { BIDS } from '../ios/data.js';
 import BookingActions from '../components/BookingActions.jsx';
@@ -18,8 +19,8 @@ const FALLBACK = [
   { id: 'h3', salonId: 'b3', salonName: 'La Reina Salon', mood: 5, service: 'Gel manicure', total: 42, rating: 4, createdAt: new Date('2026-01-18').getTime(), slot: 'Sat · Jan 18' },
 ];
 
-function fmt(ts) {
-  return new Date(ts).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+function fmt(ts, locale = 'en-US') {
+  return new Date(ts).toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
 // Map a Supabase bookings row → the shape BookingRow expects. Mood is a
@@ -69,6 +70,9 @@ export default function Bookings() {
   const { bookings: supaBookings, loading: supaLoading, refresh: refreshSupa, applyLocalReview } = useSupabaseBookings();
   const [actionFor, setActionFor] = useState(null);
   const [lifecycleAction, setLifecycleAction] = useState(null);
+  const t = useT();
+  const { lang } = useLang();
+  const locale = lang === 'es' ? 'es-MX' : 'en-US';
 
   // When Supabase is configured, the source of truth is the bookings
   // table — the localStorage list and the demo FALLBACK array are
@@ -84,23 +88,26 @@ export default function Bookings() {
   const empty = isSupabaseConfigured && !supaLoading && merged.length === 0;
 
   return (
-    <CustomerLayout active="bookings" mobileTitle="Bookings">
+    <CustomerLayout active="bookings" mobileTitle={t('Bookings', 'Reservas')}>
       <div style={{ padding: isPhone ? '20px 18px 32px' : '34px 40px 48px', maxWidth: 880 }}>
-        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>BOOKINGS</div>
-        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>Your appointments.</h1>
+        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('BOOKINGS', 'RESERVAS')}</div>
+        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>{t('Your appointments.', 'Tus citas.')}</h1>
 
         {empty && (
           <div style={{ marginTop: 28, padding: 22, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5, lineHeight: 1.55 }}>
-            No bookings yet. Accept a bid on one of your requests and it'll show up here.
+            {t(
+              "No bookings yet. Accept a bid on one of your requests and it'll show up here.",
+              'Aún no hay reservas. Acepta una oferta en una solicitud y aparecerá aquí.'
+            )}
           </div>
         )}
 
         {upcoming.length > 0 && (
           <>
-            <div style={{ marginTop: 28, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.accent }}>UPCOMING · {upcoming.length}</div>
+            <div style={{ marginTop: 28, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.accent }}>{t('UPCOMING', 'PRÓXIMAS')} · {upcoming.length}</div>
             <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
               {upcoming.map(b => (
-                <BookingRow key={b.id} b={b} navigate={navigate} accent
+                <BookingRow key={b.id} b={b} navigate={navigate} accent locale={locale} t={t}
                   onAction={action => {
                     if (b.fromSupabase && action === 'cancel') {
                       // Adapt the BookingRow shape (dollars + pre-formatted
@@ -127,10 +134,10 @@ export default function Bookings() {
 
         {past.length > 0 && (
           <>
-            <div style={{ marginTop: 28, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>PAST · {past.length}</div>
+            <div style={{ marginTop: 28, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>{t('PAST', 'PASADAS')} · {past.length}</div>
             <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
               {past.map(b => (
-                <BookingRow key={b.id} b={b} navigate={navigate}
+                <BookingRow key={b.id} b={b} navigate={navigate} locale={locale} t={t}
                   onReview={() => setLifecycleAction({
                     booking: {
                       id: b.id,
@@ -167,7 +174,7 @@ export default function Bookings() {
   );
 }
 
-function BookingRow({ b, navigate, accent, onAction, onReview }) {
+function BookingRow({ b, navigate, accent, onAction, onReview, locale = 'en-US', t = (en) => en }) {
   const isPhone = useNarrow();
   const original = BIDS.find(x => x.id === b.salonId);
   const cancelled = b.status === 'cancelled';
@@ -176,37 +183,37 @@ function BookingRow({ b, navigate, accent, onAction, onReview }) {
       <SalonPhoto mood={b.mood ?? original?.mood ?? 0} h={64} style={{ width: 64, borderRadius: 10, flexShrink: 0 }} />
       <div style={{ flex: '1 1 200px', minWidth: 0 }}>
         <div style={{ fontFamily: type.body, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: cancelled ? p.inkMuted : accent ? p.accent : p.inkMuted }}>
-          {cancelled ? 'CANCELLED · ' : accent ? 'UPCOMING · ' : ''}{(b.slot || fmt(b.createdAt)).toUpperCase()}
+          {cancelled ? `${t('CANCELLED', 'CANCELADA')} · ` : accent ? `${t('UPCOMING', 'PRÓXIMA')} · ` : ''}{(b.slot || fmt(b.createdAt, locale)).toUpperCase()}
         </div>
         <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 19, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.01em', marginTop: 4, textDecoration: cancelled ? 'line-through' : 'none' }}>{b.service}</div>
         <div style={{ fontSize: 13, color: p.inkSoft, marginTop: 2 }}>{b.salonName}</div>
       </div>
       <div style={{ minWidth: 80 }}>
-        <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>{cancelled ? 'REFUNDED' : 'TOTAL'}</div>
+        <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>{cancelled ? t('REFUNDED', 'REEMBOLSADO') : t('TOTAL', 'TOTAL')}</div>
         <div style={{ fontFamily: type.mono, fontSize: 17, fontWeight: 600, color: cancelled ? p.success : p.ink, marginTop: 1 }}>${(cancelled ? (b.refund ?? b.total) : b.total ?? 0).toFixed(0)}</div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
         {accent && !cancelled && (
           <div style={{ display: 'flex', gap: 6 }}>
-            <button onClick={() => onAction?.('reschedule')} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>Reschedule</button>
-            <button onClick={() => onAction?.('cancel')} style={{ background: 'transparent', border: `0.5px solid ${p.accent}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.accent, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+            <button onClick={() => onAction?.('reschedule')} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Reschedule', 'Reprogramar')}</button>
+            <button onClick={() => onAction?.('cancel')} style={{ background: 'transparent', border: `0.5px solid ${p.accent}`, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.accent, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Cancel', 'Cancelar')}</button>
           </div>
         )}
         {!accent && b.rating ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.12em', color: p.success }}>REVIEWED</span>
+            <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.12em', color: p.success }}>{t('REVIEWED', 'RESEÑADA')}</span>
             <Stars n={b.rating} color={p.accent} size={13} />
           </div>
         ) : !accent && !cancelled && b.isCompleted ? (
           <button onClick={() => onReview ? onReview() : navigate(`/review/${b.id}`)} style={{ background: p.ink, color: p.bg, border: 0, padding: '8px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            Leave a review →
+            {t('Leave a review →', 'Dejar reseña →')}
           </button>
         ) : !accent && !cancelled && b.isNoShow ? (
-          <div style={{ fontSize: 11, color: p.inkMuted, fontWeight: 600, letterSpacing: '0.08em' }}>NO-SHOW</div>
+          <div style={{ fontSize: 11, color: p.inkMuted, fontWeight: 600, letterSpacing: '0.08em' }}>{t('NO-SHOW', 'NO ASISTIÓ')}</div>
         ) : null}
         {b.salonId && (
           <button onClick={() => navigate(`/salon/${b.salonId}`)} style={{ background: 'transparent', border: 0, padding: 0, fontSize: 11, fontWeight: 600, color: p.inkMuted, cursor: 'pointer', fontFamily: 'inherit' }}>
-            View salon →
+            {t('View salon →', 'Ver salón →')}
           </button>
         )}
       </div>
