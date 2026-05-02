@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import Modal from './Modal.jsx';
-import { useBookings } from '../store.jsx';
+import { useBookings, useLang } from '../store.jsx';
 import { useToast } from './Toast.jsx';
+import { useT } from '../lib/i18n.js';
 
 export const SAMPLE_SLOTS = [
   'Tomorrow · 11:30 AM',
@@ -10,6 +11,14 @@ export const SAMPLE_SLOTS = [
   'Saturday · 10:00 AM',
   'Saturday · 2:30 PM',
   'Sunday · 1:00 PM',
+];
+
+const SAMPLE_SLOTS_ES = [
+  'Mañana · 11:30 AM',
+  'Mañana · 4:00 PM',
+  'Sábado · 10:00 AM',
+  'Sábado · 2:30 PM',
+  'Domingo · 1:00 PM',
 ];
 
 export function hoursUntil(ts) {
@@ -20,8 +29,10 @@ export function hoursUntil(ts) {
 export default function BookingActions({ booking, onClose, onChanged }) {
   const { cancel, reschedule } = useBookings();
   const toast = useToast();
+  const t = useT();
+  const { lang } = useLang();
   const [mode, setMode] = useState(booking?._action || 'cancel');
-  const [newSlot, setNewSlot] = useState(SAMPLE_SLOTS[0]);
+  const [newSlotIdx, setNewSlotIdx] = useState(0);
   const [reason, setReason] = useState('');
 
   if (!booking) return null;
@@ -33,19 +44,29 @@ export default function BookingActions({ booking, onClose, onChanged }) {
     : booking.total;
   const kept = booking.total - refundAmount;
 
+  const slots = lang === 'es' ? SAMPLE_SLOTS_ES : SAMPLE_SLOTS;
+  const newSlot = slots[newSlotIdx];
+
   const onCancel = () => {
     cancel(booking.id, { refund: refundAmount, kept });
-    toast(lateCancel
-      ? `Cancelled · $${refundAmount.toFixed(2)} refunded, salon keeps $${kept.toFixed(2)}.`
-      : `Cancelled · full $${refundAmount.toFixed(2)} refund issued.`,
-      { tone: 'success' });
+    if (lang === 'es') {
+      toast(lateCancel
+        ? `Cancelado · $${refundAmount.toFixed(2)} reembolsado, el salón se queda con $${kept.toFixed(2)}.`
+        : `Cancelado · reembolso completo de $${refundAmount.toFixed(2)} emitido.`,
+        { tone: 'success' });
+    } else {
+      toast(lateCancel
+        ? `Cancelled · $${refundAmount.toFixed(2)} refunded, salon keeps $${kept.toFixed(2)}.`
+        : `Cancelled · full $${refundAmount.toFixed(2)} refund issued.`,
+        { tone: 'success' });
+    }
     onChanged?.();
     onClose?.();
   };
 
   const onReschedule = () => {
     reschedule(booking.id, newSlot);
-    toast(`Rescheduled to ${newSlot}.`, { tone: 'success' });
+    toast(lang === 'es' ? `Reagendado para ${newSlot}.` : `Rescheduled to ${newSlot}.`, { tone: 'success' });
     onChanged?.();
     onClose?.();
   };
@@ -56,21 +77,23 @@ export default function BookingActions({ booking, onClose, onChanged }) {
     <Modal
       open={true}
       onClose={onClose}
-      eyebrow={isCancel ? 'CANCEL APPOINTMENT' : 'RESCHEDULE'}
+      eyebrow={isCancel ? t('CANCEL APPOINTMENT', 'CANCELAR CITA') : t('RESCHEDULE', 'REAGENDAR')}
       title={booking.salonName}
       width={520}
       footer={
         <>
           <button onClick={onClose} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>
-            Keep appointment
+            {t('Keep appointment', 'Mantener cita')}
           </button>
           {isCancel ? (
             <button onClick={onCancel} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-              {lateCancel ? `Cancel · keep $${kept.toFixed(0)}` : 'Cancel · full refund'}
+              {lateCancel
+                ? (lang === 'es' ? `Cancelar · queda $${kept.toFixed(0)}` : `Cancel · keep $${kept.toFixed(0)}`)
+                : t('Cancel · full refund', 'Cancelar · reembolso completo')}
             </button>
           ) : (
             <button onClick={onReschedule} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-              Confirm reschedule
+              {t('Confirm reschedule', 'Confirmar reagendado')}
             </button>
           )}
         </>
@@ -79,8 +102,8 @@ export default function BookingActions({ booking, onClose, onChanged }) {
       {/* Mode toggle */}
       <div style={{ display: 'inline-flex', background: p.bg, borderRadius: 99, border: `0.5px solid ${p.line}`, padding: 3, marginBottom: 18 }}>
         {[
-          { id: 'cancel', l: 'Cancel' },
-          { id: 'reschedule', l: 'Reschedule' },
+          { id: 'cancel', l: t('Cancel', 'Cancelar') },
+          { id: 'reschedule', l: t('Reschedule', 'Reagendar') },
         ].map(o => {
           const a = mode === o.id;
           return (
@@ -96,15 +119,15 @@ export default function BookingActions({ booking, onClose, onChanged }) {
       {/* Booking summary */}
       <div style={{ padding: '12px 14px', background: p.bg, borderRadius: 12, border: `0.5px solid ${p.line}`, display: 'flex', flexDirection: 'column', gap: 6 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-          <span style={{ color: p.inkMuted }}>Service</span>
+          <span style={{ color: p.inkMuted }}>{t('Service', 'Servicio')}</span>
           <span style={{ color: p.ink, fontWeight: 600 }}>{booking.service}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-          <span style={{ color: p.inkMuted }}>When</span>
+          <span style={{ color: p.inkMuted }}>{t('When', 'Cuándo')}</span>
           <span style={{ color: p.ink, fontWeight: 600, fontFamily: type.mono }}>{booking.slot}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-          <span style={{ color: p.inkMuted }}>Paid</span>
+          <span style={{ color: p.inkMuted }}>{t('Paid', 'Pagado')}</span>
           <span style={{ color: p.ink, fontWeight: 600, fontFamily: type.mono }}>${(booking.total || 0).toFixed(2)}</span>
         </div>
       </div>
@@ -120,33 +143,41 @@ export default function BookingActions({ booking, onClose, onChanged }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ width: 8, height: 8, borderRadius: 99, background: lateCancel ? p.accent : p.success }} />
               <div style={{ fontFamily: type.body, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.12em', color: lateCancel ? p.accent : p.success }}>
-                {lateCancel ? 'LATE CANCEL · 50% KEPT' : 'FREE CANCEL'}
+                {lateCancel
+                  ? t('LATE CANCEL · 50% KEPT', 'CANCELACIÓN TARDÍA · 50% RETENIDO')
+                  : t('FREE CANCEL', 'CANCELACIÓN GRATIS')}
               </div>
             </div>
             <div style={{ marginTop: 8, fontSize: 12.5, color: p.inkSoft, lineHeight: 1.5 }}>
               {hours <= 0 ? (
-                <>Appointment has already started. Cancellation may not refund.</>
+                lang === 'es'
+                  ? <>La cita ya empezó. Puede que la cancelación no genere reembolso.</>
+                  : <>Appointment has already started. Cancellation may not refund.</>
               ) : lateCancel ? (
-                <>You're cancelling within 24 hrs of your appointment. $${kept.toFixed(2)} stays with the salon as a deposit; $${refundAmount.toFixed(2)} is refunded to your card.</>
+                lang === 'es'
+                  ? <>Estás cancelando dentro de las 24 hrs antes de la cita. ${kept.toFixed(2)} se quedan con el salón como depósito; ${refundAmount.toFixed(2)} se reembolsan a tu tarjeta.</>
+                  : <>You're cancelling within 24 hrs of your appointment. ${kept.toFixed(2)} stays with the salon as a deposit; ${refundAmount.toFixed(2)} is refunded to your card.</>
               ) : (
-                <>You're outside the 24-hr window. Full $${refundAmount.toFixed(2)} returns to your card in 1–2 business days.</>
+                lang === 'es'
+                  ? <>Estás fuera de la ventana de 24 hrs. Los ${refundAmount.toFixed(2)} completos vuelven a tu tarjeta en 1–2 días hábiles.</>
+                  : <>You're outside the 24-hr window. Full ${refundAmount.toFixed(2)} returns to your card in 1–2 business days.</>
               )}
             </div>
           </div>
 
           <div style={{ marginTop: 14 }}>
-            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>REASON · OPTIONAL</div>
-            <textarea value={reason} onChange={e => setReason(e.target.value)} placeholder="Helps Glossi improve. The salon won't see this." rows={3} style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.body, fontSize: 13, color: p.ink, lineHeight: 1.5, resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{t('REASON · OPTIONAL', 'MOTIVO · OPCIONAL')}</div>
+            <textarea value={reason} onChange={e => setReason(e.target.value)} placeholder={t("Helps Glossi improve. The salon won't see this.", 'Ayuda a Glossi a mejorar. El salón no verá esto.')} rows={3} style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.body, fontSize: 13, color: p.ink, lineHeight: 1.5, resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
           </div>
         </>
       ) : (
         <>
-          <div style={{ marginTop: 14, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>PICK A NEW SLOT</div>
+          <div style={{ marginTop: 14, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>{t('PICK A NEW SLOT', 'ELIGE UN HORARIO NUEVO')}</div>
           <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {SAMPLE_SLOTS.map(s => {
-              const sel = newSlot === s;
+            {slots.map((s, i) => {
+              const sel = newSlotIdx === i;
               return (
-                <button key={s} onClick={() => setNewSlot(s)} style={{
+                <button key={s} onClick={() => setNewSlotIdx(i)} style={{
                   padding: '12px 14px', borderRadius: 12,
                   background: sel ? p.surface : 'transparent',
                   border: `0.5px solid ${sel ? p.ink : p.line}`,
@@ -161,7 +192,7 @@ export default function BookingActions({ booking, onClose, onChanged }) {
             })}
           </div>
           <div style={{ marginTop: 12, padding: '10px 12px', background: p.accentSoft, borderRadius: 10, fontSize: 12, color: p.ink, lineHeight: 1.5 }}>
-            Reschedules are free. The salon is notified and your card stays on hold for the new slot.
+            {t('Reschedules are free. The salon is notified and your card stays on hold for the new slot.', 'Reagendar es gratis. Se notifica al salón y tu tarjeta queda retenida para el nuevo horario.')}
           </div>
         </>
       )}

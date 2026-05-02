@@ -5,28 +5,35 @@ import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { GUIDES } from '../ios/data.js';
 import { GUIDE_BODIES } from '../ios/guideBodies.js';
+import { useT } from '../lib/i18n.js';
+import { useLang } from '../store.jsx';
 
 export default function Article() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const { id } = useParams();
+  const t = useT();
+  const { lang } = useLang();
+  const L = lang === 'es' ? 'es' : 'en';
+  const kickerKey = L === 'es' ? 'kicker_es' : 'kicker_en';
+  const titleKey = L === 'es' ? 't_es' : 't_en';
   const idx = Number(id);
   const g = GUIDES[idx];
-  const body = GUIDE_BODIES[idx]?.en;
+  const body = GUIDE_BODIES[idx]?.[L];
 
   if (!g || !body) {
     return (
       <CustomerLayout active="editorial">
         <div style={{ padding: '80px 32px', textAlign: 'center' }}>
-          <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 36 }}>Article not found</h1>
-          <Link to="/editorial" style={{ display: 'inline-block', marginTop: 16, color: p.accent, textDecoration: 'none', fontWeight: 600 }}>← Back to editorial</Link>
+          <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 36 }}>{t('Article not found', 'Artículo no encontrado')}</h1>
+          <Link to="/editorial" style={{ display: 'inline-block', marginTop: 16, color: p.accent, textDecoration: 'none', fontWeight: 600 }}>{t('← Back to editorial', '← Regresar a editorial')}</Link>
         </div>
       </CustomerLayout>
     );
   }
 
   return (
-    <CustomerLayout active="editorial" mobileTitle="Article">
+    <CustomerLayout active="editorial" mobileTitle={t('Article', 'Artículo')}>
       <div style={{ maxWidth: 720, margin: '0 auto', padding: isPhone ? '0' : '0 40px' }}>
         {/* Hero */}
         <div style={{ position: 'relative', height: isPhone ? 280 : 400, overflow: 'hidden', borderRadius: isPhone ? 0 : 20, marginTop: isPhone ? 0 : 24 }}>
@@ -39,9 +46,9 @@ export default function Article() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
           <div style={{ position: 'absolute', bottom: 22, left: 20, right: 20, color: '#fff' }}>
-            <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(255,255,255,0.85)' }}>{g.kicker_en}</div>
+            <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(255,255,255,0.85)' }}>{g[kickerKey]}</div>
             <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 30 : 44, fontWeight: type.displayWeight, color: '#fff', letterSpacing: '-0.025em', lineHeight: 1.02, marginTop: 8, textWrap: 'balance' }}>
-              {g.t_en}
+              {g[titleKey]}
             </div>
           </div>
         </div>
@@ -103,11 +110,11 @@ export default function Article() {
 
           {/* Footer */}
           <div style={{ marginTop: 48, paddingTop: 24, borderTop: `0.5px solid ${p.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-            <Link to="/editorial" style={{ fontSize: 13, color: p.inkMuted, textDecoration: 'none', fontWeight: 600 }}>← All guides</Link>
+            <Link to="/editorial" style={{ fontSize: 13, color: p.inkMuted, textDecoration: 'none', fontWeight: 600 }}>{t('← All guides', '← Todas las guías')}</Link>
             <div style={{ display: 'flex', gap: 8 }}>
               {GUIDES.map((_, i) => i !== idx && (
                 <Link key={i} to={`/editorial/${i}`} style={{ fontSize: 12, color: p.accent, textDecoration: 'none', padding: '6px 12px', background: p.accentSoft, borderRadius: 99, fontWeight: 600 }}>
-                  {GUIDES[i].kicker_en.split(' · ')[0]} →
+                  {GUIDES[i][kickerKey].split(' · ')[0]} →
                 </Link>
               ))}
             </div>

@@ -4,6 +4,7 @@ import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from './Toast.jsx';
 import { useAuth } from '../store.jsx';
+import { useT } from '../lib/i18n.js';
 import SignInModal from './SignInModal.jsx';
 import NotificationsBell from './NotificationsBell.jsx';
 
@@ -11,13 +12,13 @@ import NotificationsBell from './NotificationsBell.jsx';
 // claimed activity that didn't exist. When we add unread tracking
 // (Phase 7 / messaging) these can come back wired to real data.
 const NAV = [
-  { id: 'home', l: 'Home', i: 'M3 11l9-8 9 8M5 10v10h14V10', to: '/quotes' },
-  { id: 'explore', l: 'Explore', i: 'M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z', to: '/explore' },
-  { id: 'quotes', l: 'My quotes', i: 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11', to: '/quotes' },
-  { id: 'bookings', l: 'Bookings', i: 'M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM16 2v4M8 2v4M3 10h18', to: '/bookings' },
-  { id: 'inbox', l: 'Inbox', i: 'M4 4h16v16H4zM4 4l8 8 8-8', to: '/inbox' },
-  { id: 'saved', l: 'Saved', i: 'M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z', to: '/saved' },
-  { id: 'editorial', l: 'Editorial', i: 'M4 4h16v4H4zM4 12h10v8H4zM18 12h2v8h-2z', to: '/editorial' },
+  { id: 'home', en: 'Home', es: 'Inicio', i: 'M3 11l9-8 9 8M5 10v10h14V10', to: '/quotes' },
+  { id: 'explore', en: 'Explore', es: 'Explorar', i: 'M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z', to: '/explore' },
+  { id: 'quotes', en: 'My quotes', es: 'Mis solicitudes', i: 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11', to: '/quotes' },
+  { id: 'bookings', en: 'Bookings', es: 'Reservas', i: 'M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM16 2v4M8 2v4M3 10h18', to: '/bookings' },
+  { id: 'inbox', en: 'Inbox', es: 'Mensajes', i: 'M4 4h16v16H4zM4 4l8 8 8-8', to: '/inbox' },
+  { id: 'saved', en: 'Saved', es: 'Guardados', i: 'M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z', to: '/saved' },
+  { id: 'editorial', en: 'Editorial', es: 'Editorial', i: 'M4 4h16v4H4zM4 12h10v8H4zM18 12h2v8h-2z', to: '/editorial' },
 ];
 
 export default function CustomerLayout({ active, children, mobileTitle }) {
@@ -26,6 +27,7 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
   const navigate = useNavigate();
   const toast = useToast();
   const { user, signOut } = useAuth();
+  const t = useT();
   const [signInOpen, setSignInOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -57,7 +59,7 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
             border: isActive ? `0.5px solid ${p.line}` : '0.5px solid transparent', textDecoration: 'none', fontFamily: 'inherit',
           }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d={it.i} /></svg>
-            <span style={{ flex: 1 }}>{it.l}</span>
+            <span style={{ flex: 1 }}>{t(it.en, it.es)}</span>
             {it.badge && <span style={{ fontFamily: type.mono, fontSize: 10, color: p.accent, background: p.accentSoft, padding: '2px 7px', borderRadius: 99, fontWeight: 700 }}>{it.badge}</span>}
           </Link>
         );
@@ -77,15 +79,15 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
           </button>
           {menuOpen && (
             <div style={{ position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, right: 0, background: p.surface, borderRadius: 12, border: `0.5px solid ${p.line}`, padding: 6, boxShadow: '0 12px 32px rgba(0,0,0,0.10)', zIndex: 10 }}>
-              <button onClick={() => { setMenuOpen(false); navigate('/me'); }} style={menuItem}>View profile</button>
-              <button onClick={() => { setMenuOpen(false); navigate('/bookings'); }} style={menuItem}>Bookings</button>
-              <button onClick={() => { setMenuOpen(false); navigate('/settings'); }} style={menuItem}>Profile settings</button>
-              <button onClick={onSignOut} style={{ ...menuItem, color: p.accent }}>Sign out</button>
+              <button onClick={() => { setMenuOpen(false); navigate('/me'); }} style={menuItem}>{t('View profile', 'Ver perfil')}</button>
+              <button onClick={() => { setMenuOpen(false); navigate('/bookings'); }} style={menuItem}>{t('Bookings', 'Reservas')}</button>
+              <button onClick={() => { setMenuOpen(false); navigate('/settings'); }} style={menuItem}>{t('Profile settings', 'Configuración del perfil')}</button>
+              <button onClick={onSignOut} style={{ ...menuItem, color: p.accent }}>{t('Sign out', 'Cerrar sesión')}</button>
             </div>
           )}
         </div>
       ) : (
-        <button onClick={() => setSignInOpen(true)} style={{ padding: '12px 14px', borderRadius: 12, background: p.ink, color: p.bg, border: 0, cursor: 'pointer', fontFamily: type.body, fontSize: 13.5, fontWeight: 600 }}>Sign in</button>
+        <button onClick={() => setSignInOpen(true)} style={{ padding: '12px 14px', borderRadius: 12, background: p.ink, color: p.bg, border: 0, cursor: 'pointer', fontFamily: type.body, fontSize: 13.5, fontWeight: 600 }}>{t('Sign in', 'Iniciar sesión')}</button>
       )}
       <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} defaultRole="customer" />
     </div>
@@ -102,7 +104,7 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
           {user ? (
             <button onClick={() => setMenuOpen(v => !v)} style={{ width: 34, height: 34, borderRadius: 99, background: user.avatar, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, border: 0, cursor: 'pointer', fontFamily: 'inherit', marginLeft: 8 }}>{user.initials}</button>
           ) : (
-            <button onClick={() => setSignInOpen(true)} style={{ padding: '7px 14px', borderRadius: 99, background: p.ink, color: p.bg, border: 0, cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'inherit' }}>Sign in</button>
+            <button onClick={() => setSignInOpen(true)} style={{ padding: '7px 14px', borderRadius: 99, background: p.ink, color: p.bg, border: 0, cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'inherit' }}>{t('Sign in', 'Iniciar sesión')}</button>
           )}
         </div>
         {user && menuOpen && (
@@ -129,7 +131,7 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
                 flex: 1, position: 'relative',
               }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive ? 2 : 1.6} strokeLinecap="round" strokeLinejoin="round"><path d={it.i} /></svg>
-                <div style={{ fontSize: 9.5, fontWeight: isActive ? 600 : 500 }}>{it.l}</div>
+                <div style={{ fontSize: 9.5, fontWeight: isActive ? 600 : 500 }}>{t(it.en, it.es)}</div>
                 {it.badge && <span style={{ position: 'absolute', top: 0, right: '30%', width: 6, height: 6, borderRadius: 99, background: p.accent }} />}
               </Link>
             );

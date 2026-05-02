@@ -8,11 +8,13 @@ import { BIDS } from '../ios/data.js';
 import { Stars } from '../ios/atoms.jsx';
 import { useToast } from '../components/Toast.jsx';
 import { useSaved } from '../store.jsx';
+import { useT } from '../lib/i18n.js';
 
 export default function Saved() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const toast = useToast();
+  const t = useT();
   const { ids, remove: unsave } = useSaved();
   const list = BIDS.filter(b => ids.includes(b.id));
 
@@ -20,24 +22,24 @@ export default function Saved() {
     e.stopPropagation();
     const salon = BIDS.find(b => b.id === id);
     unsave(id);
-    toast(`Removed ${salon?.name} from saved.`);
+    toast(t(`Removed ${salon?.name} from saved.`, `${salon?.name} eliminado de guardados.`));
   };
 
   return (
-    <CustomerLayout active="saved" mobileTitle="Saved">
+    <CustomerLayout active="saved" mobileTitle={t('Saved', 'Guardados')}>
       <div style={{ padding: isPhone ? '20px 18px 24px' : '34px 40px 48px' }}>
-        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>SAVED</div>
-        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 54, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>Your salons.</h1>
+        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('SAVED', 'GUARDADOS')}</div>
+        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 54, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>{t('Your salons.', 'Tus salones.')}</h1>
         <p style={{ fontSize: isPhone ? 14 : 15, color: p.inkSoft, lineHeight: 1.55, margin: '10px 0 0', maxWidth: 560 }}>
           {list.length === 0
-            ? 'Tap the heart on any salon profile to save them here. Salons you save get prioritized in your bid feed.'
-            : `${list.length} saved · we ping these first when you post a request.`}
+            ? t('Tap the heart on any salon profile to save them here. Salons you save get prioritized in your bid feed.', 'Toca el corazón en cualquier perfil de salón para guardarlo aquí. Los salones que guardas tienen prioridad en tu feed de ofertas.')
+            : t(`${list.length} saved · we ping these first when you post a request.`, `${list.length} guardados · les avisamos primero cuando publicas una solicitud.`)}
         </p>
 
         {list.length === 0 ? (
           <div style={{ marginTop: 28, padding: '40px', borderRadius: 18, border: `1px dashed ${p.inkMuted}`, background: p.surface, textAlign: 'center' }}>
-            <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, color: p.ink }}>Nothing saved yet.</div>
-            <button onClick={() => navigate('/explore')} style={{ marginTop: 14, background: p.ink, color: p.bg, border: 0, padding: '12px 22px', borderRadius: 99, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Browse salons →</button>
+            <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, color: p.ink }}>{t('Nothing saved yet.', 'Aún no hay nada guardado.')}</div>
+            <button onClick={() => navigate('/explore')} style={{ marginTop: 14, background: p.ink, color: p.bg, border: 0, padding: '12px 22px', borderRadius: 99, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>{t('Browse salons →', 'Explorar salones →')}</button>
           </div>
         ) : (
           <div style={{ marginTop: 22, display: 'grid', gap: isPhone ? 14 : 18, gridTemplateColumns: isPhone ? '1fr' : 'repeat(auto-fill, minmax(300px, 1fr))' }}>
@@ -61,7 +63,7 @@ export default function Saved() {
                     <Stars n={s.rating} color={p.accent} size={11} />
                     <span style={{ color: p.ink, fontWeight: 600 }}>{s.rating}</span>
                     <span>·</span><span>{s.neighborhood}</span><span>·</span>
-                    <span style={{ fontFamily: type.mono }}>{s.distance} mi</span>
+                    <span style={{ fontFamily: type.mono }}>{s.distance} {t('mi', 'mi')}</span>
                   </div>
                   <div style={{ display: 'flex', gap: 4, marginTop: 8, flexWrap: 'wrap' }}>
                     {(s.badges || []).map(b => <TrustBadge key={b} kind={b} p={p} type={type} />)}

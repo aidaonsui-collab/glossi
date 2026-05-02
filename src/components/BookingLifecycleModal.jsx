@@ -9,27 +9,31 @@ import {
   markBookingNoShow,
   submitReview,
 } from '../lib/quotes.js';
+import { useT } from '../lib/i18n.js';
+import { useLang } from '../store.jsx';
 
 const fmtMoney = cents => `$${((cents || 0) / 100).toFixed(2)}`;
 const fmtPriceShort = cents => `$${Math.round((cents || 0) / 100)}`;
-const fmtHours = h => h == null ? '—'
-  : h < 1 ? `${Math.round(h * 60)} min`
-  : h < 48 ? `${h.toFixed(1)} hr`
-  : `${Math.floor(h / 24)} day${Math.floor(h / 24) === 1 ? '' : 's'}`;
+const fmtHours = (h, lang) => h == null ? '—'
+  : lang === 'es'
+    ? (h < 1 ? `${Math.round(h * 60)} min` : h < 48 ? `${h.toFixed(1)} hr` : `${Math.floor(h / 24)} ${Math.floor(h / 24) === 1 ? 'día' : 'días'}`)
+    : (h < 1 ? `${Math.round(h * 60)} min` : h < 48 ? `${h.toFixed(1)} hr` : `${Math.floor(h / 24)} day${Math.floor(h / 24) === 1 ? '' : 's'}`);
 const fmtServices = slugs => (slugs || []).map(s => s.replace('-', ' & ')).join(', ');
-const fmtWhen = ts => ts
-  ? new Date(ts).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+const fmtWhen = (ts, lang) => ts
+  ? new Date(ts).toLocaleString(lang === 'es' ? 'es-MX' : 'en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
   : null;
 
 // Compact card every confirmation modal renders so the user can
 // double-check what they're acting on before tapping the verb.
 // callerRole='salon' shows customerName; 'customer' shows salonName.
 function BookingSummary({ booking, callerRole }) {
+  const t = useT();
+  const { lang } = useLang();
   const headline = callerRole === 'salon'
-    ? (booking.customerName || 'Customer')
-    : (booking.salonName || 'Salon');
+    ? (booking.customerName || t('Customer', 'Cliente'))
+    : (booking.salonName || t('Salon', 'Salón'));
   const service = booking.serviceSummary || fmtServices(booking.serviceSlugs);
-  const when = fmtWhen(booking.scheduledAt);
+  const when = fmtWhen(booking.scheduledAt, lang);
   return (
     <div style={{ padding: '14px 16px', background: p.bg, borderRadius: 12, border: `0.5px solid ${p.line}` }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'baseline' }}>
@@ -57,6 +61,8 @@ function BookingSummary({ booking, callerRole }) {
 // can tell whether to refetch.
 export default function BookingLifecycleModal({ booking, mode, callerRole, onClose, onLocalReview }) {
   const toast = useToast();
+  const t = useT();
+  const { lang } = useLang();
   const [submitting, setSubmitting] = useState(false);
   const [reason, setReason] = useState('');
   const [preview, setPreview] = useState(null);
@@ -86,9 +92,9 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
     setSubmitting(false);
     if (!r.ok) { toast(r.error, { tone: 'warn' }); return; }
     if (r.refundAmountCents > 0) {
-      toast(`Cancelled · ${fmtMoney(r.refundAmountCents)} refunded.`, { tone: 'success' });
+      toast(lang === 'es' ? `Cancelado · ${fmtMoney(r.refundAmountCents)} reembolsado.` : `Cancelled · ${fmtMoney(r.refundAmountCents)} refunded.`, { tone: 'success' });
     } else {
-      toast('Cancelled — no refund (within 24h).', { tone: 'warn' });
+      toast(t('Cancelled — no refund (within 24h).', 'Cancelado — sin reembolso (dentro de 24h).'), { tone: 'warn' });
     }
     close(true);
   };
@@ -98,7 +104,7 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
     const r = await markBookingComplete(booking.id);
     setSubmitting(false);
     if (!r.ok) { toast(r.error, { tone: 'warn' }); return; }
-    toast('Marked complete.', { tone: 'success' });
+    toast(t('Marked complete.', 'Marcado como completado.'), { tone: 'success' });
     close(true);
   };
 
@@ -107,12 +113,12 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
     const r = await markBookingNoShow(booking.id);
     setSubmitting(false);
     if (!r.ok) { toast(r.error, { tone: 'warn' }); return; }
-    toast('Marked no-show.', { tone: 'success' });
+    toast(t('Marked no-show.', 'Marcado como no asistió.'), { tone: 'success' });
     close(true);
   };
 
   const onReview = async () => {
-    if (!rating) { toast('Tap a star.', { tone: 'warn' }); return; }
+    if (!rating) { toast(t('Tap a star.', 'Toca una estrella.'), { tone: 'warn' }); return; }
     setSubmitting(true);
     const r = await submitReview({ bookingId: booking.id, rating, body });
     setSubmitting(false);
@@ -121,7 +127,7 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
     // can't double-submit while the explicit refresh + realtime
     // catch up. The realtime + refresh still run via close(true).
     onLocalReview?.({ bookingId: booking.id, rating, body });
-    toast(`Thanks — ${rating}★ posted.`, { tone: 'success' });
+    toast(lang === 'es' ? `Gracias — publicaste ${rating}★.` : `Thanks — ${rating}★ posted.`, { tone: 'success' });
     close(true);
   };
 
@@ -136,12 +142,12 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
       <Modal
         open
         onClose={() => !submitting && close(false)}
-        eyebrow="CANCEL"
-        title="Cancel this booking?"
+        eyebrow={t('CANCEL', 'CANCELAR')}
+        title={t('Cancel this booking?', '¿Cancelar esta reservación?')}
         width={520}
         footer={(
           <>
-            <button onClick={() => close(false)} disabled={submitting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>Keep booking</button>
+            <button onClick={() => close(false)} disabled={submitting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>{t('Keep booking', 'Mantener reservación')}</button>
             <button onClick={onCancel} disabled={submitting || !preview?.cancelable_by_caller} style={{
               background: p.accent, color: p.ink, border: 0,
               padding: '11px 22px', borderRadius: 99,
@@ -150,7 +156,7 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
               fontFamily: 'inherit',
               opacity: (submitting || !preview?.cancelable_by_caller) ? 0.6 : 1,
             }}>
-              {submitting ? 'Cancelling…' : eligible ? `Cancel · ${fmtMoney(amount)} refund` : 'Cancel · no refund'}
+              {submitting ? t('Cancelling…', 'Cancelando…') : eligible ? (lang === 'es' ? `Cancelar · reembolso de ${fmtMoney(amount)}` : `Cancel · ${fmtMoney(amount)} refund`) : t('Cancel · no refund', 'Cancelar · sin reembolso')}
             </button>
           </>
         )}
@@ -161,7 +167,7 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
           </div>
         )}
         {!previewErr && !preview && (
-          <div style={{ padding: 20, color: p.inkMuted, fontSize: 13 }}>Checking refund eligibility…</div>
+          <div style={{ padding: 20, color: p.inkMuted, fontSize: 13 }}>{t('Checking refund eligibility…', 'Verificando elegibilidad de reembolso…')}</div>
         )}
         {preview && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -174,26 +180,36 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ width: 8, height: 8, borderRadius: 99, background: eligible ? p.success : p.accent }} />
                 <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: '0.12em', color: eligible ? p.success : p.accent }}>
-                  {eligible ? (isSalon ? 'FULL REFUND' : 'FREE CANCEL') : 'NO REFUND'}
+                  {eligible
+                    ? (isSalon ? t('FULL REFUND', 'REEMBOLSO COMPLETO') : t('FREE CANCEL', 'CANCELACIÓN GRATIS'))
+                    : t('NO REFUND', 'SIN REEMBOLSO')}
                 </div>
               </div>
               <div style={{ marginTop: 8, fontSize: 12.5, color: p.inkSoft, lineHeight: 1.5 }}>
                 {isSalon
-                  ? `Salon cancels always refund the customer in full — ${fmtMoney(preview.price_cents)} back to their card.`
+                  ? (lang === 'es'
+                      ? `Las cancelaciones del salón siempre reembolsan al cliente al 100% — ${fmtMoney(preview.price_cents)} de regreso a su tarjeta.`
+                      : `Salon cancels always refund the customer in full — ${fmtMoney(preview.price_cents)} back to their card.`)
                   : eligible
-                    ? `Appointment is in ${fmtHours(hours)}. ${fmtMoney(preview.price_cents)} returns to your card in 1–2 business days.`
-                    : `Appointment is in ${fmtHours(hours)} — under our 24-hour window, so no refund can be issued.`
+                    ? (lang === 'es'
+                        ? `La cita es en ${fmtHours(hours, lang)}. ${fmtMoney(preview.price_cents)} regresa a tu tarjeta en 1–2 días hábiles.`
+                        : `Appointment is in ${fmtHours(hours, lang)}. ${fmtMoney(preview.price_cents)} returns to your card in 1–2 business days.`)
+                    : (lang === 'es'
+                        ? `La cita es en ${fmtHours(hours, lang)} — dentro de nuestra ventana de 24 horas, así que no se puede emitir reembolso.`
+                        : `Appointment is in ${fmtHours(hours, lang)} — under our 24-hour window, so no refund can be issued.`)
                 }
               </div>
             </div>
 
             <div>
-              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>REASON · OPTIONAL</div>
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{t('REASON · OPTIONAL', 'MOTIVO · OPCIONAL')}</div>
               <textarea
                 value={reason}
                 onChange={e => setReason(e.target.value)}
                 rows={3}
-                placeholder={isSalon ? 'Helps the customer understand why.' : "Helps Glossi improve. The salon won't see this."}
+                placeholder={isSalon
+                  ? t('Helps the customer understand why.', 'Ayuda al cliente a entender por qué.')
+                  : t("Helps Glossi improve. The salon won't see this.", 'Ayuda a Glossi a mejorar. El salón no verá esto.')}
                 style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.body, fontSize: 13, color: p.ink, lineHeight: 1.5, resize: 'vertical', outline: 'none', boxSizing: 'border-box' }}
               />
             </div>
@@ -209,14 +225,14 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
       <Modal
         open
         onClose={() => !submitting && close(false)}
-        eyebrow="MARK COMPLETE"
-        title="Confirm appointment"
+        eyebrow={t('MARK COMPLETE', 'MARCAR COMPLETADA')}
+        title={t('Confirm appointment', 'Confirmar cita')}
         width={460}
         footer={(
           <>
-            <button onClick={() => close(false)} disabled={submitting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+            <button onClick={() => close(false)} disabled={submitting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>{t('Cancel', 'Cancelar')}</button>
             <button onClick={onComplete} disabled={submitting} style={{ background: p.success, color: '#fff', border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>
-              {submitting ? 'Saving…' : 'Mark complete'}
+              {submitting ? t('Saving…', 'Guardando…') : t('Mark complete', 'Marcar completada')}
             </button>
           </>
         )}
@@ -224,7 +240,7 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <BookingSummary booking={booking} callerRole={callerRole} />
           <div style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.55 }}>
-            The customer will be invited to leave a review. This can't be undone.
+            {t("The customer will be invited to leave a review. This can't be undone.", 'Se invitará al cliente a dejar una reseña. Esto no se puede deshacer.')}
           </div>
         </div>
       </Modal>
@@ -237,14 +253,14 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
       <Modal
         open
         onClose={() => !submitting && close(false)}
-        eyebrow="NO-SHOW"
-        title="Customer didn't show?"
+        eyebrow={t('NO-SHOW', 'NO ASISTIÓ')}
+        title={t("Customer didn't show?", '¿El cliente no se presentó?')}
         width={460}
         footer={(
           <>
-            <button onClick={() => close(false)} disabled={submitting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+            <button onClick={() => close(false)} disabled={submitting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>{t('Cancel', 'Cancelar')}</button>
             <button onClick={onNoShow} disabled={submitting} style={{ background: p.accent, color: p.ink, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>
-              {submitting ? 'Saving…' : 'Mark no-show'}
+              {submitting ? t('Saving…', 'Guardando…') : t('Mark no-show', 'Marcar no asistió')}
             </button>
           </>
         )}
@@ -252,7 +268,9 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <BookingSummary booking={booking} callerRole={callerRole} />
           <div style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.55 }}>
-            You keep the full {fmtPriceShort(booking.priceCents)} — no refund. Use this sparingly; flagged no-shows are tracked.
+            {lang === 'es'
+              ? `Te quedas con los ${fmtPriceShort(booking.priceCents)} completos — sin reembolso. Úsalo con moderación; los no-asistió marcados se registran.`
+              : `You keep the full ${fmtPriceShort(booking.priceCents)} — no refund. Use this sparingly; flagged no-shows are tracked.`}
           </div>
         </div>
       </Modal>
@@ -261,19 +279,21 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
 
   // ── Review (customer) ────────────────────────────────────────────
   if (mode === 'review') {
-    const label = ['Tap a star', 'Bad', 'Meh', 'Fine', 'Great', 'Excellent'][hover || rating];
+    const labelsEn = ['Tap a star', 'Bad', 'Meh', 'Fine', 'Great', 'Excellent'];
+    const labelsEs = ['Toca una estrella', 'Mal', 'Más o menos', 'Bien', 'Muy bien', 'Excelente'];
+    const label = (lang === 'es' ? labelsEs : labelsEn)[hover || rating];
     return (
       <Modal
         open
         onClose={() => !submitting && close(false)}
-        eyebrow="LEAVE A REVIEW"
-        title={booking.salonName || 'Salon'}
+        eyebrow={t('LEAVE A REVIEW', 'DEJA UNA RESEÑA')}
+        title={booking.salonName || t('Salon', 'Salón')}
         width={460}
         footer={(
           <>
-            <button onClick={() => close(false)} disabled={submitting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>Maybe later</button>
+            <button onClick={() => close(false)} disabled={submitting} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '11px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: p.ink, cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit' }}>{t('Maybe later', 'Tal vez después')}</button>
             <button onClick={onReview} disabled={submitting || !rating} style={{ background: rating ? p.ink : p.line, color: p.bg, border: 0, padding: '11px 22px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: (submitting || !rating) ? 'not-allowed' : 'pointer', fontFamily: 'inherit', opacity: (submitting || !rating) ? 0.6 : 1 }}>
-              {submitting ? 'Posting…' : rating ? `Post · ${rating}★` : 'Pick a rating'}
+              {submitting ? t('Posting…', 'Publicando…') : rating ? (lang === 'es' ? `Publicar · ${rating}★` : `Post · ${rating}★`) : t('Pick a rating', 'Elige una calificación')}
             </button>
           </>
         )}
@@ -299,12 +319,12 @@ export default function BookingLifecycleModal({ booking, mode, callerRole, onClo
           <div style={{ fontFamily: type.mono, fontSize: 12, color: p.inkMuted, letterSpacing: '0.06em' }}>{label.toUpperCase()}</div>
 
           <div style={{ width: '100%' }}>
-            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>YOUR REVIEW · OPTIONAL</div>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{t('YOUR REVIEW · OPTIONAL', 'TU RESEÑA · OPCIONAL')}</div>
             <textarea
               value={body}
               onChange={e => setBody(e.target.value)}
               rows={4}
-              placeholder="What was the vibe? Did the result match what you asked for?"
+              placeholder={t('What was the vibe? Did the result match what you asked for?', '¿Cómo fue la experiencia? ¿El resultado coincidió con lo que pediste?')}
               style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${p.line}`, background: p.bg, fontFamily: type.body, fontSize: 13, color: p.ink, lineHeight: 1.5, resize: 'vertical', outline: 'none', boxSizing: 'border-box' }}
             />
           </div>
