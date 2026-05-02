@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
 import { useNarrow } from '../hooks.js';
-import { useAuth } from '../store.jsx';
+import { useAuth, useLang } from '../store.jsx';
 import { useToast } from '../components/Toast.jsx';
 import SocialSignIn from '../components/SocialSignIn.jsx';
+import { useT } from '../lib/i18n.js';
 
 const PASSWORD_MIN = 8;
 
@@ -17,7 +18,8 @@ function strength(pw) {
   return s; // 0..4
 }
 
-const STRENGTH_LABEL = ['', 'Weak', 'Okay', 'Strong', 'Excellent'];
+const STRENGTH_LABEL_EN = ['', 'Weak', 'Okay', 'Strong', 'Excellent'];
+const STRENGTH_LABEL_ES = ['', 'Débil', 'Aceptable', 'Fuerte', 'Excelente'];
 
 export default function SignUp() {
   const isPhone = useNarrow();
@@ -25,6 +27,9 @@ export default function SignUp() {
   const toast = useToast();
   const { signUp, user } = useAuth();
   const [params] = useSearchParams();
+  const t = useT();
+  const { lang } = useLang();
+  const STRENGTH_LABEL = lang === 'es' ? STRENGTH_LABEL_ES : STRENGTH_LABEL_EN;
 
   // If already signed in, redirect to the right dashboard.
   useEffect(() => {
@@ -45,28 +50,28 @@ export default function SignUp() {
   const submit = async e => {
     e?.preventDefault();
     if (!canSubmit) {
-      if (!agree) toast('Please accept the terms to continue.', { tone: 'warn' });
-      else if (!emailValid) toast('Check the email format.', { tone: 'warn' });
-      else if (password.length < PASSWORD_MIN) toast(`Password needs ${PASSWORD_MIN}+ characters.`, { tone: 'warn' });
-      else if (name.trim().length < 2) toast('Add your name.', { tone: 'warn' });
+      if (!agree) toast(t('Please accept the terms to continue.', 'Por favor acepta los términos para continuar.'), { tone: 'warn' });
+      else if (!emailValid) toast(t('Check the email format.', 'Revisa el formato del correo.'), { tone: 'warn' });
+      else if (password.length < PASSWORD_MIN) toast(t(`Password needs ${PASSWORD_MIN}+ characters.`, `La contraseña necesita ${PASSWORD_MIN}+ caracteres.`), { tone: 'warn' });
+      else if (name.trim().length < 2) toast(t('Add your name.', 'Agrega tu nombre.'), { tone: 'warn' });
       return;
     }
     setSubmitting(true);
     try {
       const result = await signUp({ name: name.trim(), email, password, role });
       if (!result?.ok) {
-        toast(result?.error || 'Sign up failed.', { tone: 'warn' });
+        toast(result?.error || t('Sign up failed.', 'Falló el registro.'), { tone: 'warn' });
         return;
       }
       if (result.needsConfirmation) {
-        toast('Check your email to confirm your account.', { tone: 'success' });
+        toast(t('Check your email to confirm your account.', 'Revisa tu correo para confirmar tu cuenta.'), { tone: 'success' });
         return;
       }
-      toast(`Welcome, ${name.split(' ')[0]}!`, { tone: 'success' });
+      toast(t(`Welcome, ${name.split(' ')[0]}!`, `¡Bienvenida, ${name.split(' ')[0]}!`), { tone: 'success' });
       navigate(role === 'salon' ? '/onboarding/salon' : '/onboarding/customer');
     } catch (err) {
       console.error('signUp error', err);
-      toast(err?.message || 'Sign up failed unexpectedly.', { tone: 'warn' });
+      toast(err?.message || t('Sign up failed unexpectedly.', 'El registro falló inesperadamente.'), { tone: 'warn' });
     } finally {
       setSubmitting(false);
     }
@@ -84,28 +89,32 @@ export default function SignUp() {
       <div style={{ padding: isPhone ? '18px' : '22px 64px', display: 'flex', alignItems: 'center', borderBottom: `0.5px solid ${p.line}` }}>
         <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
         <div style={{ flex: 1 }} />
-        <span style={{ fontSize: 12.5, color: p.inkMuted }}>Already a member?</span>
-        <Link to="/?signin=1" style={{ marginLeft: 10, fontSize: 13, color: p.ink, textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
+        <span style={{ fontSize: 12.5, color: p.inkMuted }}>{t('Already a member?', '¿Ya eres miembro?')}</span>
+        <Link to="/?signin=1" style={{ marginLeft: 10, fontSize: 13, color: p.ink, textDecoration: 'none', fontWeight: 600 }}>{t('Sign in', 'Iniciar sesión')}</Link>
       </div>
 
       <div style={{ flex: 1, display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1fr', alignItems: 'stretch' }}>
         {/* Form column */}
         <div style={{ padding: isPhone ? '32px 18px 48px' : '64px 80px', display: 'flex', flexDirection: 'column', justifyContent: 'center', maxWidth: 600 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>JOIN GLOSSI</div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>{t('JOIN GLOSSI', 'ÚNETE A GLOSSI')}</div>
           <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 44 : 64, fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.95, margin: '12px 0 0', textWrap: 'balance' }}>
-            Create your <span style={{ color: p.accent }}>account.</span>
+            {lang === 'es' ? (
+              <>Crea tu <span style={{ color: p.accent }}>cuenta.</span></>
+            ) : (
+              <>Create your <span style={{ color: p.accent }}>account.</span></>
+            )}
           </h1>
           <p style={{ fontSize: isPhone ? 14.5 : 16, color: p.inkSoft, lineHeight: 1.55, margin: '14px 0 0', maxWidth: 460 }}>
-            Free to join. Customers post requests, salons send bids — no monthly subscription either way.
+            {t('Free to join. Customers post requests, salons send bids — no monthly subscription either way.', 'Únete gratis. Los clientes publican solicitudes, los salones envían ofertas — sin suscripción mensual de ningún lado.')}
           </p>
 
           {/* Role picker */}
           <div style={{ marginTop: isPhone ? 24 : 32 }}>
-            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 8 }}>I'M JOINING AS</div>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 8 }}>{t("I'M JOINING AS", 'ME UNO COMO')}</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               {[
-                { id: 'customer', l: 'Customer', sub: 'Book salons, get bids' },
-                { id: 'salon', l: 'Salon', sub: 'Send bids, fill chairs' },
+                { id: 'customer', l: t('Customer', 'Cliente'), sub: t('Book salons, get bids', 'Reserva salones, recibe ofertas') },
+                { id: 'salon', l: t('Salon', 'Salón'), sub: t('Send bids, fill chairs', 'Envía ofertas, llena sillas') },
               ].map(r => {
                 const a = role === r.id;
                 return (
@@ -124,16 +133,16 @@ export default function SignUp() {
 
           <form onSubmit={submit} style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 14 }}>
             <label>
-              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{role === 'salon' ? 'SALON OR OWNER NAME' : 'YOUR NAME'}</div>
-              <input value={name} onChange={e => setName(e.target.value)} placeholder={role === 'salon' ? 'e.g. Casa de Belleza' : 'e.g. Sofia Martínez'} autoFocus autoComplete="name" style={input} />
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{role === 'salon' ? t('SALON OR OWNER NAME', 'SALÓN O NOMBRE DEL DUEÑO') : t('YOUR NAME', 'TU NOMBRE')}</div>
+              <input value={name} onChange={e => setName(e.target.value)} placeholder={role === 'salon' ? t('e.g. Casa de Belleza', 'p. ej. Casa de Belleza') : t('e.g. Sofia Martínez', 'p. ej. Sofia Martínez')} autoFocus autoComplete="name" style={input} />
             </label>
             <label>
-              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>EMAIL</div>
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{t('EMAIL', 'CORREO')}</div>
               <input type="email" value={email} onChange={e => setEmail(e.target.value.trim())} placeholder="you@email.com" autoComplete="email" style={input} />
             </label>
             <label>
-              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>PASSWORD</div>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={`At least ${PASSWORD_MIN} characters`} autoComplete="new-password" style={input} />
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, marginBottom: 6 }}>{t('PASSWORD', 'CONTRASEÑA')}</div>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={t(`At least ${PASSWORD_MIN} characters`, `Al menos ${PASSWORD_MIN} caracteres`)} autoComplete="new-password" style={input} />
               {password.length > 0 && (
                 <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{ flex: 1, display: 'flex', gap: 4 }}>
@@ -162,7 +171,11 @@ export default function SignUp() {
                 {agree && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M5 13l4 4L19 7" /></svg>}
               </button>
               <span onClick={e => { if (e.target.tagName !== 'A') setAgree(v => !v); }} style={{ fontSize: 12.5, color: p.inkSoft, lineHeight: 1.55, cursor: 'pointer', userSelect: 'none' }}>
-                I agree to Glossi's <Link to="/terms" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Terms of Service</Link> and <Link to="/privacy" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Privacy Policy</Link>. Glossi may send appointment reminders and bid updates by email and SMS — you can opt out anytime in settings.
+                {lang === 'es' ? (
+                  <>Acepto los <Link to="/terms" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Términos de Servicio</Link> y la <Link to="/privacy" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Política de Privacidad</Link> de Glossi. Glossi puede enviar recordatorios de citas y actualizaciones de ofertas por correo y SMS — puedes desactivarlos cuando quieras en ajustes.</>
+                ) : (
+                  <>I agree to Glossi's <Link to="/terms" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Terms of Service</Link> and <Link to="/privacy" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Privacy Policy</Link>. Glossi may send appointment reminders and bid updates by email and SMS — you can opt out anytime in settings.</>
+                )}
               </span>
             </div>
 
@@ -174,7 +187,7 @@ export default function SignUp() {
               opacity: submitting ? 0.7 : 1,
               display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
             }}>
-              <span>{submitting ? 'Creating account…' : 'Create account'}</span>
+              <span>{submitting ? t('Creating account…', 'Creando cuenta…') : t('Create account', 'Crear cuenta')}</span>
               {!submitting && <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>}
             </button>
 
@@ -187,19 +200,19 @@ export default function SignUp() {
           <div style={{ position: 'relative', overflow: 'hidden', backgroundImage: `url(${PHOTOS[0]})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(26,23,20,0.10) 0%, rgba(26,23,20,0.55) 70%, rgba(26,23,20,0.85) 100%)' }} />
             <div style={{ position: 'absolute', top: 32, left: 36, right: 36, color: p.bg, fontFamily: type.mono, fontSize: 12, fontWeight: 600, letterSpacing: '0.18em' }}>
-              ISSUE 04 · APR 2026
+              {t('ISSUE 04 · APR 2026', 'EDICIÓN 04 · ABR 2026')}
             </div>
             <div style={{ position: 'absolute', left: 36, right: 36, bottom: 40, color: p.bg }}>
               <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 64, fontWeight: type.displayWeight, lineHeight: 0.95, letterSpacing: '-0.03em', textWrap: 'balance' }}>
-                They bid.<br />You book.
+                {lang === 'es' ? (<>Ellos ofertan.<br />Tú reservas.</>) : (<>They bid.<br />You book.</>)}
               </div>
               <div style={{ marginTop: 18, padding: '14px 16px', background: 'rgba(255,255,255,0.10)', backdropFilter: 'blur(12px)', borderRadius: 12, border: '0.5px solid rgba(255,255,255,0.15)' }}>
-                <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: p.accent }}>WHAT YOU GET</div>
+                <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: p.accent }}>{t('WHAT YOU GET', 'LO QUE OBTIENES')}</div>
                 <ul style={{ margin: '8px 0 0', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {[
-                    role === 'salon' ? '7% per booking · no monthly fee' : 'Bids in your inbox in 5–15 min',
-                    role === 'salon' ? 'Stripe payouts within 2 days' : 'Save 20–40% off menu prices',
-                    role === 'salon' ? 'Real chair-fillers, not "leads"' : 'Real slots, real prices, real people',
+                    role === 'salon' ? t('7% per booking · no monthly fee', '7% por reserva · sin cuota mensual') : t('Bids in your inbox in 5–15 min', 'Ofertas en tu bandeja en 5–15 min'),
+                    role === 'salon' ? t('Stripe payouts within 2 days', 'Pagos por Stripe en 2 días') : t('Save 20–40% off menu prices', 'Ahorra 20–40% sobre los precios de menú'),
+                    role === 'salon' ? t('Real chair-fillers, not "leads"', 'Clientes reales, no "leads"') : t('Real slots, real prices, real people', 'Horarios reales, precios reales, gente real'),
                   ].map(line => (
                     <li key={line} style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: type.body, fontSize: 13.5, color: 'rgba(255,255,255,0.92)' }}>
                       <span style={{ width: 16, height: 16, borderRadius: 99, background: p.accent, color: p.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>

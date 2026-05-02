@@ -3,12 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import CustomerLayout from '../components/CustomerLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
-import { useAuth } from '../store.jsx';
+import { useAuth, useLang } from '../store.jsx';
 import { useNotifications, markNotificationsRead, useUnreadNotifications } from '../lib/quotes.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
+import { useT } from '../lib/i18n.js';
 
-const fmtAgo = ts => {
+const fmtAgo = (ts, lang) => {
   const m = Math.floor((Date.now() - new Date(ts).getTime()) / 60000);
+  if (lang === 'es') {
+    if (m < 1) return 'ahora mismo';
+    if (m < 60) return `hace ${m}m`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `hace ${h}h`;
+    return `hace ${Math.floor(h / 24)}d`;
+  }
   if (m < 1) return 'just now';
   if (m < 60) return `${m}m ago`;
   const h = Math.floor(m / 60);
@@ -32,6 +40,8 @@ const KIND_DOT = (palette, kind) => ({
 export default function NotificationsPage() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
+  const t = useT();
+  const { lang } = useLang();
   const { user } = useAuth();
   const { items, loading, refresh } = useNotifications(50);
   const { refresh: refreshCount } = useUnreadNotifications();
@@ -45,25 +55,25 @@ export default function NotificationsPage() {
   const onItem = n => { if (n.link) navigate(n.link); };
 
   return (
-    <CustomerLayout mobileTitle="Notifications">
+    <CustomerLayout mobileTitle={t('Notifications', 'Notificaciones')}>
       <div style={{ padding: isPhone ? '20px 18px 60px' : '34px 40px 60px', maxWidth: 720 }}>
-        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>NOTIFICATIONS</div>
-        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>What's new.</h1>
+        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('NOTIFICATIONS', 'NOTIFICACIONES')}</div>
+        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>{t("What's new.", 'Lo nuevo.')}</h1>
 
         <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {!isSupabaseConfigured ? (
             <div style={{ padding: 22, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5 }}>
-              Supabase isn't configured — notifications need a backend.
+              {t("Supabase isn't configured — notifications need a backend.", 'Supabase no está configurado — las notificaciones necesitan un backend.')}
             </div>
           ) : !user ? (
             <div style={{ padding: 22, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5 }}>
-              Sign in to see your notifications.
+              {t('Sign in to see your notifications.', 'Inicia sesión para ver tus notificaciones.')}
             </div>
           ) : loading && items.length === 0 ? (
-            <div style={{ padding: 22, color: p.inkMuted, fontSize: 13.5 }}>Loading…</div>
+            <div style={{ padding: 22, color: p.inkMuted, fontSize: 13.5 }}>{t('Loading…', 'Cargando…')}</div>
           ) : items.length === 0 ? (
             <div style={{ padding: 22, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5, lineHeight: 1.55 }}>
-              Nothing yet. Bids, bookings, completions and reviews show up here as they happen.
+              {t('Nothing yet. Bids, bookings, completions and reviews show up here as they happen.', 'Nada aún. Las cotizaciones, reservaciones, citas completadas y reseñas aparecen aquí cuando ocurren.')}
             </div>
           ) : items.map(n => (
             <button key={n.id} onClick={() => onItem(n)} style={{
@@ -76,7 +86,7 @@ export default function NotificationsPage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, color: p.ink, flex: 1 }}>{n.title}</div>
-                  <div style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, flexShrink: 0 }}>{fmtAgo(n.created_at)}</div>
+                  <div style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, flexShrink: 0 }}>{fmtAgo(n.created_at, lang)}</div>
                 </div>
                 {n.body && (
                   <div style={{ fontSize: 12.5, color: p.inkSoft, marginTop: 4, lineHeight: 1.5 }}>

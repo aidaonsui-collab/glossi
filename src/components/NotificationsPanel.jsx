@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
-import { useNotifications } from '../store.jsx';
+import { useNotifications, useLang } from '../store.jsx';
+import { useT } from '../lib/i18n.js';
 
 const ICONS = {
   bid: 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',
@@ -22,8 +23,15 @@ const ICON_COLORS = {
   refund: '#3D7A4E',
 };
 
-function timeAgo(ts) {
+function timeAgo(ts, lang) {
   const s = Math.floor((Date.now() - ts) / 1000);
+  if (lang === 'es') {
+    if (s < 60) return 'ahora';
+    if (s < 3600) return `${Math.floor(s / 60)}m`;
+    if (s < 86400) return `${Math.floor(s / 3600)}h`;
+    if (s < 604800) return `${Math.floor(s / 86400)}d`;
+    return new Date(ts).toLocaleDateString('es-MX', { month: 'short', day: 'numeric' });
+  }
   if (s < 60) return 'just now';
   if (s < 3600) return `${Math.floor(s / 60)}m`;
   if (s < 86400) return `${Math.floor(s / 3600)}h`;
@@ -34,6 +42,8 @@ function timeAgo(ts) {
 // variant = 'dropdown' | 'page'
 export default function NotificationsPanel({ variant = 'dropdown', onClose }) {
   const navigate = useNavigate();
+  const t = useT();
+  const { lang } = useLang();
   const { items, unreadCount, markRead, markAllRead, clear } = useNotifications();
 
   const dropdown = variant === 'dropdown';
@@ -55,21 +65,23 @@ export default function NotificationsPanel({ variant = 'dropdown', onClose }) {
         borderBottom: `0.5px solid ${p.line}`,
       }}>
         <div>
-          <div style={{ fontSize: dropdown ? 10.5 : 11, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>NOTIFICATIONS</div>
+          <div style={{ fontSize: dropdown ? 10.5 : 11, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>{t('NOTIFICATIONS', 'NOTIFICACIONES')}</div>
           {!dropdown && <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 32, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.02em', marginTop: 4 }}>
-            {unreadCount > 0 ? `${unreadCount} new` : 'All caught up.'}
+            {unreadCount > 0
+              ? (lang === 'es' ? `${unreadCount} ${unreadCount === 1 ? 'nueva' : 'nuevas'}` : `${unreadCount} new`)
+              : t('All caught up.', 'Todo al día.')}
           </div>}
         </div>
         {items.length > 0 && (
           <div style={{ display: 'flex', gap: 6 }}>
             {unreadCount > 0 && (
               <button onClick={markAllRead} style={{ background: 'transparent', border: 0, fontSize: 11.5, color: p.accent, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: '4px 8px' }}>
-                Mark all read
+                {t('Mark all read', 'Marcar todo como leído')}
               </button>
             )}
             {!dropdown && (
               <button onClick={clear} style={{ background: 'transparent', border: 0, fontSize: 11.5, color: p.inkMuted, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: '4px 8px' }}>
-                Clear all
+                {t('Clear all', 'Borrar todo')}
               </button>
             )}
           </div>
@@ -78,7 +90,7 @@ export default function NotificationsPanel({ variant = 'dropdown', onClose }) {
 
       {items.length === 0 ? (
         <div style={{ padding: dropdown ? 28 : 60, textAlign: 'center', color: p.inkMuted, fontSize: 13 }}>
-          You're all caught up.
+          {t("You're all caught up.", 'Estás al día.')}
         </div>
       ) : (
         <div>
@@ -101,7 +113,7 @@ export default function NotificationsPanel({ variant = 'dropdown', onClose }) {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 6 }}>
                     <div style={{ fontSize: dropdown ? 13 : 14, fontWeight: 600, color: p.ink, lineHeight: 1.3 }}>{n.title}</div>
-                    <div style={{ fontFamily: type.mono, fontSize: 10, color: p.inkMuted, flexShrink: 0 }}>{timeAgo(n.ts)}</div>
+                    <div style={{ fontFamily: type.mono, fontSize: 10, color: p.inkMuted, flexShrink: 0 }}>{timeAgo(n.ts, lang)}</div>
                   </div>
                   {n.body && (
                     <div style={{ fontSize: dropdown ? 11.5 : 12.5, color: p.inkSoft, marginTop: 3, lineHeight: 1.45 }}>{n.body}</div>
@@ -119,7 +131,7 @@ export default function NotificationsPanel({ variant = 'dropdown', onClose }) {
           <button onClick={() => { onClose?.(); navigate('/notifications'); }} style={{
             width: '100%', padding: '10px', background: 'transparent', border: 0,
             fontSize: 12.5, color: p.accent, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-          }}>See all notifications →</button>
+          }}>{t('See all notifications →', 'Ver todas las notificaciones →')}</button>
         </div>
       )}
     </div>

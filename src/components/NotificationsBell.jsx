@@ -2,9 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { markNotificationsRead, useNotifications, useUnreadNotifications } from '../lib/quotes.js';
+import { useT } from '../lib/i18n.js';
+import { useLang } from '../store.jsx';
 
-const fmtAgo = ts => {
+const fmtAgo = (ts, lang) => {
   const m = Math.floor((Date.now() - new Date(ts).getTime()) / 60000);
+  if (lang === 'es') {
+    if (m < 1) return 'ya';
+    if (m < 60) return `${m}m`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h`;
+    return `${Math.floor(h / 24)}d`;
+  }
   if (m < 1) return 'now';
   if (m < 60) return `${m}m`;
   const h = Math.floor(m / 60);
@@ -16,6 +25,8 @@ const fmtAgo = ts => {
 // `tone` selects ring/icon color so the bell blends into either chrome.
 export default function NotificationsBell({ tone = 'light' }) {
   const navigate = useNavigate();
+  const t = useT();
+  const { lang } = useLang();
   const [open, setOpen] = useState(false);
   const { count, refresh: refreshCount } = useUnreadNotifications();
   const { items, refresh: refreshList } = useNotifications(15);
@@ -62,7 +73,7 @@ export default function NotificationsBell({ tone = 'light' }) {
     <div ref={ref} style={{ position: 'relative', flexShrink: 0 }}>
       <button
         onClick={() => (open ? setOpen(false) : onOpen())}
-        aria-label="Notifications"
+        aria-label={t('Notifications', 'Notificaciones')}
         style={{
           width: 36, height: 36, borderRadius: 99,
           background: 'transparent', border: `0.5px solid ${ringColor}`,
@@ -98,18 +109,18 @@ export default function NotificationsBell({ tone = 'light' }) {
           maxHeight: 'min(75vh, 540px)', display: 'flex', flexDirection: 'column',
         }}>
           <div style={{ padding: '12px 16px', borderBottom: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ flex: 1, fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>NOTIFICATIONS</div>
+            <div style={{ flex: 1, fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>{t('NOTIFICATIONS', 'NOTIFICACIONES')}</div>
             {count > 0 && (
               <button onClick={onMarkAll} style={{
                 background: 'transparent', border: 0, padding: 0, cursor: 'pointer',
                 fontFamily: 'inherit', fontSize: 11.5, fontWeight: 600, color: p.accent,
-              }}>Mark all read</button>
+              }}>{t('Mark all read', 'Marcar todo leído')}</button>
             )}
           </div>
           <div style={{ flex: 1, overflow: 'auto' }}>
             {items.length === 0 ? (
               <div style={{ padding: 28, textAlign: 'center', color: p.inkMuted, fontSize: 13 }}>
-                No notifications yet.
+                {t('No notifications yet.', 'Aún no hay notificaciones.')}
               </div>
             ) : items.map((n, i) => {
               const unread = !n.read_at;
@@ -134,7 +145,7 @@ export default function NotificationsBell({ tone = 'light' }) {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                       <div style={{ fontSize: 13, fontWeight: unread ? 600 : 500, color: p.ink, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.title}</div>
-                      <div style={{ fontFamily: type.mono, fontSize: 10.5, color: p.inkMuted, flexShrink: 0 }}>{fmtAgo(n.created_at)}</div>
+                      <div style={{ fontFamily: type.mono, fontSize: 10.5, color: p.inkMuted, flexShrink: 0 }}>{fmtAgo(n.created_at, lang)}</div>
                     </div>
                     {n.body && (
                       <div style={{ fontSize: 12, color: p.inkSoft, marginTop: 3, lineHeight: 1.45, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
@@ -150,7 +161,7 @@ export default function NotificationsBell({ tone = 'light' }) {
             <button onClick={() => { setOpen(false); navigate('/notifications'); }} style={{
               background: 'transparent', border: 0, padding: 0, cursor: 'pointer',
               fontFamily: 'inherit', fontSize: 12, fontWeight: 600, color: p.inkMuted,
-            }}>See all →</button>
+            }}>{t('See all →', 'Ver todas →')}</button>
           </div>
         </div>
       )}

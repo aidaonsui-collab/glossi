@@ -5,9 +5,10 @@ import CustomerLayout from '../components/CustomerLayout.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
-import { useAuth } from '../store.jsx';
+import { useAuth, useLang } from '../store.jsx';
 import { invokeEdgeFunction, isStripeConfigured, stripePromise, PLATFORM_FEE_PCT } from '../lib/stripe.js';
 import { isSupabaseConfigured, supabase } from '../lib/supabase.js';
+import { useT } from '../lib/i18n.js';
 
 const fmtMoney = cents => `$${((cents || 0) / 100).toFixed(2)}`;
 
@@ -20,6 +21,8 @@ function PaymentForm({ amount, fee, salonName, serviceSummary, returnTo, payment
   const elements = useElements();
   const navigate = useNavigate();
   const toast = useToast();
+  const t = useT();
+  const { lang } = useLang();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [waiting, setWaiting] = useState(false);
@@ -37,7 +40,7 @@ function PaymentForm({ amount, fee, salonName, serviceSummary, returnTo, payment
       redirect: 'if_required',
     });
     if (result.error) {
-      setError(result.error.message || 'Payment failed.');
+      setError(result.error.message || t('Payment failed.', 'El pago falló.'));
       setSubmitting(false);
       return;
     }
@@ -56,10 +59,10 @@ function PaymentForm({ amount, fee, salonName, serviceSummary, returnTo, payment
         if (data?.id) break;
         await new Promise(r => setTimeout(r, 700));
       }
-      toast(`Booked with ${salonName}.`, { tone: 'success' });
+      toast(lang === 'es' ? `Reservado con ${salonName}.` : `Booked with ${salonName}.`, { tone: 'success' });
       navigate('/bookings');
     } else {
-      setError(`Unexpected status: ${result.paymentIntent?.status || 'unknown'}`);
+      setError(lang === 'es' ? `Estado inesperado: ${result.paymentIntent?.status || 'desconocido'}` : `Unexpected status: ${result.paymentIntent?.status || 'unknown'}`);
       setSubmitting(false);
     }
   };
@@ -80,7 +83,11 @@ function PaymentForm({ amount, fee, salonName, serviceSummary, returnTo, payment
         </div>
       )}
       <div style={{ padding: '14px 16px', background: p.surface2, borderRadius: 12, fontSize: 12.5, color: p.inkSoft, lineHeight: 1.55 }}>
-        Glossi charges your card now and releases funds to <strong style={{ color: p.ink }}>{salonName}</strong> after the appointment. Cancel up to 24 hours before for a full refund.
+        {lang === 'es' ? (
+          <>Glossi cobra tu tarjeta ahora y libera los fondos a <strong style={{ color: p.ink }}>{salonName}</strong> después de la cita. Cancela hasta 24 horas antes para un reembolso completo.</>
+        ) : (
+          <>Glossi charges your card now and releases funds to <strong style={{ color: p.ink }}>{salonName}</strong> after the appointment. Cancel up to 24 hours before for a full refund.</>
+        )}
       </div>
       <button type="submit" disabled={!stripe || submitting || waiting} style={{
         background: p.ink, color: p.bg, border: 0,
@@ -89,7 +96,7 @@ function PaymentForm({ amount, fee, salonName, serviceSummary, returnTo, payment
         fontFamily: 'inherit',
         opacity: (!stripe || submitting || waiting) ? 0.6 : 1,
       }}>
-        {waiting ? 'Confirming booking…' : submitting ? 'Charging card…' : `Pay ${fmtMoney(amount)} & book ${serviceSummary}`}
+        {waiting ? t('Confirming booking…', 'Confirmando reservación…') : submitting ? t('Charging card…', 'Cobrando tarjeta…') : (lang === 'es' ? `Pagar ${fmtMoney(amount)} y reservar ${serviceSummary}` : `Pay ${fmtMoney(amount)} & book ${serviceSummary}`)}
       </button>
     </form>
   );
@@ -100,6 +107,8 @@ export default function PaymentPage() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const toast = useToast();
+  const t = useT();
+  const { lang } = useLang();
   const { user, loading: authLoading } = useAuth();
 
   const [intent, setIntent] = useState(null);
@@ -119,7 +128,7 @@ export default function PaymentPage() {
       const result = await invokeEdgeFunction('create-payment-intent', { bidId });
       if (cancelled) return;
       if (!result.ok) {
-        setErr(result.error || 'Could not start payment.');
+        setErr(result.error || t('Could not start payment.', 'No se pudo iniciar el pago.'));
       } else {
         setIntent(result.data);
       }
@@ -143,20 +152,24 @@ export default function PaymentPage() {
   } : null, [intent]);
 
   return (
-    <CustomerLayout active="quotes" mobileTitle="Pay & book">
+    <CustomerLayout active="quotes" mobileTitle={t('Pay & book', 'Pagar y reservar')}>
       <div style={{ padding: isPhone ? '20px 18px 60px' : '34px 40px 60px', maxWidth: 640 }}>
-        <Link to={`/quotes`} style={{ fontSize: 12, color: p.inkMuted, textDecoration: 'none', fontWeight: 600 }}>← Back to quotes</Link>
-        <div style={{ marginTop: 16, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>CHECKOUT</div>
-        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>Pay &amp; book.</h1>
+        <Link to={`/quotes`} style={{ fontSize: 12, color: p.inkMuted, textDecoration: 'none', fontWeight: 600 }}>{t('← Back to quotes', '← Volver a cotizaciones')}</Link>
+        <div style={{ marginTop: 16, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('CHECKOUT', 'PAGO')}</div>
+        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 48, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>{t('Pay & book.', 'Paga y reserva.')}</h1>
 
         {!isStripeConfigured && (
           <div style={{ marginTop: 22, padding: 18, background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}`, color: p.inkSoft, fontSize: 13.5, lineHeight: 1.55 }}>
-            Stripe isn't configured — set <code>VITE_STRIPE_PUBLISHABLE_KEY</code> in Vercel and redeploy.
+            {lang === 'es' ? (
+              <>Stripe no está configurado — define <code>VITE_STRIPE_PUBLISHABLE_KEY</code> en Vercel y vuelve a desplegar.</>
+            ) : (
+              <>Stripe isn't configured — set <code>VITE_STRIPE_PUBLISHABLE_KEY</code> in Vercel and redeploy.</>
+            )}
           </div>
         )}
 
         {isStripeConfigured && loading && (
-          <div style={{ marginTop: 22, color: p.inkMuted, fontSize: 14 }}>Setting up your payment…</div>
+          <div style={{ marginTop: 22, color: p.inkMuted, fontSize: 14 }}>{t('Setting up your payment…', 'Preparando tu pago…')}</div>
         )}
 
         {isStripeConfigured && err && (
@@ -178,7 +191,7 @@ export default function PaymentPage() {
                 </div>
               </div>
               <div style={{ marginTop: 14, paddingTop: 12, borderTop: `0.5px dashed ${p.line}`, display: 'flex', justifyContent: 'space-between', fontSize: 11.5, color: p.inkMuted }}>
-                <span>Glossi platform fee · {PLATFORM_FEE_PCT}%</span>
+                <span>{t('Glossi platform fee', 'Comisión de plataforma Glossi')} · {PLATFORM_FEE_PCT}%</span>
                 <span style={{ fontFamily: type.mono }}>{fmtMoney(intent.platformFeeCents)}</span>
               </div>
             </div>

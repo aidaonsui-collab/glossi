@@ -4,10 +4,11 @@ import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
 import CustomerLayout from '../components/CustomerLayout.jsx';
-import { useAuth, useCustomerProfile } from '../store.jsx';
+import { useAuth, useCustomerProfile, useLang } from '../store.jsx';
 import { createQuoteRequest } from '../lib/quotes.js';
 import { isSupabaseConfigured, supabase } from '../lib/supabase.js';
 import { ZIP_CENTROIDS } from '../lib/geocode.js';
+import { useT } from '../lib/i18n.js';
 
 // Read the last-used ZIP synchronously from localStorage so the form
 // renders with it on the very first paint — no flash-of-disabled-button
@@ -22,17 +23,17 @@ function readCachedZip() {
 }
 
 const SERVICES = [
-  { slug: 'haircut', label: 'Haircut', icon: '💇‍♀️' },
-  { slug: 'hairstyle', label: 'Hairstyle', icon: '💁‍♀️' },
-  { slug: 'color', label: 'Color', icon: '🎨' },
-  { slug: 'nails', label: 'Nails', icon: '💅' },
-  { slug: 'lashes-brows', label: 'Lashes & Brows', icon: '👁️' },
-  { slug: 'hair-removal', label: 'Hair Removal', icon: '🪒' },
-  { slug: 'facials', label: 'Facials', icon: '🧖‍♀️' },
-  { slug: 'massage', label: 'Massage', icon: '💆‍♀️' },
-  { slug: 'med-spa', label: 'Med Spa', icon: '💉' },
-  { slug: 'makeup', label: 'Makeup', icon: '💄' },
-  { slug: 'tanning', label: 'Tanning', icon: '🌞' },
+  { slug: 'haircut', label: 'Haircut', labelEs: 'Corte de cabello', icon: '💇‍♀️' },
+  { slug: 'hairstyle', label: 'Hairstyle', labelEs: 'Peinado', icon: '💁‍♀️' },
+  { slug: 'color', label: 'Color', labelEs: 'Color', icon: '🎨' },
+  { slug: 'nails', label: 'Nails', labelEs: 'Uñas', icon: '💅' },
+  { slug: 'lashes-brows', label: 'Lashes & Brows', labelEs: 'Pestañas y cejas', icon: '👁️' },
+  { slug: 'hair-removal', label: 'Hair Removal', labelEs: 'Depilación', icon: '🪒' },
+  { slug: 'facials', label: 'Facials', labelEs: 'Faciales', icon: '🧖‍♀️' },
+  { slug: 'massage', label: 'Massage', labelEs: 'Masaje', icon: '💆‍♀️' },
+  { slug: 'med-spa', label: 'Med Spa', labelEs: 'Med Spa', icon: '💉' },
+  { slug: 'makeup', label: 'Makeup', labelEs: 'Maquillaje', icon: '💄' },
+  { slug: 'tanning', label: 'Tanning', labelEs: 'Bronceado', icon: '🌞' },
 ];
 
 const RADII = [5, 10, 15, 25];
@@ -41,6 +42,8 @@ export default function RequestQuote() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const toast = useToast();
+  const t = useT();
+  const { lang } = useLang();
   const { user, loading: authLoading } = useAuth();
   const { profile } = useCustomerProfile();
   const [params] = useSearchParams();
@@ -82,7 +85,7 @@ export default function RequestQuote() {
     // Hard 15s ceiling so the button can't get truly stuck if the RPC hangs.
     const watchdog = setTimeout(() => {
       setSubmitting(false);
-      toast('Posting is taking too long. Check your connection and try again.', { tone: 'warn' });
+      toast(t('Posting is taking too long. Check your connection and try again.', 'La publicación está tardando demasiado. Revisa tu conexión e inténtalo de nuevo.'), { tone: 'warn' });
     }, 15000);
     try {
       const result = await createQuoteRequest({
@@ -95,10 +98,10 @@ export default function RequestQuote() {
       });
       if (!result.ok) {
         console.error('createQuoteRequest failed:', result.error);
-        toast(result.error || 'Could not post request.', { tone: 'warn' });
+        toast(result.error || t('Could not post request.', 'No se pudo publicar la solicitud.'), { tone: 'warn' });
         return;
       }
-      toast('Request posted — salons within your radius will see it shortly.', { tone: 'success' });
+      toast(t('Request posted — salons within your radius will see it shortly.', 'Solicitud publicada — los salones dentro de tu radio la verán pronto.'), { tone: 'success' });
       // Cache the ZIP so the next /request visit pre-fills the field
       // (avoids the disabled-button-on-first-land friction). Also
       // best-effort backfill the profile.home_zip so the cache works
@@ -110,7 +113,7 @@ export default function RequestQuote() {
       navigate(`/quotes/${result.id}`);
     } catch (err) {
       console.error('submit error:', err);
-      toast(err?.message || 'Something went wrong.', { tone: 'warn' });
+      toast(err?.message || t('Something went wrong.', 'Algo salió mal.'), { tone: 'warn' });
     } finally {
       clearTimeout(watchdog);
       setSubmitting(false);
@@ -127,17 +130,17 @@ export default function RequestQuote() {
   };
 
   return (
-    <CustomerLayout active="quotes" mobileTitle="Post a request">
+    <CustomerLayout active="quotes" mobileTitle={t('Post a request', 'Publica una solicitud')}>
       <form onSubmit={submit} style={{ padding: isPhone ? '20px 18px 60px' : '34px 40px 60px', maxWidth: 720 }}>
-        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>NEW REQUEST</div>
-        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 38 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>Post a request.</h1>
+        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('NEW REQUEST', 'NUEVA SOLICITUD')}</div>
+        <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 38 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>{t('Post a request.', 'Publica una solicitud.')}</h1>
         <p style={{ fontSize: isPhone ? 14 : 15, color: p.inkSoft, lineHeight: 1.55, margin: '10px 0 0', maxWidth: 560 }}>
-          Pick what you're booking. Salons within your radius will see it for the next 72 hours and send bids.
+          {t("Pick what you're booking. Salons within your radius will see it for the next 72 hours and send bids.", 'Elige lo que vas a reservar. Los salones dentro de tu radio lo verán durante las próximas 72 horas y enviarán cotizaciones.')}
         </p>
 
         {/* Services */}
         <section style={{ marginTop: 28 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>01 · WHAT</div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('01 · WHAT', '01 · QUÉ')}</div>
           <div style={{ marginTop: 10, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 8 }}>
             {SERVICES.map(s => {
               const sel = picked.has(s.slug);
@@ -150,7 +153,7 @@ export default function RequestQuote() {
                   display: 'flex', alignItems: 'center', gap: 10,
                 }}>
                   <span style={{ fontSize: 18 }}>{s.icon}</span>
-                  <span style={{ fontSize: 13, fontWeight: 600 }}>{s.label}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600 }}>{t(s.label, s.labelEs)}</span>
                 </button>
               );
             })}
@@ -159,17 +162,17 @@ export default function RequestQuote() {
 
         {/* Location */}
         <section style={{ marginTop: 28 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>02 · WHERE</div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('02 · WHERE', '02 · DÓNDE')}</div>
           <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '160px 1fr', gap: 12, marginTop: 10 }}>
             <div>
-              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>ZIP</div>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>{t('ZIP', 'Código postal')}</div>
               <input value={zip} onChange={e => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))} inputMode="numeric" placeholder="78577" style={{ ...inputStyle, fontFamily: type.mono, letterSpacing: '0.1em' }} />
               {zip.length === 5 && !validZip && (
-                <div style={{ fontSize: 11.5, color: '#B23A3A', marginTop: 6 }}>Glossi launches in TX (Dallas, Austin, San Antonio, RGV).</div>
+                <div style={{ fontSize: 11.5, color: '#B23A3A', marginTop: 6 }}>{t('Glossi launches in TX (Dallas, Austin, San Antonio, RGV).', 'Glossi se lanza en TX (Dallas, Austin, San Antonio, RGV).')}</div>
               )}
             </div>
             <div>
-              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Radius</div>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>{t('Radius', 'Radio')}</div>
               <div style={{ display: 'flex', gap: 6 }}>
                 {RADII.map(r => {
                   const a = radius === r;
@@ -189,14 +192,14 @@ export default function RequestQuote() {
 
         {/* Window */}
         <section style={{ marginTop: 28 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>03 · WHEN <span style={{ color: p.inkMuted, fontWeight: 500, letterSpacing: '0.04em' }}>· OPTIONAL</span></div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('03 · WHEN', '03 · CUÁNDO')} <span style={{ color: p.inkMuted, fontWeight: 500, letterSpacing: '0.04em' }}>{t('· OPTIONAL', '· OPCIONAL')}</span></div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 10 }}>
             <div>
-              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Earliest</div>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>{t('Earliest', 'Lo más pronto')}</div>
               <input type="date" value={earliestDate} onChange={e => setEarliestDate(e.target.value)} style={inputStyle} />
             </div>
             <div>
-              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>Latest</div>
+              <div style={{ fontSize: 11.5, color: p.inkSoft, marginBottom: 6, fontWeight: 600 }}>{t('Latest', 'Lo más tarde')}</div>
               <input type="date" value={latestDate} onChange={e => setLatestDate(e.target.value)} min={earliestDate || undefined} style={inputStyle} />
             </div>
           </div>
@@ -204,8 +207,8 @@ export default function RequestQuote() {
 
         {/* Notes */}
         <section style={{ marginTop: 28 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>04 · DETAILS <span style={{ color: p.inkMuted, fontWeight: 500, letterSpacing: '0.04em' }}>· OPTIONAL</span></div>
-          <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Tell salons what you're looking for. Reference photos help — paste links or describe."
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('04 · DETAILS', '04 · DETALLES')} <span style={{ color: p.inkMuted, fontWeight: 500, letterSpacing: '0.04em' }}>{t('· OPTIONAL', '· OPCIONAL')}</span></div>
+          <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder={t("Tell salons what you're looking for. Reference photos help — paste links or describe.", 'Cuéntale a los salones qué buscas. Las fotos de referencia ayudan — pega enlaces o descríbelo.')}
             rows={4}
             style={{ ...inputStyle, marginTop: 10, fontFamily: type.body, lineHeight: 1.5, resize: 'vertical' }}
           />
@@ -218,10 +221,14 @@ export default function RequestQuote() {
             padding: '15px 24px', borderRadius: 99, fontSize: 14.5, fontWeight: 600,
             cursor: canSubmit ? 'pointer' : 'not-allowed', fontFamily: 'inherit',
           }}>
-            {submitting ? 'Posting…' : 'Post request →'}
+            {submitting ? t('Posting…', 'Publicando…') : t('Post request →', 'Publicar solicitud →')}
           </button>
           <span style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, letterSpacing: '0.1em' }}>
-            {picked.size > 0 ? `${picked.size} SERVICE${picked.size === 1 ? '' : 'S'} · ${radius} MI · 72H WINDOW` : 'PICK AT LEAST ONE SERVICE'}
+            {picked.size > 0
+              ? (lang === 'es'
+                ? `${picked.size} ${picked.size === 1 ? 'SERVICIO' : 'SERVICIOS'} · ${radius} MI · VENTANA DE 72H`
+                : `${picked.size} SERVICE${picked.size === 1 ? '' : 'S'} · ${radius} MI · 72H WINDOW`)
+              : t('PICK AT LEAST ONE SERVICE', 'ELIGE AL MENOS UN SERVICIO')}
           </span>
         </div>
       </form>
