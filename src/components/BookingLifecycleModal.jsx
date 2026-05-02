@@ -9,7 +9,7 @@ import {
   markBookingNoShow,
   submitReview,
 } from '../lib/quotes.js';
-import { useT } from '../lib/i18n.js';
+import { useT, fmtSlugs } from '../lib/i18n.js';
 import { useLang } from '../store.jsx';
 
 const fmtMoney = cents => `$${((cents || 0) / 100).toFixed(2)}`;
@@ -18,7 +18,6 @@ const fmtHours = (h, lang) => h == null ? '—'
   : lang === 'es'
     ? (h < 1 ? `${Math.round(h * 60)} min` : h < 48 ? `${h.toFixed(1)} hr` : `${Math.floor(h / 24)} ${Math.floor(h / 24) === 1 ? 'día' : 'días'}`)
     : (h < 1 ? `${Math.round(h * 60)} min` : h < 48 ? `${h.toFixed(1)} hr` : `${Math.floor(h / 24)} day${Math.floor(h / 24) === 1 ? '' : 's'}`);
-const fmtServices = slugs => (slugs || []).map(s => s.replace('-', ' & ')).join(', ');
 const fmtWhen = (ts, lang) => ts
   ? new Date(ts).toLocaleString(lang === 'es' ? 'es-MX' : 'en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
   : null;
@@ -32,7 +31,7 @@ function BookingSummary({ booking, callerRole }) {
   const headline = callerRole === 'salon'
     ? (booking.customerName || t('Customer', 'Cliente'))
     : (booking.salonName || t('Salon', 'Salón'));
-  const service = booking.serviceSummary || fmtServices(booking.serviceSlugs);
+  const service = booking.serviceSummary || fmtSlugs(booking.serviceSlugs, lang);
   const when = fmtWhen(booking.scheduledAt, lang);
   return (
     <div style={{ padding: '14px 16px', background: p.bg, borderRadius: 12, border: `0.5px solid ${p.line}` }}>

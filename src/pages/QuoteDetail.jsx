@@ -8,7 +8,7 @@ import Modal from '../components/Modal.jsx';
 import { useAuth, useLang } from '../store.jsx';
 import { useBidsForQuote, counterBid } from '../lib/quotes.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
-import { useT } from '../lib/i18n.js';
+import { useT, fmtSlugs } from '../lib/i18n.js';
 
 const fmtPrice = cents => cents == null ? '—' : `$${(cents / 100).toFixed(0)}`;
 const fmtDur = (min, lang) => min ? (min < 60 ? `${min} min` : `${Math.round(min / 60 * 10) / 10} ${lang === 'es' ? 'h' : 'hr'}`) : '—';
@@ -127,7 +127,7 @@ export default function QuoteDetail() {
           {t('REQUEST', 'SOLICITUD')} · {quote.search_zip || '—'} · {quote.radius_miles}MI · {isBooked ? t('BOOKED', 'RESERVADO') : isClosed ? t('CLOSED', 'CERRADO') : (lang === 'es' ? `${expiresIn}H RESTANTES` : `${expiresIn}H LEFT`)}
         </div>
         <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 42, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1.05, margin: '8px 0 0' }}>
-          {quote.service_slugs.map(s => s.replace('-', ' & ')).join(', ')}
+          {fmtSlugs(quote.service_slugs, lang)}
         </h1>
         {quote.notes && (
           <p style={{ fontSize: isPhone ? 14 : 15, color: p.inkSoft, lineHeight: 1.55, margin: '12px 0 0', maxWidth: 560, fontStyle: 'italic' }}>
