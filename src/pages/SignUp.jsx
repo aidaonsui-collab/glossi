@@ -68,6 +68,17 @@ export default function SignUp() {
         return;
       }
       toast(t(`Welcome, ${name.split(' ')[0]}!`, `¡Bienvenida, ${name.split(' ')[0]}!`), { tone: 'success' });
+      // If the visitor came from /request with a stashed draft, send them
+      // back there so the auto-post effect can publish it before they hit
+      // onboarding. They can finish their profile from /settings later.
+      const hasPendingQuote = (() => {
+        try { return Boolean(JSON.parse(localStorage.getItem('glossi.pendingQuote') || 'null')?.serviceSlugs?.length); }
+        catch { return false; }
+      })();
+      if (role === 'customer' && (params.get('next') === 'request' || hasPendingQuote)) {
+        navigate('/request');
+        return;
+      }
       navigate(role === 'salon' ? '/onboarding/salon' : '/onboarding/customer');
     } catch (err) {
       console.error('signUp error', err);

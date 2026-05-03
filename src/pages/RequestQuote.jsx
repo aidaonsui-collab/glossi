@@ -22,6 +22,22 @@ function readCachedZip() {
   } catch { return ''; }
 }
 
+// An anonymous visitor can compose a request and click Post; we stash the
+// draft here, send them to /signup, and on the way back read it out and
+// auto-publish so they don't lose what they typed.
+const PENDING_KEY = 'glossi.pendingQuote';
+function readPendingDraft() {
+  if (typeof window === 'undefined') return null;
+  try { return JSON.parse(localStorage.getItem(PENDING_KEY) || 'null'); }
+  catch { return null; }
+}
+function writePendingDraft(draft) {
+  try { localStorage.setItem(PENDING_KEY, JSON.stringify(draft)); } catch { /* noop */ }
+}
+function clearPendingDraft() {
+  try { localStorage.removeItem(PENDING_KEY); } catch { /* noop */ }
+}
+
 const SERVICES = [
   { slug: 'haircut', label: 'Haircut', labelEs: 'Corte de cabello', icon: '💇‍♀️' },
   { slug: 'hairstyle', label: 'Hairstyle', labelEs: 'Peinado', icon: '💁‍♀️' },
@@ -48,18 +64,22 @@ export default function RequestQuote() {
   const { profile } = useCustomerProfile();
   const [params] = useSearchParams();
 
+  // If we're returning from signup with a stashed draft, restore it on first
+  // render so the form starts pre-filled — no flicker of empty state.
+  const initialDraft = readPendingDraft();
   const [picked, setPicked] = useState(() => {
+    if (initialDraft?.serviceSlugs?.length) return new Set(initialDraft.serviceSlugs);
     const slugs = (params.get('services') || '').split(',').map(s => s.trim()).filter(Boolean);
     const valid = new Set(SERVICES.map(s => s.slug));
     return new Set(slugs.filter(s => valid.has(s)));
   });
   // Initial value: cached ZIP if we have one. Falls back to profile
   // .zip via the effect below once auth hydrates.
-  const [zip, setZip] = useState(readCachedZip);
-  const [radius, setRadius] = useState(10);
-  const [notes, setNotes] = useState('');
-  const [earliestDate, setEarliestDate] = useState('');
-  const [latestDate, setLatestDate] = useState('');
+  const [zip, setZip] = useState(() => initialDraft?.zip || readCachedZip());
+  const [radius, setRadius] = useState(initialDraft?.radius || 10);
+  const [notes, setNotes] = useState(initialDraft?.notes || '');
+  const [earliestDate, setEarliestDate] = useState(initialDraft?.earliestDate || '');
+  const [latestDate, setLatestDate] = useState(initialDraft?.latestDate || '');
   const [submitting, setSubmitting] = useState(false);
 
   // Prefill ZIP from the customer profile once it hydrates — only if
@@ -68,10 +88,27 @@ export default function RequestQuote() {
     if (!zip && profile?.zip) setZip(profile.zip);
   }, [profile, zip]);
 
-  // If not signed in (after auth has settled), send them to sign up
+  // Auto-publish the stashed draft when the user lands here authenticated
+  // (i.e. they just finished /signup). One shot, then clear the stash.
+  const [autoPosting, setAutoPosting] = useState(false);
   useEffect(() => {
-    if (isSupabaseConfigured && !authLoading && !user) navigate('/signup', { replace: true });
-  }, [user, authLoading, navigate]);
+    if (autoPosting) return;
+    if (authLoading || !user) return;
+    const draft = readPendingDraft();
+    if (!draft || !draft.serviceSlugs?.length) return;
+    setAutoPosting(true);
+    (async () => {
+      const result = await createQuoteRequest(draft);
+      clearPendingDraft();
+      if (result.ok) {
+        toast(t('Request posted — salons within your radius will see it shortly.', 'Solicitud publicada — los salones dentro de tu radio la verán pronto.'), { tone: 'success' });
+        navigate(`/quotes/${result.id}`);
+      } else {
+        toast(result.error || t('Could not post your saved request — try again.', 'No se pudo publicar tu solicitud guardada — inténtalo de nuevo.'), { tone: 'warn' });
+        setAutoPosting(false);
+      }
+    })();
+  }, [user, authLoading, autoPosting, navigate, toast, t]);
 
   const togglePicked = slug => setPicked(curr => {
     const next = new Set(curr);
@@ -81,6 +118,24 @@ export default function RequestQuote() {
 
   const submit = async e => {
     e?.preventDefault();
+    const payload = {
+      serviceSlugs: Array.from(picked),
+      zip,
+      radius,
+      notes,
+      earliestDate: earliestDate || null,
+      latestDate: latestDate || null,
+    };
+
+    // Anonymous user: stash the draft and route to signup. The auto-post
+    // effect on this page will pick it up when they come back authed.
+    if (!user) {
+      writePendingDraft(payload);
+      toast(t('Almost there — create an account to send this to salons.', 'Casi listo — crea una cuenta para enviarla a los salones.'), { tone: 'info' });
+      navigate('/signup?next=request');
+      return;
+    }
+
     setSubmitting(true);
     // Hard 15s ceiling so the button can't get truly stuck if the RPC hangs.
     const watchdog = setTimeout(() => {
@@ -88,14 +143,7 @@ export default function RequestQuote() {
       toast(t('Posting is taking too long. Check your connection and try again.', 'La publicación está tardando demasiado. Revisa tu conexión e inténtalo de nuevo.'), { tone: 'warn' });
     }, 15000);
     try {
-      const result = await createQuoteRequest({
-        serviceSlugs: Array.from(picked),
-        zip,
-        radius,
-        notes,
-        earliestDate: earliestDate || null,
-        latestDate: latestDate || null,
-      });
+      const result = await createQuoteRequest(payload);
       if (!result.ok) {
         console.error('createQuoteRequest failed:', result.error);
         toast(result.error || t('Could not post request.', 'No se pudo publicar la solicitud.'), { tone: 'warn' });
