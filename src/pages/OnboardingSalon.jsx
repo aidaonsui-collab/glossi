@@ -75,42 +75,52 @@ export default function OnboardingSalon() {
 
   const [submitting, setSubmitting] = useState(false);
 
-  // Pulls a Google Place into the form. We grab name + address parts +
-  // phone + up to 6 photo URLs. Bio is left for the salon to write —
-  // Google doesn't have one, and a generated one would feel canned.
+  // Pulls a Google Place into the form. The PlaceAutocompleteElement
+  // returns a Place object with the new schema: displayName,
+  // formattedAddress, addressComponents (longText/shortText/types),
+  // nationalPhoneNumber, websiteURI, photos with getURI().
   const handlePlaceSelect = place => {
-    if (!place || !place.name) return;
-    setName(place.name);
+    if (!place) return;
 
-    const components = place.address_components || [];
-    const get = (...types) => components.find(c => types.every(t => c.types.includes(t)));
-    const streetNumber = get('street_number')?.long_name || '';
-    const route = get('route')?.short_name || get('route')?.long_name || '';
+    // displayName is a string in the JS SDK; some surfaces wrap it as
+    // { text } — coerce defensively.
+    const displayName = typeof place.displayName === 'string'
+      ? place.displayName
+      : place.displayName?.text || '';
+    if (displayName) setName(displayName);
+
+    const components = place.addressComponents || [];
+    const findByType = (...wanted) => components.find(c =>
+      wanted.every(t => (c.types || []).includes(t))
+    );
+    const streetNumber = findByType('street_number')?.longText || '';
+    const route = findByType('route')?.shortText || findByType('route')?.longText || '';
     const street = [streetNumber, route].filter(Boolean).join(' ');
-    const cityComp = get('locality') || get('postal_town') || get('administrative_area_level_3');
-    const zipComp = get('postal_code');
+    const cityComp = findByType('locality') || findByType('postal_town') || findByType('administrative_area_level_3');
+    const zipComp = findByType('postal_code');
 
     if (street) setAddress(street);
-    if (cityComp) setCity(cityComp.long_name);
-    if (zipComp) setZip(zipComp.long_name);
-    if (place.formatted_phone_number) setPhone(place.formatted_phone_number);
+    if (cityComp) setCity(cityComp.longText);
+    if (zipComp) setZip(zipComp.longText);
+    if (place.nationalPhoneNumber) setPhone(place.nationalPhoneNumber);
 
-    // If their website is an Instagram URL, autofill the handle too.
-    if (place.website) {
-      const m = place.website.match(/instagram\.com\/([A-Za-z0-9._]+)/);
+    // If their public website is an Instagram URL, extract the handle.
+    if (place.websiteURI) {
+      const m = place.websiteURI.match(/instagram\.com\/([A-Za-z0-9._]+)/);
       if (m) setInstagram(m[1].replace(/\/$/, ''));
     }
 
-    // Google photos come back as Photo objects; getUrl returns a CDN URL.
-    // Cap at 6 — onboarding lets you upload up to 8, so the salon still
-    // has room to add their own. Stable for ~12 hours per Google's docs;
-    // before going to production we should rehost into Supabase Storage.
+    // Cap at 6 photos — onboarding lets the salon upload up to 8, so
+    // they have room to add their own. Google CDN URLs are stable for
+    // ~hours; before scale we should rehost into Supabase Storage.
     if (Array.isArray(place.photos) && place.photos.length) {
-      const urls = place.photos.slice(0, 6).map(p => p.getUrl({ maxWidth: 1600, maxHeight: 1200 }));
-      setPhotos(urls);
+      const urls = place.photos.slice(0, 6)
+        .map(p => p.getURI?.({ maxWidth: 1600, maxHeight: 1200 }))
+        .filter(Boolean);
+      if (urls.length) setPhotos(urls);
     }
 
-    toast(`Imported ${place.name} from Google. Review and edit anything below.`, { tone: 'success' });
+    toast(`Imported ${displayName || 'business'} from Google. Review and edit anything below.`, { tone: 'success' });
   };
 
   const onPhotoPick = e => {
