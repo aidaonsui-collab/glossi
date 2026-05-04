@@ -163,7 +163,7 @@ export default function SignUp() {
                   { name: 'Groupon', how: t("Deep discount — you're the loss-leader", 'Descuento agresivo — tú asumes la pérdida'), booked: true, cost: t('~50% of the ticket', '~50% del ticket') },
                   { name: 'StyleSeat / Fresha', how: t('Directory + AI marketing', 'Directorio + marketing con IA'), booked: false, cost: t('$0–$35/mo + 2.6–2.75% per txn', '$0–$35/mes + 2.6–2.75% por txn') },
                   { name: 'Booksy / Vagaro', how: t('Tool — not a source', 'Herramienta — no es fuente'), booked: false, cost: t('$30–$50/mo + per-staff + 2.69%', '$30–$50/mes + tarifa por empleado + 2.69%') },
-                  { name: 'Glossi', highlight: true, how: t('Customer posts → you bid → you win', 'Cliente publica → tú ofertas → tú ganas'), booked: true, cost: t('$0/mo + 7% only when you win', '$0/mes + 7% solo cuando ganas') },
+                  { name: 'Glossi', highlight: true, how: t('Customer posts → you bid → you win', 'Cliente publica → tú ofertas → tú ganas'), booked: true, cost: t('$0/mo + 5% only when you win', '$0/mes + 5% solo cuando ganas') },
                 ].map((r, i) => (
                   <div key={r.name} style={{
                     display: 'grid',
@@ -204,6 +204,13 @@ export default function SignUp() {
                     }}>{r.cost}</div>
                   </div>
                 ))}
+              </div>
+
+              <div style={{ marginTop: 10, fontSize: 11, color: p.inkMuted, lineHeight: 1.45 }}>
+                {t(
+                  'YES = booking guaranteed when you pay. NO = you pay regardless of outcome.',
+                  'SÍ = reserva garantizada al pagar. NO = pagas sin importar el resultado.'
+                )}
               </div>
 
               <div style={{ marginTop: 16, fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 17 : 19, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.015em', lineHeight: 1.15, textWrap: 'balance' }}>
@@ -291,7 +298,7 @@ export default function SignUp() {
                 <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: p.accent }}>{t('WHAT YOU GET', 'LO QUE OBTIENES')}</div>
                 <ul style={{ margin: '8px 0 0', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {[
-                    role === 'salon' ? t('7% per booking · no monthly fee', '7% por reserva · sin cuota mensual') : t('Bids in your inbox in 5–15 min', 'Ofertas en tu bandeja en 5–15 min'),
+                    role === 'salon' ? t('5% per booking · no monthly fee', '5% por reserva · sin cuota mensual') : t('Bids in your inbox in 5–15 min', 'Ofertas en tu bandeja en 5–15 min'),
                     role === 'salon' ? t('Stripe payouts within 2 days', 'Pagos por Stripe en 2 días') : t('Save 20–40% off menu prices', 'Ahorra 20–40% sobre los precios de menú'),
                     role === 'salon' ? t('Real chair-fillers, not "leads"', 'Clientes reales, no "leads"') : t('Real slots, real prices, real people', 'Horarios reales, precios reales, gente real'),
                   ].map(line => (

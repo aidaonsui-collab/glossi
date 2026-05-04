@@ -180,8 +180,8 @@ export default function Marketing() {
             <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 0.98, margin: '10px 0 0', textWrap: 'balance' }}>{t('You set your floor. We bring the chair.', 'Tú pones el piso. Nosotros llenamos la silla.')}</h2>
             <p style={{ fontSize: isPhone ? 14 : 16, color: p.inkSoft, lineHeight: 1.55, margin: '14px 0 0', maxWidth: 480 }}>
               {t(
-                'No subscription. No lead fees. Pay 7% only when you win a booking. Set your minimum price, your service area, your hours — we route requests that match.',
-                'Sin suscripción. Sin tarifas por contacto. Paga 7% solo cuando ganas una reserva. Define tu precio mínimo, tu área, tus horas — enrutamos las solicitudes que encajen.'
+                'No subscription. No lead fees. Pay 5% only when you win a booking. Set your minimum price, your service area, your hours — we route requests that match.',
+                'Sin suscripción. Sin tarifas por contacto. Paga 5% solo cuando ganas una reserva. Define tu precio mínimo, tu área, tus horas — enrutamos las solicitudes que encajen.'
               )}
             </p>
             <button onClick={() => navigate('/signup?role=salon')} style={{ marginTop: 18, background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 20px' : '15px 24px', borderRadius: 99, fontSize: isPhone ? 13.5 : 15, fontWeight: 600, cursor: 'pointer' }}>{t('Apply for salons →', 'Aplicar como salón →')}</button>
@@ -191,7 +191,7 @@ export default function Marketing() {
               { k: t('Avg. response', 'Resp. promedio'), v: t('11 min', '11 min') },
               { k: t('Win rate', 'Tasa de éxito'), v: '34%' },
               { k: t('No-show rate', 'Inasistencia'), v: '2.1%' },
-              { k: t('Glossi fee', 'Tarifa Glossi'), v: '7%' },
+              { k: t('Glossi fee', 'Tarifa Glossi'), v: '5%' },
             ].map((s, i) => (
               <div key={i} style={{ padding: '18px 18px', background: p.bg, borderRadius: 14, border: `0.5px solid ${p.line}` }}>
                 <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>{s.k.toUpperCase()}</div>
