@@ -5,6 +5,7 @@ import { useNarrow } from '../hooks.js';
 import Modal from '../components/Modal.jsx';
 import { useToast } from '../components/Toast.jsx';
 import { useAuth } from '../store.jsx';
+import GooglePlacesAutocomplete, { isGooglePlacesAvailable } from '../components/GooglePlacesAutocomplete.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { geocodeZip, ZIP_CENTROIDS } from '../lib/geocode.js';
 
@@ -73,6 +74,44 @@ export default function OnboardingSalon() {
   const photoInputRef = useRef(null);
 
   const [submitting, setSubmitting] = useState(false);
+
+  // Pulls a Google Place into the form. We grab name + address parts +
+  // phone + up to 6 photo URLs. Bio is left for the salon to write —
+  // Google doesn't have one, and a generated one would feel canned.
+  const handlePlaceSelect = place => {
+    if (!place || !place.name) return;
+    setName(place.name);
+
+    const components = place.address_components || [];
+    const get = (...types) => components.find(c => types.every(t => c.types.includes(t)));
+    const streetNumber = get('street_number')?.long_name || '';
+    const route = get('route')?.short_name || get('route')?.long_name || '';
+    const street = [streetNumber, route].filter(Boolean).join(' ');
+    const cityComp = get('locality') || get('postal_town') || get('administrative_area_level_3');
+    const zipComp = get('postal_code');
+
+    if (street) setAddress(street);
+    if (cityComp) setCity(cityComp.long_name);
+    if (zipComp) setZip(zipComp.long_name);
+    if (place.formatted_phone_number) setPhone(place.formatted_phone_number);
+
+    // If their website is an Instagram URL, autofill the handle too.
+    if (place.website) {
+      const m = place.website.match(/instagram\.com\/([A-Za-z0-9._]+)/);
+      if (m) setInstagram(m[1].replace(/\/$/, ''));
+    }
+
+    // Google photos come back as Photo objects; getUrl returns a CDN URL.
+    // Cap at 6 — onboarding lets you upload up to 8, so the salon still
+    // has room to add their own. Stable for ~12 hours per Google's docs;
+    // before going to production we should rehost into Supabase Storage.
+    if (Array.isArray(place.photos) && place.photos.length) {
+      const urls = place.photos.slice(0, 6).map(p => p.getUrl({ maxWidth: 1600, maxHeight: 1200 }));
+      setPhotos(urls);
+    }
+
+    toast(`Imported ${place.name} from Google. Review and edit anything below.`, { tone: 'success' });
+  };
 
   const onPhotoPick = e => {
     const files = Array.from(e.target.files || []);
@@ -185,6 +224,25 @@ export default function OnboardingSalon() {
         <p style={{ fontSize: isPhone ? 15 : 16, color: p.inkSoft, lineHeight: 1.55, margin: '12px 0 0', maxWidth: 540 }}>
           Customers within 5–25 miles will see your salon and your services when they post a request. You can edit anything later.
         </p>
+
+        {/* Google Places auto-fill — pulls name, address, phone, photos
+            from a public Google Maps listing in one click. Hidden entirely
+            when VITE_GOOGLE_MAPS_API_KEY isn't set, so the manual form
+            below remains the source of truth in those environments. */}
+        {isGooglePlacesAvailable && (
+          <section style={{ marginTop: 28, padding: '18px 18px 16px', background: p.surface, borderRadius: 14, border: `0.5px dashed ${p.line}` }}>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>FIND YOUR BUSINESS</div>
+            <p style={{ fontSize: 12.5, color: p.inkSoft, lineHeight: 1.5, margin: '6px 0 12px' }}>
+              Search Google to auto-fill your name, address, phone, and up to six photos. Edit anything you don't like — nothing is saved until you finish.
+            </p>
+            <GooglePlacesAutocomplete
+              placeholder="e.g. Casa de Belleza Pharr"
+              biasBounds={{ sw: { lat: 25.84, lng: -106.65 }, ne: { lat: 36.50, lng: -93.51 } }}
+              style={inputStyle}
+              onSelect={handlePlaceSelect}
+            />
+          </section>
+        )}
 
         {/* Business basics */}
         <section style={{ marginTop: 28 }}>
