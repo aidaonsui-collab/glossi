@@ -4,11 +4,7 @@ import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useT } from '../lib/i18n.js';
 import { useLang } from '../store.jsx';
-
-// One flat fee for everyone — keeps the marketplace simple while we
-// learn what segments matter. Tiered plans (Starter/Pro/Studio) are
-// possible once we have volume to justify them.
-const PLATFORM_FEE_PCT = 7;
+import { PLATFORM_FEE_PCT } from '../lib/stripe.js';
 
 export default function Pricing() {
   const isPhone = useNarrow();

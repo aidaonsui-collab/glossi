@@ -33,4 +33,4 @@ export async function invokeEdgeFunction(name, body) {
   return { ok: true, data };
 }
 
-export const PLATFORM_FEE_PCT = 7;
+export const PLATFORM_FEE_PCT = 5;

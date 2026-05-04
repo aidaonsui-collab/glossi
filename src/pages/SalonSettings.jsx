@@ -396,7 +396,7 @@ export default function SalonSettings() {
         <Section title="Account" eyebrow="07 · ACCESS">
           <Field label="Plan">
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontSize: 13.5, fontWeight: 600 }}>7% per confirmed booking</span>
+              <span style={{ fontSize: 13.5, fontWeight: 600 }}>5% per confirmed booking</span>
               <span style={{ background: p.accentSoft, color: p.accent, padding: '3px 10px', borderRadius: 99, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.08em' }}>ACTIVE</span>
               <div style={{ flex: 1 }} />
               <button onClick={() => navigate('/pricing')} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: p.ink, cursor: 'pointer', fontFamily: 'inherit' }}>View pricing</button>
