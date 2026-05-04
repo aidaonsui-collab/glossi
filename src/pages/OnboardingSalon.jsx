@@ -8,6 +8,7 @@ import { useAuth } from '../store.jsx';
 import GooglePlacesAutocomplete, { isGooglePlacesAvailable } from '../components/GooglePlacesAutocomplete.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { geocodeZip, ZIP_CENTROIDS } from '../lib/geocode.js';
+import { useMyBusinesses } from '../lib/quotes.js';
 
 // Canonical service catalog slugs (mirrors supabase/migrations/...service_catalog.sql)
 const SERVICE_SLUGS = [
@@ -40,7 +41,17 @@ export default function OnboardingSalon() {
   const navigate = useNavigate();
   const toast = useToast();
   const { user } = useAuth();
+  const { businesses, loading: bizLoading } = useMyBusinesses();
   const step = 2;
+
+  // Symmetric guard: if the user already has a business listing, this
+  // page (which always creates a new one on submit) is wrong for them.
+  // Send them to the inbox instead. Edits go through /salon/settings.
+  useEffect(() => {
+    if (isSupabaseConfigured && user && !bizLoading && businesses.length > 0) {
+      navigate('/salon/inbox', { replace: true });
+    }
+  }, [user, bizLoading, businesses, navigate]);
 
   // Business basics
   const [name, setName] = useState('');

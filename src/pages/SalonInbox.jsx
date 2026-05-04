@@ -29,6 +29,16 @@ export default function SalonInbox() {
     if (isSupabaseConfigured && !authLoading && !user) navigate('/signup?role=salon', { replace: true });
   }, [user, navigate]);
 
+  // Onboarding gate: a salon authed but with zero business rows hasn't
+  // completed onboarding yet (typical after email confirmation, where
+  // SignUp.jsx never gets to fire its post-submit navigate). Push them
+  // straight to /onboarding/salon instead of the friendly interstitial.
+  useEffect(() => {
+    if (isSupabaseConfigured && user && !bizLoading && businesses.length === 0) {
+      navigate('/onboarding/salon', { replace: true });
+    }
+  }, [user, bizLoading, businesses, navigate]);
+
   // Auto-select first business
   useEffect(() => {
     if (!activeBizId && businesses.length > 0) setActiveBizId(businesses[0].id);
@@ -60,19 +70,12 @@ export default function SalonInbox() {
     );
   }
 
+  // Empty state is unreachable in normal flow — the gate effect above redirects to /onboarding/salon.
+  // Keep a minimal placeholder for the brief frame before navigate fires.
   if (businesses.length === 0) {
     return (
       <SalonLayout active="inbox" mobileTitle="Inbox">
-        <div style={{ padding: isPhone ? '20px 18px' : '34px 40px', maxWidth: 600 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>NO BUSINESS YET</div>
-          <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 36, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1.05, margin: '8px 0 12px' }}>Set up your salon.</h1>
-          <p style={{ fontSize: 14, color: p.inkSoft, lineHeight: 1.55, margin: '0 0 20px' }}>
-            You need a published business listing to receive quote requests. We'll walk you through it in a minute.
-          </p>
-          <button onClick={() => navigate('/onboarding/salon')} style={{ background: p.ink, color: p.bg, border: 0, padding: '14px 22px', borderRadius: 99, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-            Create salon listing →
-          </button>
-        </div>
+        <div style={{ padding: 40, color: p.inkMuted, fontSize: 14 }}>Loading…</div>
       </SalonLayout>
     );
   }
