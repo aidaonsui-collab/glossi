@@ -60,7 +60,10 @@ export default function Marketing() {
       <Nav />
 
       <div style={{ padding: isPhone ? '12px 18px 0' : '20px 64px 0' }}>
-        <div style={{ position: 'relative', borderRadius: isPhone ? 20 : 24, overflow: 'hidden', aspectRatio: isPhone ? '4/5' : '21/9', backgroundImage: `url(${PHOTOS[0]})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div style={{ position: 'relative', borderRadius: isPhone ? 20 : 24, overflow: 'hidden', aspectRatio: isPhone ? '4/5' : '21/9', background: '#1a1714' }}>
+          <video autoPlay muted loop playsInline preload="auto" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}>
+            <source src="/hero.mp4" type="video/mp4" />
+          </video>
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(26,23,20,0) 0%, rgba(26,23,20,0.05) 50%, rgba(26,23,20,0.7) 100%)' }} />
           <div style={{ position: 'absolute', top: isPhone ? 16 : 28, left: isPhone ? 16 : 32, color: p.bg, fontFamily: type.mono, fontSize: isPhone ? 10 : 12, fontWeight: 600, letterSpacing: '0.18em' }}>
             {t('ISSUE 04 · APR 2026', 'EDICIÓN 04 · ABR 2026')}
