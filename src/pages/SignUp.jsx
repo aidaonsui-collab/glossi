@@ -252,6 +252,11 @@ export default function SignUp() {
                   'Numbers reflect public 2026 pricing. Square / GlossGenius / Booksy figures are subscription + card-processing only; they don\'t source customers — that cost is somewhere else in your budget (IG ads, Yelp, referrals).',
                   'Cifras según precios públicos 2026. Square / GlossGenius / Booksy incluyen solo suscripción + procesamiento de tarjeta; no traen clientes — ese costo está en otra parte de tu presupuesto (anuncios IG, Yelp, referidos).'
                 )}
+                <br />
+                {t(
+                  'Glossi 5% is the platform fee only. Standard Stripe card processing (2.9% + 30¢ online, 2.7% + 5¢ in-person) is passed through at cost — Glossi takes $0 on processing, same rate every salon pays Stripe directly. Cash and Zelle bookings have no processing fee.',
+                  'El 5% de Glossi es solo la comisión de plataforma. El procesamiento estándar de Stripe (2.9% + 30¢ en línea, 2.7% + 5¢ en persona) se traspasa al costo — Glossi se lleva $0 del procesamiento, la misma tarifa que cualquier salón pagaría a Stripe directamente. Cash y Zelle no tienen tarifa de procesamiento.'
+                )}
               </div>
 
               <div style={{ marginTop: 16, fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 17 : 19, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.015em', lineHeight: 1.15, textWrap: 'balance' }}>

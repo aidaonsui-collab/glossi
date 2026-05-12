@@ -7,7 +7,7 @@
 //      request, the bid is still active, and reports the salon's
 //      Connect status + price.
 //   2. Create a Stripe PaymentIntent with transfer_data[destination]
-//      = salon's connected account, application_fee_amount = 7%.
+//      = salon's connected account, application_fee_amount = 5%.
 //      capture_method=automatic so funds settle on success; we don't
 //      escrow until completion in this MVP.
 //   3. Return clientSecret to the frontend so Stripe Elements can
@@ -21,7 +21,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
-const PLATFORM_FEE_BPS = 700; // 7.00% in basis points
+const PLATFORM_FEE_BPS = 500; // 5.00% in basis points — must match PLATFORM_FEE_PCT in src/lib/stripe.js
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
