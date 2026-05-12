@@ -7,3 +7,6 @@ dist
 .env.local
 supabase/.temp/
 .env.local.bak
+scripts/.cache/
+scripts/rgv-stylists.csv
+.claude/
