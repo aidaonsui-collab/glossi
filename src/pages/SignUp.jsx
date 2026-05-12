@@ -161,11 +161,16 @@ export default function SignUp() {
               {!isPhone && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: 12, padding: '10px 14px', marginTop: 14, fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted, textTransform: 'uppercase' }}>
                   <div></div>
-                  <div>{t('Slow month · 0 bookings', 'Mes lento · 0 reservas')}</div>
+                  <div>{t('0 bookings', '0 reservas')}</div>
                   <div>{t('Average · 5 × $200', 'Promedio · 5 × $200')}</div>
                   <div>{t('Busy · 20 × $200', 'Lleno · 20 × $200')}</div>
                 </div>
               )}
+
+              {/* Keyframes for the Glossi row's animated border — a green
+                  comet sweeping the perimeter to signal "this is the one"
+                  without resorting to a black-block highlight. */}
+              <style>{`@keyframes glossiBorderSweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
 
               <div style={{ marginTop: isPhone ? 14 : 4 }}>
                 {[
@@ -174,42 +179,64 @@ export default function SignUp() {
                   { name: 'GlossGenius', kind: t('Tool — not a customer source', 'Herramienta — no es fuente de clientes'), c0: '$24', c5: '$24', c20: '$24' },
                   { name: 'Booksy + Boost', kind: t('Tool + 30% commission on app-sourced bookings', 'Herramienta + 30% de comisión en reservas de la app'), c0: '$30', c5: '$330', c20: '$1,230' },
                   { name: 'Glossi', highlight: true, kind: t('Customer source — 5% only on the bid you won', 'Fuente de clientes — 5% solo en la oferta que ganaste'), c0: '$0', c5: '$50', c20: '$200' },
-                ].map((r, i) => (
-                  <div key={r.name} style={{
+                ].map((r, i) => {
+                  const innerContent = (
+                    <>
+                      <div>
+                        <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 19, fontWeight: type.displayWeight, letterSpacing: '-0.01em', color: r.highlight ? p.accent : p.ink, lineHeight: 1.1 }}>{r.name}</div>
+                        <div style={{ fontSize: 11.5, color: p.inkSoft, lineHeight: 1.4, marginTop: 4 }}>{r.kind}</div>
+                      </div>
+                      {[
+                        { label: t('0 bookings', '0 reservas'), value: r.c0 },
+                        { label: t('Avg · 5', 'Promedio · 5'),  value: r.c5 },
+                        { label: t('Busy · 20', 'Lleno · 20'),  value: r.c20 },
+                      ].map((cell, ci) => (
+                        <div key={ci} style={{ display: 'flex', alignItems: isPhone ? 'baseline' : 'center', gap: 8, justifyContent: isPhone ? 'space-between' : 'flex-start' }}>
+                          {isPhone && <span style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted, textTransform: 'uppercase' }}>{cell.label}</span>}
+                          <span style={{
+                            fontFamily: type.display, fontStyle: 'italic',
+                            fontSize: r.highlight ? 22 : 18,
+                            fontWeight: type.displayWeight,
+                            color: r.highlight ? p.accent : (cell.value === '$0' || cell.value === '$24' ? p.ink : p.inkSoft),
+                            letterSpacing: '-0.01em',
+                          }}>{cell.value}</span>
+                        </div>
+                      ))}
+                    </>
+                  );
+
+                  const innerStyle = {
                     display: 'grid',
                     gridTemplateColumns: isPhone ? '1fr' : '1.5fr 1fr 1fr 1fr',
                     gap: isPhone ? 8 : 12,
                     alignItems: isPhone ? 'stretch' : 'center',
-                    padding: isPhone ? '14px' : '14px',
-                    background: r.highlight ? p.ink : p.surface,
-                    color: r.highlight ? p.bg : p.ink,
-                    borderRadius: 12,
-                    border: r.highlight ? 'none' : `0.5px solid ${p.line}`,
-                    boxShadow: r.highlight ? `0 0 0 1px ${p.accent}` : 'none',
-                    marginTop: i === 0 ? 0 : 6,
-                  }}>
-                    <div>
-                      <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 19, fontWeight: type.displayWeight, letterSpacing: '-0.01em', color: r.highlight ? p.accent : p.ink, lineHeight: 1.1 }}>{r.name}</div>
-                      <div style={{ fontSize: 11.5, color: r.highlight ? 'rgba(255,255,255,0.72)' : p.inkSoft, lineHeight: 1.4, marginTop: 4 }}>{r.kind}</div>
-                    </div>
-                    {[
-                      { label: t('Slow · 0', 'Lento · 0'),       value: r.c0 },
-                      { label: t('Avg · 5', 'Promedio · 5'),     value: r.c5 },
-                      { label: t('Busy · 20', 'Lleno · 20'),     value: r.c20 },
-                    ].map((cell, ci) => (
-                      <div key={ci} style={{ display: 'flex', alignItems: isPhone ? 'baseline' : 'center', gap: 8, justifyContent: isPhone ? 'space-between' : 'flex-start' }}>
-                        {isPhone && <span style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: r.highlight ? 'rgba(255,255,255,0.55)' : p.inkMuted, textTransform: 'uppercase' }}>{cell.label}</span>}
-                        <span style={{
-                          fontFamily: type.display, fontStyle: 'italic',
-                          fontSize: r.highlight ? (isPhone ? 22 : 22) : (isPhone ? 18 : 18),
-                          fontWeight: type.displayWeight,
-                          color: r.highlight ? p.accent : (cell.value === '$0' || cell.value === '$24' ? p.ink : p.inkSoft),
-                          letterSpacing: '-0.01em',
-                        }}>{cell.value}</span>
+                    padding: '14px',
+                    background: p.surface,
+                    color: p.ink,
+                  };
+
+                  if (r.highlight) {
+                    return (
+                      <div key={r.name} style={{ position: 'relative', marginTop: i === 0 ? 0 : 6, padding: 2, borderRadius: 12, overflow: 'hidden', background: 'rgba(61,122,78,0.18)' }}>
+                        <div style={{
+                          position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
+                          background: 'conic-gradient(from 0deg, transparent 0deg, transparent 260deg, rgba(122,191,138,0.55) 310deg, #3D7A4E 340deg, rgba(122,191,138,0.55) 350deg, transparent 360deg)',
+                          animation: 'glossiBorderSweep 3.5s linear infinite',
+                          pointerEvents: 'none',
+                        }} />
+                        <div style={{ ...innerStyle, position: 'relative', zIndex: 1, borderRadius: 10 }}>
+                          {innerContent}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                ))}
+                    );
+                  }
+
+                  return (
+                    <div key={r.name} style={{ ...innerStyle, borderRadius: 12, border: `0.5px solid ${p.line}`, marginTop: i === 0 ? 0 : 6 }}>
+                      {innerContent}
+                    </div>
+                  );
+                })}
               </div>
 
               <div style={{ marginTop: 14, padding: '12px 14px', background: p.accentSoft, borderRadius: 10, fontSize: 12.5, color: p.ink, lineHeight: 1.5 }}>
