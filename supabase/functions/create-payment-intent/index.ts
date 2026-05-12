@@ -10,6 +10,14 @@
 //      = salon's connected account, application_fee_amount = 5%.
 //      capture_method=automatic so funds settle on success; we don't
 //      escrow until completion in this MVP.
+//
+//      Payment methods enabled: card + Cash App Pay always (Cash App
+//      = same fee as cards but heavy adoption in our RGV/Hispanic
+//      under-35 demo). Klarna + Afterpay added for bookings ≥ $150
+//      — BNPL fees are 6% so we gate to higher tickets where the
+//      conversion uplift outweighs the salon's extra ~3% cost.
+//      Redirect-based methods rely on confirmParams.return_url set
+//      by PaymentPage.jsx when stripe.confirmPayment runs.
 //   3. Return clientSecret to the frontend so Stripe Elements can
 //      confirm the payment in the browser.
 //
@@ -80,11 +88,18 @@ Deno.serve(async (req) => {
     const amount = bid.price_cents as number;
     const fee = Math.round(amount * PLATFORM_FEE_BPS / 10000);
 
-    const pi = await stripeForm("payment_intents", {
+    // Card + Cash App always; BNPL only on tickets ≥ $150 so salons
+    // don't eat the extra ~3% on small services. Threshold in cents.
+    const BNPL_MIN_CENTS = 15000;
+    const paymentMethodTypes = ["card", "cashapp"];
+    if (amount >= BNPL_MIN_CENTS) {
+      paymentMethodTypes.push("klarna", "afterpay_clearpay");
+    }
+
+    const params: Record<string, string> = {
       "amount": String(amount),
       "currency": "usd",
       "capture_method": "automatic",
-      "automatic_payment_methods[enabled]": "true",
       "application_fee_amount": String(fee),
       "transfer_data[destination]": bid.stripe_account_id,
       "description": `Glossi booking: ${bid.business_name} · ${bid.service_summary}`,
@@ -93,7 +108,12 @@ Deno.serve(async (req) => {
       "metadata[glossi_business_id]": bid.business_id,
       "metadata[glossi_customer_id]": user.id,
       "metadata[glossi_platform_fee_cents]": String(fee),
+    };
+    paymentMethodTypes.forEach((pm, i) => {
+      params[`payment_method_types[${i}]`] = pm;
     });
+
+    const pi = await stripeForm("payment_intents", params);
 
     return new Response(
       JSON.stringify({
