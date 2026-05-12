@@ -145,32 +145,42 @@ export default function SignUp() {
           {role === 'salon' && (
             <div style={{ marginTop: isPhone ? 22 : 28 }}>
               <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>
-                {t('CUSTOMER ACQUISITION', 'ADQUISICIÓN DE CLIENTES')}
+                {t('WHAT YOU ACTUALLY PAY', 'LO QUE REALMENTE PAGAS')}
               </div>
               <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 24 : 28, fontWeight: type.displayWeight, letterSpacing: '-0.02em', lineHeight: 1.05, margin: '8px 0 0', textWrap: 'balance' }}>
                 {t('The cheapest customer is the one who asked for you.', 'El cliente más barato es el que te pidió a ti.')}
               </h2>
               <p style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.55, margin: '10px 0 0' }}>
                 {t(
-                  'Every other platform charges you to be visible. Glossi charges you only when a customer chose you.',
-                  'Las demás plataformas te cobran por aparecer. Glossi solo te cobra cuando un cliente te eligió.'
+                  'Other platforms charge whether or not anyone books. Here is what each one actually costs at three real volumes — for a salon doing $200 average tickets in the RGV.',
+                  'Las demás plataformas te cobran ya sea que reserven o no. Esto es lo que cuesta cada una a tres volúmenes reales — para un salón con ticket promedio de $200 en el Valle.'
                 )}
               </p>
 
-              <div style={{ marginTop: 14 }}>
+              {/* Column headers — desktop only */}
+              {!isPhone && (
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: 12, padding: '10px 14px', marginTop: 14, fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted, textTransform: 'uppercase' }}>
+                  <div></div>
+                  <div>{t('Slow month · 0 bookings', 'Mes lento · 0 reservas')}</div>
+                  <div>{t('Average · 5 × $200', 'Promedio · 5 × $200')}</div>
+                  <div>{t('Busy · 20 × $200', 'Lleno · 20 × $200')}</div>
+                </div>
+              )}
+
+              <div style={{ marginTop: isPhone ? 14 : 4 }}>
                 {[
-                  { name: 'Yelp / Instagram', how: t('You buy impressions', 'Compras impresiones'), booked: false, cost: t('$300–$1,000/mo, no guarantee', '$300–$1,000/mes, sin garantía') },
-                  { name: 'Groupon', how: t("Deep discount — you're the loss-leader", 'Descuento agresivo — tú asumes la pérdida'), booked: true, cost: t('~50% of the ticket', '~50% del ticket') },
-                  { name: 'StyleSeat / Fresha', how: t('Directory + AI marketing', 'Directorio + marketing con IA'), booked: false, cost: t('$0–$35/mo + 2.6–2.75% per txn', '$0–$35/mes + 2.6–2.75% por txn') },
-                  { name: 'Booksy / Vagaro', how: t('Tool — not a source', 'Herramienta — no es fuente'), booked: false, cost: t('$30–$50/mo + per-staff + 2.69%', '$30–$50/mes + tarifa por empleado + 2.69%') },
-                  { name: 'Glossi', highlight: true, how: t('Customer posts → you bid → you win', 'Cliente publica → tú ofertas → tú ganas'), booked: true, cost: t('$0/mo + 5% only when you win', '$0/mes + 5% solo cuando ganas') },
+                  { name: 'Yelp / IG ads', kind: t('Marketing spend — flat regardless of bookings', 'Gasto de marketing — fijo sin importar reservas'), c0: '$500', c5: '$500', c20: '$500' },
+                  { name: 'Square Appointments', kind: t('Tool — not a customer source', 'Herramienta — no es fuente de clientes'), c0: '$0', c5: '$26', c20: '$104' },
+                  { name: 'GlossGenius', kind: t('Tool — not a customer source', 'Herramienta — no es fuente de clientes'), c0: '$24', c5: '$24', c20: '$24' },
+                  { name: 'Booksy + Boost', kind: t('Tool + 30% commission on app-sourced bookings', 'Herramienta + 30% de comisión en reservas de la app'), c0: '$30', c5: '$330', c20: '$1,230' },
+                  { name: 'Glossi', highlight: true, kind: t('Customer source — 5% only on the bid you won', 'Fuente de clientes — 5% solo en la oferta que ganaste'), c0: '$0', c5: '$50', c20: '$200' },
                 ].map((r, i) => (
                   <div key={r.name} style={{
                     display: 'grid',
-                    gridTemplateColumns: isPhone ? '1fr' : '1.2fr 1.6fr 0.5fr 1.4fr',
-                    gap: isPhone ? 6 : 12,
-                    alignItems: 'center',
-                    padding: isPhone ? '12px 14px' : '12px 14px',
+                    gridTemplateColumns: isPhone ? '1fr' : '1.5fr 1fr 1fr 1fr',
+                    gap: isPhone ? 8 : 12,
+                    alignItems: isPhone ? 'stretch' : 'center',
+                    padding: isPhone ? '14px' : '14px',
                     background: r.highlight ? p.ink : p.surface,
                     color: r.highlight ? p.bg : p.ink,
                     borderRadius: 12,
@@ -178,38 +188,42 @@ export default function SignUp() {
                     boxShadow: r.highlight ? `0 0 0 1px ${p.accent}` : 'none',
                     marginTop: i === 0 ? 0 : 6,
                   }}>
-                    <div style={{
-                      fontFamily: type.display, fontStyle: 'italic',
-                      fontSize: isPhone ? 18 : 18, fontWeight: type.displayWeight,
-                      letterSpacing: '-0.01em',
-                      color: r.highlight ? p.accent : p.ink,
-                    }}>{r.name}</div>
-                    <div style={{ fontSize: 12.5, color: r.highlight ? 'rgba(255,255,255,0.78)' : p.inkSoft, lineHeight: 1.4 }}>{r.how}</div>
                     <div>
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                        minWidth: 24, height: 22, padding: '0 8px',
-                        borderRadius: 99,
-                        background: r.booked ? (r.highlight ? p.accent : p.success) : 'transparent',
-                        border: r.booked ? 'none' : `0.5px solid ${r.highlight ? 'rgba(255,255,255,0.35)' : p.inkMuted}`,
-                        color: r.booked ? p.ink : (r.highlight ? 'rgba(255,255,255,0.6)' : p.inkMuted),
-                        fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
-                      }}>{r.booked ? t('YES', 'SÍ') : t('NO', 'NO')}</span>
+                      <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 19, fontWeight: type.displayWeight, letterSpacing: '-0.01em', color: r.highlight ? p.accent : p.ink, lineHeight: 1.1 }}>{r.name}</div>
+                      <div style={{ fontSize: 11.5, color: r.highlight ? 'rgba(255,255,255,0.72)' : p.inkSoft, lineHeight: 1.4, marginTop: 4 }}>{r.kind}</div>
                     </div>
-                    <div style={{
-                      fontSize: 12.5,
-                      fontWeight: r.highlight ? 600 : 500,
-                      color: r.highlight ? p.bg : p.ink,
-                      lineHeight: 1.4,
-                    }}>{r.cost}</div>
+                    {[
+                      { label: t('Slow · 0', 'Lento · 0'),       value: r.c0 },
+                      { label: t('Avg · 5', 'Promedio · 5'),     value: r.c5 },
+                      { label: t('Busy · 20', 'Lleno · 20'),     value: r.c20 },
+                    ].map((cell, ci) => (
+                      <div key={ci} style={{ display: 'flex', alignItems: isPhone ? 'baseline' : 'center', gap: 8, justifyContent: isPhone ? 'space-between' : 'flex-start' }}>
+                        {isPhone && <span style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: r.highlight ? 'rgba(255,255,255,0.55)' : p.inkMuted, textTransform: 'uppercase' }}>{cell.label}</span>}
+                        <span style={{
+                          fontFamily: type.display, fontStyle: 'italic',
+                          fontSize: r.highlight ? (isPhone ? 22 : 22) : (isPhone ? 18 : 18),
+                          fontWeight: type.displayWeight,
+                          color: r.highlight ? p.accent : (cell.value === '$0' || cell.value === '$24' ? p.ink : p.inkSoft),
+                          letterSpacing: '-0.01em',
+                        }}>{cell.value}</span>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
 
+              <div style={{ marginTop: 14, padding: '12px 14px', background: p.accentSoft, borderRadius: 10, fontSize: 12.5, color: p.ink, lineHeight: 1.5 }}>
+                <strong style={{ fontWeight: 700 }}>{t('Already booking via DMs?', '¿Ya reservas por DM?')}</strong>{' '}
+                {t(
+                  '39% of RGV stylists do — and they pay $0 today. Glossi gives those clients a structured way to find you, without changing how you currently work.',
+                  'El 39% de los estilistas del Valle también — y pagan $0 hoy. Glossi les da a tus clientas una forma estructurada de encontrarte, sin cambiar cómo trabajas.'
+                )}
+              </div>
+
               <div style={{ marginTop: 10, fontSize: 11, color: p.inkMuted, lineHeight: 1.45 }}>
                 {t(
-                  'YES = booking guaranteed when you pay. NO = you pay regardless of outcome.',
-                  'SÍ = reserva garantizada al pagar. NO = pagas sin importar el resultado.'
+                  'Numbers reflect public 2026 pricing. Square / GlossGenius / Booksy figures are subscription + card-processing only; they don\'t source customers — that cost is somewhere else in your budget (IG ads, Yelp, referrals).',
+                  'Cifras según precios públicos 2026. Square / GlossGenius / Booksy incluyen solo suscripción + procesamiento de tarjeta; no traen clientes — ese costo está en otra parte de tu presupuesto (anuncios IG, Yelp, referidos).'
                 )}
               </div>
 
