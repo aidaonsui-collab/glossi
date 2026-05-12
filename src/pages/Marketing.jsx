@@ -7,6 +7,33 @@ import { useAuth, useLang } from '../store.jsx';
 import { useT } from '../lib/i18n.js';
 import SignInModal from '../components/SignInModal.jsx';
 
+// Service category entry tiles. Customers tap a category → bid-request form
+// pre-filled. Photo index maps into PHOTOS in theme.js. Salon counts are
+// illustrative pre-launch; pull from `businesses` grouped by primary service
+// once we have real data. No unit prices on this page — surfaces aggregate
+// activity (`VALLEY_PULSE` below) instead, so we don't anchor customers to
+// a specific dollar figure or pin a salon to a public price floor.
+const CATEGORIES = [
+  { slug: 'haircut',      labelEn: 'Hair',    labelEs: 'Cabello',   salons: 84, photo: 0 },
+  { slug: 'color',        labelEn: 'Color',   labelEs: 'Color',     salons: 47, photo: 1 },
+  { slug: 'nails',        labelEn: 'Nails',   labelEs: 'Uñas',      salons: 76, photo: 7 },
+  { slug: 'lashes-brows', labelEn: 'Lashes',  labelEs: 'Pestañas',  salons: 52, photo: 3 },
+  { slug: 'lashes-brows', labelEn: 'Brows',   labelEs: 'Cejas',     salons: 67, photo: 4 },
+  { slug: 'haircut',      labelEn: 'Barber',  labelEs: 'Barbería',  salons: 30, photo: 2 },
+  { slug: 'makeup',       labelEn: 'Makeup',  labelEs: 'Maquillaje',salons: 23, photo: 6 },
+  { slug: 'facials',      labelEn: 'Skin',    labelEs: 'Piel',      salons: 11, photo: 5 },
+];
+
+// Aggregate marketplace health. Conveys liquidity + competition without
+// exposing individual prices or pinning salons to historic price floors.
+// Numbers are placeholders pre-launch; will be live counts post-launch.
+const VALLEY_PULSE = [
+  { num: '84',  en: 'Bookings in the Valley this week', es: 'Reservas en el Valle esta semana' },
+  { num: '312', en: 'Salons accepting requests',         es: 'Salones aceptando solicitudes' },
+  { num: '4',   en: 'Bids per request, on average',      es: 'Ofertas por solicitud, en promedio' },
+  { num: '14m', en: 'Median time-to-first-bid',          es: 'Tiempo mediano a la primera oferta' },
+];
+
 export default function Marketing() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
@@ -46,13 +73,17 @@ export default function Marketing() {
     </div>
   );
 
+  // Avoid surfacing per-booking dollar savings publicly — it anchors
+  // customers to a specific price and pins salons to historical floors.
+  // Use bid-count + time-to-book instead: signals liquidity without
+  // exposing units.
   const ticker = [
-    { who: 'Sofia · Pharr', what: 'Color & balayage', save: '$48' },
-    { who: 'Daniela · McAllen', what: 'Hybrid lashes', save: '$22' },
-    { who: 'Maritza · Edinburg', what: 'Gel mani + pedi', save: '$15' },
-    { who: 'Kevin · Mission', what: 'Skin fade + beard', save: '$18' },
-    { who: 'Jasmin · Brownsville', what: 'Brazilian blowout', save: '$76' },
-    { who: 'Camila · Harlingen', what: 'Microblading', save: '$120' },
+    { who: 'Sofia · Pharr',        what: t('Color & balayage', 'Color y balayage'),    metaEn: '5 bids · booked in 12 min', metaEs: '5 ofertas · reservada en 12 min' },
+    { who: 'Daniela · McAllen',    what: t('Hybrid lashes', 'Pestañas híbridas'),      metaEn: '4 bids · booked in 8 min',  metaEs: '4 ofertas · reservada en 8 min' },
+    { who: 'Maritza · Edinburg',   what: t('Gel mani + pedi', 'Mani gel + pedi'),      metaEn: '6 bids · booked in 21 min', metaEs: '6 ofertas · reservada en 21 min' },
+    { who: 'Kevin · Mission',      what: t('Skin fade + beard', 'Corte fade + barba'), metaEn: '7 bids · booked in 5 min',  metaEs: '7 ofertas · reservada en 5 min' },
+    { who: 'Jasmin · Brownsville', what: t('Brazilian blowout', 'Alisado brasileño'),  metaEn: '4 bids · booked in 14 min', metaEs: '4 ofertas · reservada en 14 min' },
+    { who: 'Camila · Harlingen',   what: t('Microblading', 'Microblading'),            metaEn: '3 bids · booked in 38 min', metaEs: '3 ofertas · reservada en 38 min' },
   ];
 
   return (
@@ -84,25 +115,68 @@ export default function Marketing() {
       </div>
 
       <div ref={howRef} style={{ padding: isPhone ? '40px 18px 30px' : '80px 64px 80px' }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ width: 8, height: 8, borderRadius: 99, background: p.accent }} />
-          <span>{t('AVERAGE GLOSSI USER SAVES', 'EL USUARIO PROMEDIO AHORRA')}</span>
-        </div>
-        <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? '25vw' : '19vw', fontWeight: type.displayWeight, letterSpacing: '-0.06em', lineHeight: 0.82, margin: '8px 0 0', color: p.ink }}>$34</div>
-        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1.4fr 1fr', gap: isPhone ? 20 : 60, marginTop: isPhone ? 20 : 30, alignItems: 'flex-end' }}>
-          <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 54, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 0.95, margin: 0, textWrap: 'balance' }}>
-            {lang === 'es' ? <>por reserva, vs. llegar <span style={{ color: p.accent }}>sin cita.</span></> : <>per booking, vs. walking in <span style={{ color: p.accent }}>cold.</span></>}
-          </h1>
-          <p style={{ fontSize: isPhone ? 14 : 16, color: p.inkSoft, lineHeight: 1.55, margin: 0, textWrap: 'pretty' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1.6fr', gap: isPhone ? 18 : 60, alignItems: 'flex-end', marginBottom: isPhone ? 28 : 44 }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent, display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, fontFamily: type.mono }}>
+              <span style={{ width: 7, height: 7, borderRadius: 99, background: p.accent, boxShadow: `0 0 0 4px ${p.bg}` }} />
+              <span>{t('VALLEY PULSE · LIVE', 'PULSO DEL VALLE · EN VIVO')}</span>
+            </div>
+            <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 62, fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.92, margin: 0, textWrap: 'balance', color: p.ink }}>
+              {lang === 'es' ? <>El Valle<br /><span style={{ color: p.accent }}>está lleno.</span></> : <>The Valley<br /><span style={{ color: p.accent }}>is booked up.</span></>}
+            </h2>
+          </div>
+          <p style={{ fontSize: isPhone ? 14 : 17, color: p.inkSoft, lineHeight: 1.55, margin: 0, textWrap: 'pretty', maxWidth: 480 }}>
             {t(
-              "You post what you want. Salons send bids. The right one wins. It's how every other industry works — finally, beauty too.",
-              'Publicas lo que quieres. Los salones envían ofertas. El mejor gana. Así funcionan todas las demás industrias — por fin, la belleza también.'
+              'You post the service, ZIP, and budget. Local salons send real prices. You pick the bid that fits. Pricing is between you and your stylist — Glossi just makes the intro.',
+              'Publicas el servicio, el código postal y tu presupuesto. Los salones locales envían precios reales. Tú eliges la oferta. El precio queda entre tú y tu estilista — Glossi solo hace la presentación.'
             )}
           </p>
         </div>
-        <div style={{ marginTop: isPhone ? 28 : 42, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          <button onClick={() => navigate('/request')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '18px 30px', borderRadius: 99, fontSize: isPhone ? 14 : 16, fontWeight: 600, cursor: 'pointer' }}>{t('What are you looking for? →', '¿Qué buscas? →')}</button>
-          <span style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, fontWeight: 500, letterSpacing: '0.1em' }}>{t('FREE · 30 SECONDS · NO ACCOUNT NEEDED', 'GRATIS · 30 SEGUNDOS · SIN CUENTA')}</span>
+
+        {/* Aggregate Valley activity — liquidity without unit prices */}
+        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isPhone ? 10 : 18, marginBottom: isPhone ? 28 : 44, padding: isPhone ? 18 : 28, background: p.surface, border: `0.5px solid ${p.line}`, borderRadius: 16 }}>
+          {VALLEY_PULSE.map((s, i) => (
+            <div key={i} style={{ borderLeft: !isPhone && i > 0 ? `0.5px solid ${p.line}` : 0, paddingLeft: !isPhone && i > 0 ? 20 : 0 }}>
+              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 54, fontWeight: type.displayWeight, color: p.accent, lineHeight: 1, letterSpacing: '-0.03em', marginBottom: 6 }}>{s.num}</div>
+              <div style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 600, color: p.inkSoft, letterSpacing: '0.08em', textTransform: 'uppercase', lineHeight: 1.4 }}>{lang === 'es' ? s.es : s.en}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Service category tiles — entry into the bid form, no prices */}
+        <div style={{ marginBottom: isPhone ? 20 : 24, display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+          <h3 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 28 : 38, fontWeight: type.displayWeight, letterSpacing: '-0.02em', margin: 0, color: p.ink }}>
+            {t('What are you booking?', '¿Qué vas a reservar?')}
+          </h3>
+          <span style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, letterSpacing: '0.1em' }}>
+            {t('TAP TO REQUEST BIDS', 'TOCA PARA PEDIR OFERTAS')}
+          </span>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isPhone ? 10 : 14 }}>
+          {CATEGORIES.map((c, i) => (
+            <button
+              key={i}
+              onClick={() => navigate(`/request?service=${c.slug}`)}
+              style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
+            >
+              <div style={{ position: 'relative', aspectRatio: '1/1', backgroundImage: `url(${PHOTOS[c.photo]})`, backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: 14, overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(26,23,20,0) 40%, rgba(26,23,20,0.78) 100%)' }} />
+                <div style={{ position: 'absolute', left: 14, right: 14, bottom: 12 }}>
+                  <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, color: p.bg, lineHeight: 1, letterSpacing: '-0.02em', marginBottom: 4 }}>{lang === 'es' ? c.labelEs : c.labelEn}</div>
+                  <div style={{ fontFamily: type.mono, fontSize: 10, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.08em' }}>{c.salons} {t('RGV salons accepting', 'salones del Valle aceptando')}</div>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div style={{ marginTop: isPhone ? 28 : 36, display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', paddingTop: isPhone ? 18 : 24, borderTop: `0.5px solid ${p.line}` }}>
+          <span style={{ fontFamily: type.mono, fontSize: 12, color: p.inkSoft, letterSpacing: '0.06em' }}>
+            {t('FREE · 30 SECONDS · NO ACCOUNT NEEDED · EN / ES', 'GRATIS · 30 SEGUNDOS · SIN CUENTA · EN / ES')}
+          </span>
+          <button onClick={() => navigate('/request')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '16px 28px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer' }}>
+            {t('Post your first request →', 'Publica tu primera solicitud →')}
+          </button>
         </div>
       </div>
 
@@ -113,7 +187,7 @@ export default function Marketing() {
               <span style={{ width: 6, height: 6, borderRadius: 99, background: p.accent }} />
               <span style={{ color: 'rgba(255,255,255,0.5)' }}>{row.who}</span>
               <span>{row.what}</span>
-              <span style={{ color: p.accent, fontWeight: 600 }}>{t('saved', 'ahorró')} {row.save}</span>
+              <span style={{ color: p.accent, fontWeight: 600 }}>{lang === 'es' ? row.metaEs : row.metaEn}</span>
             </div>
           ))}
         </div>
