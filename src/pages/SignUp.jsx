@@ -217,14 +217,14 @@ export default function SignUp() {
 
                   if (r.highlight) {
                     return (
-                      <div key={r.name} style={{ position: 'relative', marginTop: i === 0 ? 0 : 6, padding: 2, borderRadius: 12, overflow: 'hidden', background: 'rgba(61,122,78,0.18)' }}>
+                      <div key={r.name} style={{ position: 'relative', marginTop: i === 0 ? 0 : 6, padding: 3, borderRadius: 12, overflow: 'hidden', background: 'rgba(184,137,62,0.18)' }}>
                         <div style={{
                           position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
-                          background: 'conic-gradient(from 0deg, transparent 0deg, transparent 260deg, rgba(122,191,138,0.55) 310deg, #3D7A4E 340deg, rgba(122,191,138,0.55) 350deg, transparent 360deg)',
+                          background: 'conic-gradient(from 0deg, transparent 0deg, transparent 250deg, rgba(184,137,62,0.45) 305deg, #B8893E 340deg, rgba(184,137,62,0.45) 350deg, transparent 360deg)',
                           animation: 'glossiBorderSweep 3.5s linear infinite',
                           pointerEvents: 'none',
                         }} />
-                        <div style={{ ...innerStyle, position: 'relative', zIndex: 1, borderRadius: 10 }}>
+                        <div style={{ ...innerStyle, position: 'relative', zIndex: 1, borderRadius: 9 }}>
                           {innerContent}
                         </div>
                       </div>
