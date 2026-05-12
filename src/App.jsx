@@ -54,6 +54,8 @@ import RequestQuote from './pages/RequestQuote.jsx';
 import QuoteDetail from './pages/QuoteDetail.jsx';
 import SalonInbox from './pages/SalonInbox.jsx';
 import SalonInboxDetail from './pages/SalonInboxDetail.jsx';
+import Pros from './pages/Pros.jsx';
+import AdminOutreach from './pages/AdminOutreach.jsx';
 
 export default function App() {
   return (
@@ -101,6 +103,8 @@ export default function App() {
         <Route path="/quotes/:id" element={<QuoteDetail />} />
         <Route path="/salon/inbox" element={<SalonInbox />} />
         <Route path="/salon/inbox/:id" element={<SalonInboxDetail />} />
+        <Route path="/pros" element={<Pros />} />
+        <Route path="/admin/outreach" element={<AdminOutreach />} />
       </Routes>
     </BrowserRouter>
   );
