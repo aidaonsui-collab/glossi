@@ -39,6 +39,11 @@ export default function SignInModal({ open, onClose, defaultRole = 'customer' })
       if (!result?.ok) { toast(result?.error || t('Sign in failed.', 'Falló el inicio de sesión.'), { tone: 'warn' }); return; }
       toast(t('Signed in.', 'Sesión iniciada.'), { tone: 'success' });
       onClose?.();
+      // Route to the role's home so a salon owner who picked "Salon" lands
+      // on their dashboard, not on /quotes (which is the customer side).
+      // Trusts the role picker — if their profile.is_business doesn't match,
+      // RLS on /salon/* will surface that as an error, which is fine.
+      navigate(role === 'salon' ? '/salon/inbox' : '/quotes');
     } catch (err) {
       console.error('signIn error', err);
       toast(err?.message || t('Sign in failed unexpectedly.', 'El inicio de sesión falló inesperadamente.'), { tone: 'warn' });

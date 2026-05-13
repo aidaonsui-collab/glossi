@@ -75,15 +75,23 @@ export default function Marketing() {
           <Link to="/ios" style={navBtn}>{t('iOS preview', 'Vista previa iOS')}</Link>
         </div>
       )}
+      {/* Logged-in: just the user pill (no "List your business" CTA — that's
+          a prospecting button for visitors, irrelevant for signed-in users).
+          Logged-out: two clearly differentiated CTAs — customer entry on the
+          left ("Log in / Sign up" opens the signin modal with role picker),
+          business entry on the right ("List your business" goes straight to
+          the salon signup flow). */}
       {user ? (
         <button onClick={() => navigate(user.type === 'salon' ? '/salon' : '/quotes')} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '6px 6px 6px 12px', fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', borderRadius: 99, display: 'flex', alignItems: 'center', gap: 8 }}>
           <span>{user.name.split(' ')[0]}</span>
           <span style={{ width: 28, height: 28, borderRadius: 99, background: user.avatar, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 11, fontWeight: 700 }}>{user.initials}</span>
         </button>
       ) : (
-        <button onClick={() => setSignInOpen(true)} style={{ background: 'transparent', border: 0, padding: '8px 12px', fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer' }}>{t('Sign in', 'Iniciar sesión')}</button>
+        <>
+          <button onClick={() => setSignInOpen(true)} style={{ background: 'transparent', border: 0, padding: '8px 12px', fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer' }}>{t('Log in / Sign up', 'Inicia sesión / Regístrate')}</button>
+          <button onClick={() => navigate('/signup?role=salon')} style={{ background: p.accent, color: p.ink, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{isPhone ? t('List business', 'Mi negocio') : t('List your business', 'Lista tu negocio')}</button>
+        </>
       )}
-      <button onClick={() => navigate(user ? '/quotes' : '/signup')} style={{ background: p.accent, color: p.ink, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{isPhone ? t('Sign up', 'Registrarse') : t('Get started', 'Comenzar')}</button>
     </div>
   );
 
