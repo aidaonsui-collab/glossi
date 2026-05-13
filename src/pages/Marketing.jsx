@@ -54,11 +54,8 @@ export default function Marketing() {
       <div style={{ flex: 1 }} />
       {!isPhone && (
         <div style={{ display: 'flex', gap: 24 }}>
-          <button onClick={() => scrollTo(howRef)} style={navBtn}>{t('How it works', 'Cómo funciona')}</button>
           <button onClick={() => scrollTo(salonRef)} style={navBtn}>{t('For salons', 'Para salones')}</button>
-          <Link to="/pricing" style={navBtn}>{t('Pricing', 'Precios')}</Link>
           <Link to="/ios" style={navBtn}>{t('iOS preview', 'Vista previa iOS')}</Link>
-          <Link to="/cities" style={navBtn}>{t('Cities', 'Ciudades')}</Link>
         </div>
       )}
       {user ? (
@@ -261,7 +258,7 @@ export default function Marketing() {
                 'Sin suscripción. Sin tarifas por contacto. Paga 5% solo cuando ganas una reserva. Define tu precio mínimo, tu área, tus horas — enrutamos las solicitudes que encajen.'
               )}
             </p>
-            <button onClick={() => navigate('/signup?role=salon')} style={{ marginTop: 18, background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 20px' : '15px 24px', borderRadius: 99, fontSize: isPhone ? 13.5 : 15, fontWeight: 600, cursor: 'pointer' }}>{t('Apply for salons →', 'Aplicar como salón →')}</button>
+            <button onClick={() => navigate('/signup?role=salon')} style={{ marginTop: 18, background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 20px' : '15px 24px', borderRadius: 99, fontSize: isPhone ? 13.5 : 15, fontWeight: 600, cursor: 'pointer' }}>{t('List your business →', 'Lista tu negocio →')}</button>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 8 }}>
             {[
