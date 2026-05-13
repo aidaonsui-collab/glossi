@@ -1,11 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { useToast } from '../components/Toast.jsx';
 import { useAuth, useLang } from '../store.jsx';
 import { useT } from '../lib/i18n.js';
+import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import SignInModal from '../components/SignInModal.jsx';
+
+// RGV cities Glossi serves — surfaced as pills under the salon-recruit
+// section as local-proof. Beats "1,400+ salons globally" type stats
+// because customers + stylists in McAllen care about McAllen.
+const RGV_CITIES = ['McAllen', 'Edinburg', 'Brownsville', 'Harlingen', 'Pharr', 'Mission', 'Weslaco'];
 
 // Service category entry tiles. Customers tap a category → bid-request form
 // pre-filled. Photo index maps into PHOTOS in theme.js. Salon counts are
@@ -41,6 +47,17 @@ export default function Marketing() {
   const { user } = useAuth();
   const { lang, toggle: toggleLang } = useLang();
   const t = useT();
+
+  // Live founder-cohort counter — same RPC as /pros. Ties the homepage
+  // stat to actual signups so the number moves as outreach lands.
+  // Starts at 23 (matches the migration's pre-launch offset) before fetch.
+  const [founderCount, setFounderCount] = useState(23);
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    supabase.rpc('founder_count').then(({ data, error }) => {
+      if (!error && typeof data === 'number') setFounderCount(data);
+    });
+  }, []);
   const [signInOpen, setSignInOpen] = useState(false);
   const howRef = useRef(null);
   const compareRef = useRef(null);
@@ -252,6 +269,12 @@ export default function Marketing() {
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>{t('SALONS — READ THIS', 'SALONES — LEAN ESTO')}</div>
             <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 0.98, margin: '10px 0 0', textWrap: 'balance' }}>{t('You set your floor. We bring the chair.', 'Tú pones el piso. Nosotros llenamos la silla.')}</h2>
+            {/* Bilingual subline — always shows the OFF-language line in muted
+                style so an EN viewer sees the ES one and vice versa. Tiny
+                signal that this is a Valley platform, not a translated one. */}
+            <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 18 : 22, color: p.inkMuted, marginTop: 8, letterSpacing: '-0.015em', lineHeight: 1.1, textWrap: 'balance' }}>
+              {t('Tú pones el piso. Nosotros llenamos la silla.', 'You set your floor. We bring the chair.')}
+            </div>
             <p style={{ fontSize: isPhone ? 14 : 16, color: p.inkSoft, lineHeight: 1.55, margin: '14px 0 0', maxWidth: 480 }}>
               {t(
                 'No subscription. No lead fees. Pay 5% only when you win a booking. Set your minimum price, your service area, your hours — we route requests that match.',
@@ -260,18 +283,30 @@ export default function Marketing() {
             </p>
             <button onClick={() => navigate('/signup?role=salon')} style={{ marginTop: 18, background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 20px' : '15px 24px', borderRadius: 99, fontSize: isPhone ? 13.5 : 15, fontWeight: 600, cursor: 'pointer' }}>{t('List your business →', 'Lista tu negocio →')}</button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 8 }}>
-            {[
-              { k: t('Avg. response', 'Resp. promedio'), v: t('11 min', '11 min') },
-              { k: t('Win rate', 'Tasa de éxito'), v: '34%' },
-              { k: t('No-show rate', 'Inasistencia'), v: '2.1%' },
-              { k: t('Glossi fee', 'Tarifa Glossi'), v: '5%' },
-            ].map((s, i) => (
-              <div key={i} style={{ padding: '18px 18px', background: p.bg, borderRadius: 14, border: `0.5px solid ${p.line}` }}>
-                <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>{s.k.toUpperCase()}</div>
-                <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 26 : 36, fontWeight: type.displayWeight, marginTop: 4, letterSpacing: '-0.02em', lineHeight: 1 }}>{s.v}</div>
-              </div>
-            ))}
+          <div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 8 }}>
+              {[
+                { k: t('Avg. response', 'Resp. promedio'), v: t('11 min', '11 min') },
+                // Founders cohort replaces WIN RATE — local supply + scarcity,
+                // tied to the live founder_count() RPC from /pros so the
+                // number actually updates as outreach lands signups.
+                { k: t('Founders cohort', 'Cohorte fundadora'), v: `${founderCount}/100` },
+                { k: t('No-show rate', 'Inasistencia'), v: '2.1%' },
+                { k: t('Glossi fee', 'Tarifa Glossi'), v: '5%' },
+              ].map((s, i) => (
+                <div key={i} style={{ padding: '18px 18px', background: p.bg, borderRadius: 14, border: `0.5px solid ${p.line}` }}>
+                  <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>{s.k.toUpperCase()}</div>
+                  <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 26 : 36, fontWeight: type.displayWeight, marginTop: 4, letterSpacing: '-0.02em', lineHeight: 1 }}>{s.v}</div>
+                </div>
+              ))}
+            </div>
+            {/* City pills — local proof that beats "X,000 salons globally"
+                stats. Tells a McAllen visitor that her city is on the map. */}
+            <div style={{ marginTop: 14, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {RGV_CITIES.map((city) => (
+                <span key={city} style={{ padding: '5px 11px', background: p.bg, border: `0.5px solid ${p.line}`, borderRadius: 99, fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: p.inkSoft, textTransform: 'uppercase' }}>{city}</span>
+              ))}
+            </div>
           </div>
         </div>
       </div>

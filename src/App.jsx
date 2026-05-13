@@ -21,7 +21,6 @@ import CustomerLoading from './pages/CustomerLoading.jsx';
 // salon dashboards live under /salon/inbox /salon/bids etc., so we
 // redirect /salon there instead of rendering the stub.
 import SalonEmpty from './pages/SalonEmpty.jsx';
-import Pricing from './pages/Pricing.jsx';
 import OnboardingCustomer from './pages/OnboardingCustomer.jsx';
 import OnboardingSalon from './pages/OnboardingSalon.jsx';
 import IOS from './pages/IOS.jsx';
@@ -67,7 +66,6 @@ export default function App() {
         <Route path="/quotes/waiting" element={<CustomerLoading />} />
         <Route path="/salon" element={<Navigate to="/salon/inbox" replace />} />
         <Route path="/salon/empty" element={<SalonEmpty />} />
-        <Route path="/pricing" element={<Pricing />} />
         <Route path="/onboarding/customer" element={<OnboardingCustomer />} />
         <Route path="/onboarding/salon" element={<OnboardingSalon />} />
         <Route path="/ios" element={<IOS />} />
