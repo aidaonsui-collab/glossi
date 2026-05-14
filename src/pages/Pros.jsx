@@ -14,7 +14,7 @@ const COPY = {
     hero_sub: 'Clients in the Valley post what they need. Salons send a price. You pick the bookings you actually want.',
     hero_cta: 'Claim my spot — 60 seconds',
     hero_cta_scroll_target: 'claim',
-    hero_stripe: 'FREE · NO MONTHLY FEE · NO PER-LEAD FEE',
+    hero_stripe: 'NO MONTHLY FEE · NO PER-LEAD FEE · 5% PER BOOKING',
     steps_eyebrow: 'THE 60-SECOND PITCH',
     steps_h: 'It already works the way you already work.',
     step_1_t: 'Client posts',
@@ -22,21 +22,21 @@ const COPY = {
     step_2_t: 'You bid',
     step_2_d: 'You see the request. You send a price. Other salons in range do the same.',
     step_3_t: 'You book',
-    step_3_d: 'She picks. You get notified. She shows up. You get paid directly.',
+    step_3_d: 'She picks. You get notified. She shows up. You get paid.',
     compare_eyebrow: 'WHAT THIS COSTS YOU',
-    compare_h: '$0 vs $30+ a month.',
-    compare_sub: 'Real numbers, public as of May 2026. Glossi never charges a monthly fee, never takes a cut of your work.',
+    compare_h: '$0 a month. 5% a booking.',
+    compare_sub: 'Real numbers, public as of May 2026. No monthly fee, no subscription tiers, no new-client commission — Glossi takes 5% of a booking, and only when you actually get paid.',
     compare_col_monthly: 'Monthly fee',
-    compare_col_perlead: 'Per-new-client fee',
+    compare_col_booking: 'Per-booking fee',
     compare_col_card: 'Card processing',
-    compare_col_upsell: '"Boost" upsell',
-    compare_note: 'Sources: booksy.biz · fresha.com/pricing · vagaro.com/pro · glossi.cc · all retrieved May 2026.',
+    compare_col_newclient: 'New-client fee',
+    compare_note: 'Sources: squareup.com/appointments/pricing · glossgenius.com/pricing · biz.booksy.com/pricing · glossi.cc · all retrieved May 2026. Card rates vary by in-person vs. online.',
     ticker_eyebrow: 'LIVE — REAL VALLEY REQUESTS',
     cohort_eyebrow: 'VALLEY FOUNDERS COHORT',
     cohort_h: 'First 100 pros in the Valley get something the rest never will.',
     cohort_sub: "We're hand-picking the first 100 stylists, barbers, and lash/nail/brow techs across McAllen, Edinburg, Brownsville, Harlingen, Pharr, Mission, and Weslaco. Once we hit 100, the cohort closes.",
     cohort_perks: [
-      ['Lifetime $0 fees', 'Locked in writing. Free forever, no asterisk.'],
+      ['5% rate, locked for life', 'Founding pros never pay a monthly fee, and your 5% booking rate never goes up. Locked.'],
       ['Founder badge', 'Shows on your profile and on every bid you send. Clients see it.'],
       ['First-bid priority for 12 months', 'Your bid lands first in the customer\'s inbox.'],
       ['Direct WhatsApp to the founder', 'Not a help center. A person, on your phone.'],
@@ -63,7 +63,7 @@ const COPY = {
     share_copied: 'Copied!',
     share_download: 'Save the card (PNG)',
     share_title_native: 'Glossi — Valley founders cohort',
-    share_text: 'Pro tip — Glossi sends Valley clients with service, date & budget already filled in. No monthly, no per-lead. First 100 in the Valley lock lifetime $0. Aparta tu lugar:',
+    share_text: 'Pro tip — Glossi sends Valley clients with service, date & budget already filled in. No monthly fee, no per-lead fee — just 5% a booking. First 100 in the Valley lock that 5% rate for life. Claim your spot:',
     card_kicker: 'Pro tip.',
     card_body: 'Glossi sends Valley clients — no monthly, no per-lead.',
     card_from: 'From',
@@ -71,10 +71,10 @@ const COPY = {
     ref_banner: 'sent you. Founding-pro slot reserved →',
     faq_eyebrow: 'COMMON QUESTIONS',
     faq: [
-      ['Is it really free?', 'Yes. No monthly fee, no per-lead fee, no commission on bookings. We make money later from optional paid features — none of which you ever have to use.'],
+      ['What does it cost?', 'No monthly fee, no per-lead fee, no subscription tiers. Glossi takes 5% of each booking — and only when a client actually books and pays you. No booking, no fee.'],
       ['Do I have to leave Booksy?', "No. Glossi isn't a calendar — it's a lead source. Keep your existing tools. We just send you pre-qualified clients with service, date, and budget filled in."],
       ['What if a client doesn\'t speak English?', "Most don\'t. Glossi handles requests in English or Spanish — your reply goes back in the same language."],
-      ['How do payouts work?', "Client pays you directly the way you already collect — Cash App, Zelle, card on arrival, whatever you set. We don\'t touch the money."],
+      ['How do payouts work?', 'When a client accepts your bid, she pays securely through the app. The money lands in your connected account — minus the 5% — usually within a couple business days.'],
       ['What if I\'m booked solid?', 'Then ignore the bid. There\'s no minimum, no penalty, no pressure. Glossi only sends bids that match your service list.'],
     ],
     bottomcta: 'Claim my Valley spot',
@@ -89,7 +89,7 @@ const COPY = {
     hero_sub: 'Las clientas del Valle publican lo que necesitan. Los salones cotizan. Tú aceptas solo las citas que te convienen.',
     hero_cta: 'Apartar mi lugar — 60 segundos',
     hero_cta_scroll_target: 'claim',
-    hero_stripe: 'GRATIS · SIN MENSUALIDAD · SIN COMISIÓN POR CLIENTE',
+    hero_stripe: 'SIN MENSUALIDAD · SIN CUOTA POR CONTACTO · 5% POR CITA',
     steps_eyebrow: 'EN 60 SEGUNDOS',
     steps_h: 'Funciona como tú ya trabajas.',
     step_1_t: 'La cliente publica',
@@ -97,21 +97,21 @@ const COPY = {
     step_2_t: 'Tú cotizas',
     step_2_d: 'Ves la solicitud. Mandas tu precio. Otros salones de la zona también lo hacen.',
     step_3_t: 'Tú agendas',
-    step_3_d: 'Ella elige. Te avisamos. Llega a su cita. Te paga directo.',
+    step_3_d: 'Ella elige. Te avisamos. Llega a su cita. Te pagan.',
     compare_eyebrow: 'LO QUE TE CUESTA',
-    compare_h: '$0 contra más de $30 al mes.',
-    compare_sub: 'Números reales, públicos a mayo 2026. Glossi nunca cobra mensualidad ni se queda con parte de tu trabajo.',
+    compare_h: '$0 al mes. 5% por cita.',
+    compare_sub: 'Números reales, públicos a mayo 2026. Sin mensualidad, sin planes por niveles, sin comisión por cliente nueva — Glossi cobra 5% de la cita, y solo cuando de verdad te pagan.',
     compare_col_monthly: 'Mensualidad',
-    compare_col_perlead: 'Por cliente nueva',
+    compare_col_booking: 'Cuota por cita',
     compare_col_card: 'Procesamiento de tarjeta',
-    compare_col_upsell: 'Upsell de "Boost"',
-    compare_note: 'Fuentes: booksy.biz · fresha.com/pricing · vagaro.com/pro · glossi.cc · consultadas en mayo 2026.',
+    compare_col_newclient: 'Cuota por cliente nueva',
+    compare_note: 'Fuentes: squareup.com/appointments/pricing · glossgenius.com/pricing · biz.booksy.com/pricing · glossi.cc · consultadas en mayo 2026. Las tasas de tarjeta varían entre presencial y en línea.',
     ticker_eyebrow: 'EN VIVO — SOLICITUDES REALES DEL VALLE',
     cohort_eyebrow: 'COHORTE FUNDADORA DEL VALLE',
     cohort_h: 'Las primeras 100 profesionales del Valle reciben algo que las demás nunca tendrán.',
     cohort_sub: 'Estamos seleccionando a mano a las primeras 100 estilistas, barberos, y técnicas de pestañas/uñas/cejas de McAllen, Edinburg, Brownsville, Harlingen, Pharr, Mission y Weslaco. Cuando lleguemos a 100, se cierra.',
     cohort_perks: [
-      ['Tarifa $0 de por vida', 'Por escrito. Gratis para siempre, sin asterisco.'],
+      ['Tarifa 5% fija de por vida', 'Las profesionales fundadoras nunca pagan mensualidad, y tu tarifa de 5% por cita nunca sube. Fija.'],
       ['Insignia de fundadora', 'Aparece en tu perfil y en cada cotización que mandas. Las clientas la ven.'],
       ['Prioridad de cotización 12 meses', 'Tu precio llega primero en la bandeja de la clienta.'],
       ['WhatsApp directo al fundador', 'No un call center. Una persona, en tu teléfono.'],
@@ -138,18 +138,18 @@ const COPY = {
     share_copied: '¡Copiado!',
     share_download: 'Guardar la tarjeta (PNG)',
     share_title_native: 'Glossi — Cohorte fundadora del Valle',
-    share_text: 'Te paso el plug — Glossi te manda clientas del Valle con servicio, fecha y presupuesto listos. Sin mensualidad, sin comisión. Las primeras 100 del Valle entran gratis de por vida. Aparta tu lugar:',
+    share_text: 'Te paso el plug — Glossi te manda clientas del Valle con servicio, fecha y presupuesto listos. Sin mensualidad, sin cuota por contacto — solo 5% por cita. Las primeras 100 del Valle fijan esa tarifa de 5% de por vida. Aparta tu lugar:',
     card_kicker: 'Te paso el plug.',
-    card_body: 'Glossi te manda clientas del Valle. Sin mensualidad. Sin comisión.',
+    card_body: 'Glossi te manda clientas del Valle. Sin mensualidad. Sin cuota por contacto.',
     card_from: 'De',
     card_foot: 'Primeras 100 del Valle',
     ref_banner: 'te mandó. Lugar fundador reservado →',
     faq_eyebrow: 'PREGUNTAS FRECUENTES',
     faq: [
-      ['¿De verdad es gratis?', 'Sí. Sin mensualidad, sin costo por contacto, sin comisión por cita. Más adelante tendremos funciones opcionales de pago — ninguna obligatoria.'],
+      ['¿Cuánto cuesta?', 'Sin mensualidad, sin costo por contacto, sin planes por niveles. Glossi cobra 5% de cada cita — y solo cuando una clienta de verdad reserva y te paga. Sin cita, sin cuota.'],
       ['¿Tengo que dejar Booksy?', 'No. Glossi no es un calendario, es una fuente de clientas. Sigue usando lo que ya usas. Solo te mandamos clientas pre-calificadas con servicio, fecha, y presupuesto listos.'],
       ['¿Y si la clienta no habla inglés?', 'La mayoría no. Glossi maneja solicitudes en inglés o español — tu respuesta sale en el mismo idioma.'],
-      ['¿Cómo me pagan?', 'La clienta te paga directo como ya recibes — Cash App, Zelle, tarjeta al llegar, lo que ya tengas. Nosotros no tocamos el dinero.'],
+      ['¿Cómo me pagan?', 'Cuando una clienta acepta tu cotización, paga de forma segura en la app. El dinero llega a tu cuenta conectada — menos el 5% — normalmente en un par de días hábiles.'],
       ['¿Y si estoy llena?', 'Ignora la cotización. No hay mínimo, no hay penalidad, no hay presión. Solo te mandamos solicitudes que coincidan con tus servicios.'],
     ],
     bottomcta: 'Apartar mi lugar en el Valle',
@@ -168,10 +168,10 @@ const TICKER = [
 ];
 
 const COMPARE_ROWS = [
-  { name: 'Glossi',   monthly: '$0',       perlead: '$0',         card: '—',           upsell: '—' },
-  { name: 'Booksy',   monthly: '$29.99',   perlead: '—',          card: '2.9% + $0.30', upsell: '$30+/mo Boost' },
-  { name: 'Fresha',   monthly: '$19.95',   perlead: '20% (min $6)', card: '2.79% + $0.20', upsell: '$59.95/mo+' },
-  { name: 'Vagaro',   monthly: '$23.99',   perlead: '—',          card: '2.75% +',     upsell: '$10–60/mo' },
+  { name: 'Glossi',      monthly: '$0',          perBooking: '5%', card: '2.9% + 30¢',  newClient: '—' },
+  { name: 'Square',      monthly: '$0–$149/mo',  perBooking: '—',  card: '2.6%–3.3%',   newClient: '—' },
+  { name: 'GlossGenius', monthly: '$24–$148/mo', perBooking: '—',  card: '2.6% flat',   newClient: '—' },
+  { name: 'Booksy',      monthly: '$29.99/mo+',  perBooking: '—',  card: '2.49%–3.25%', newClient: '30% of 1st visit' },
 ];
 
 export default function Pros() {
@@ -476,7 +476,7 @@ function wrapInput(node) {
 
 function CompareTable({ t, isPhone }) {
   const cellPad = isPhone ? '12px 10px' : '16px 18px';
-  const colNames = [t.compare_col_monthly, t.compare_col_perlead, t.compare_col_card, t.compare_col_upsell];
+  const colNames = [t.compare_col_monthly, t.compare_col_booking, t.compare_col_card, t.compare_col_newclient];
   return (
     <div style={{ background: p.bg, border: `0.5px solid ${p.line}`, borderRadius: 16, overflow: 'hidden', overflowX: 'auto' }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: isPhone ? 12 : 14, minWidth: isPhone ? 520 : 'auto' }}>
@@ -495,9 +495,9 @@ function CompareTable({ t, isPhone }) {
               <tr key={row.name} style={{ borderTop: i > 0 ? `0.5px solid ${p.line}` : 0, background: isGlossi ? p.accentSoft : 'transparent' }}>
                 <td style={{ padding: cellPad, fontWeight: 700, color: isGlossi ? p.ink : p.inkSoft, fontFamily: isGlossi ? type.display : type.body, fontStyle: isGlossi ? 'italic' : 'normal', fontSize: isGlossi ? (isPhone ? 18 : 22) : (isPhone ? 13 : 15) }}>{row.name}</td>
                 <td style={{ ...tdStyle, padding: cellPad }}>{cellValue(row.monthly, isGlossi)}</td>
-                <td style={{ ...tdStyle, padding: cellPad }}>{cellValue(row.perlead, isGlossi)}</td>
+                <td style={{ ...tdStyle, padding: cellPad }}>{cellValue(row.perBooking, isGlossi)}</td>
                 <td style={{ ...tdStyle, padding: cellPad }}>{cellValue(row.card, isGlossi)}</td>
-                <td style={{ ...tdStyle, padding: cellPad }}>{cellValue(row.upsell, isGlossi)}</td>
+                <td style={{ ...tdStyle, padding: cellPad }}>{cellValue(row.newClient, isGlossi)}</td>
               </tr>
             );
           })}
@@ -511,8 +511,11 @@ const thStyle = { color: p.inkSoft, fontWeight: 600, textTransform: 'uppercase' 
 const tdStyle = { textAlign: 'center', color: p.inkSoft };
 
 function cellValue(v, isGlossi) {
-  if (isGlossi && v === '$0') return <span style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, color: p.accent, fontWeight: type.displayWeight }}>$0</span>;
-  if (isGlossi && v === '—') return <span style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, color: p.accent, fontWeight: type.displayWeight }}>—</span>;
+  // Glossi's punchy single-token cells ($0, 5%, —) get the display
+  // treatment; the verbose card-rate value renders as plain text.
+  if (isGlossi && (v === '$0' || v === '5%' || v === '—')) {
+    return <span style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, color: p.accent, fontWeight: type.displayWeight }}>{v}</span>;
+  }
   return v;
 }
 
@@ -584,7 +587,7 @@ function ShareCard({ t, lang, handle, shareUrl, isPhone }) {
       </div>
       {/* Middle: kicker + body */}
       <div>
-        <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 'clamp(40px, 12vw, 88px)', fontWeight: type.displayWeight, color: p.accent, lineHeight: 0.9, letterSpacing: '-0.04em', marginBottom: 6 }}>$0</div>
+        <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 'clamp(36px, 11vw, 76px)', fontWeight: type.displayWeight, color: p.accent, lineHeight: 0.9, letterSpacing: '-0.04em', marginBottom: 6 }}>$0/mo</div>
         <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 'clamp(20px, 6vw, 32px)', fontWeight: type.displayWeight, color: p.ink, lineHeight: 1, letterSpacing: '-0.02em', marginBottom: 14 }}>{t.card_kicker}</div>
         <div style={{ fontSize: 13, color: p.inkSoft, lineHeight: 1.5 }}>{t.card_body}</div>
       </div>
@@ -627,10 +630,10 @@ function drawAndDownloadCard({ lang, handle, shareUrl }) {
   ctx.fillText(kicker[1], W - 84, 168);
   ctx.textAlign = 'left';
 
-  // big $0
+  // big $0/mo
   ctx.fillStyle = p.accent;
-  ctx.font = 'italic 440px "DM Serif Display", Georgia, serif';
-  ctx.fillText('$0', 64, 540);
+  ctx.font = 'italic 320px "DM Serif Display", Georgia, serif';
+  ctx.fillText('$0/mo', 64, 540);
 
   // kicker phrase
   ctx.fillStyle = p.ink;
@@ -642,7 +645,7 @@ function drawAndDownloadCard({ lang, handle, shareUrl }) {
   ctx.fillStyle = p.inkSoft;
   ctx.font = '500 42px "Inter", system-ui, sans-serif';
   const body = lang === 'es'
-    ? ['Glossi te manda clientas del Valle.', 'Sin mensualidad. Sin comisión.']
+    ? ['Glossi te manda clientas del Valle.', 'Sin mensualidad. Sin cuota por contacto.']
     : ['Glossi sends Valley clients —', 'no monthly, no per-lead.'];
   body.forEach((line, i) => ctx.fillText(line, 84, 1180 + i * 56));
 
