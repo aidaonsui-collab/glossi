@@ -294,7 +294,17 @@ export default function Pros() {
           </h1>
           <p style={{ fontSize: isPhone ? 15 : 18, color: p.inkSoft, lineHeight: 1.55, margin: '20px 0 0', maxWidth: 520, textWrap: 'pretty' }}>{t.hero_sub}</p>
           <div style={{ marginTop: 24, display: 'flex', flexDirection: isPhone ? 'column' : 'row', gap: 12, alignItems: isPhone ? 'stretch' : 'center', flexWrap: 'wrap' }}>
-            <button onClick={scrollToClaim} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '16px 22px' : '16px 26px', borderRadius: 99, fontSize: isPhone ? 15 : 15, fontWeight: 600, cursor: 'pointer' }}>{t.hero_cta}</button>
+            {/* Comet-border wrapper — same animated gold sweep as the
+                Glossi row on /signup, to pull the eye to the primary CTA. */}
+            <div style={{ position: 'relative', padding: 3, borderRadius: 99, overflow: 'hidden', background: 'rgba(184,137,62,0.18)' }}>
+              <div style={{
+                position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
+                background: 'conic-gradient(from 0deg, transparent 0deg, transparent 250deg, rgba(184,137,62,0.45) 305deg, #B8893E 340deg, rgba(184,137,62,0.45) 350deg, transparent 360deg)',
+                animation: 'glossiBorderSweep 3.5s linear infinite',
+                pointerEvents: 'none',
+              }} />
+              <button onClick={scrollToClaim} style={{ position: 'relative', zIndex: 1, display: 'block', width: isPhone ? '100%' : 'auto', background: p.ink, color: p.bg, border: 0, padding: isPhone ? '16px 22px' : '16px 26px', borderRadius: 99, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>{t.hero_cta}</button>
+            </div>
             <button onClick={toggleLang} style={{ background: 'transparent', color: p.inkSoft, border: 0, padding: '8px 0', fontSize: 13, fontWeight: 500, cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3 }}>{t.nav_es}</button>
           </div>
           <div style={{ marginTop: 22, padding: '10px 14px', display: 'inline-flex', gap: 10, alignItems: 'center', background: p.accentSoft, borderRadius: 99, fontFamily: type.mono, fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: p.ink }}>
@@ -354,6 +364,7 @@ export default function Pros() {
           @keyframes glossiScroll { from { transform: translateX(0); } to { transform: translateX(-33.33%); } }
           @keyframes glossiPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
           @keyframes glossiFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+          @keyframes glossiBorderSweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         `}</style>
       </div>
 
