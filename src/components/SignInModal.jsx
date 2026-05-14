@@ -110,7 +110,7 @@ export default function SignInModal({ open, onClose, defaultRole = 'customer' })
             {t('Demo · click "Sign in" with any email. Your booking history and saved salons are stored locally on this device.', 'Demo · haz clic en "Iniciar sesión" con cualquier correo. Tu historial de reservas y salones guardados se guardan localmente en este dispositivo.')}
           </div>
         )}
-        <SocialSignIn redirectTo={role === 'salon' ? '/salon' : '/quotes'} compact />
+        <SocialSignIn redirectTo="/auth/callback" compact />
         <div style={{ marginTop: 4, paddingTop: 12, borderTop: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
           <span style={{ fontSize: 12.5, color: p.inkSoft }}>{t("Don't have an account?", '¿No tienes cuenta?')}</span>
           <button onClick={() => { onClose?.(); navigate(`/signup${role === 'salon' ? '?role=salon' : ''}`); }} style={{ background: 'transparent', border: 0, fontSize: 13, color: p.accent, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>

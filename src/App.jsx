@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Marketing from './pages/Marketing.jsx';
 import { useAuth } from './store.jsx';
+import { supabase, isSupabaseConfigured } from './lib/supabase.js';
 
 // React Router preserves window scroll position across navigations, so
 // jumping from a scrolled-down page (e.g. a service tile far down the
@@ -13,6 +14,41 @@ function ScrollToTop() {
     window.scrollTo(0, 0);
   }, [pathname]);
   return null;
+}
+
+// OAuth (Google/Apple/Facebook) sign-in lands here. The provider's
+// redirect URL has to be fixed at click time — before we know the
+// account type — so the social buttons all point here. This route
+// resolves the authoritative type from profiles.is_business (the same
+// source of truth as email sign-in) and forwards to the right home.
+// Falls back to "/" if no session lands (e.g. an OAuth error).
+function AuthCallback() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isSupabaseConfigured) { navigate('/', { replace: true }); return; }
+    let done = false;
+    const route = async session => {
+      if (done) return;
+      done = true;
+      if (!session?.user) { navigate('/', { replace: true }); return; }
+      const { data: profile } = await supabase
+        .from('profiles').select('is_business')
+        .eq('id', session.user.id).maybeSingle();
+      const isSalon = profile?.is_business || session.user.user_metadata?.role === 'salon';
+      navigate(isSalon ? '/salon/inbox' : '/quotes', { replace: true });
+    };
+    // The session may already be parsed from the callback URL hash, or
+    // it may land a beat later via the auth event — handle both.
+    supabase.auth.getSession().then(({ data }) => { if (data.session) route(data.session); });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => { if (session) route(session); });
+    const fallback = setTimeout(() => { if (!done) { done = true; navigate('/', { replace: true }); } }, 8000);
+    return () => { sub.subscription.unsubscribe(); clearTimeout(fallback); };
+  }, [navigate]);
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif', color: '#5C5651', fontSize: 14 }}>
+      Signing you in…
+    </div>
+  );
 }
 
 // At "/", the marketing landing page is for visitors. A logged-in
@@ -117,6 +153,7 @@ export default function App() {
         <Route path="/salon/inbox/:id" element={<SalonInboxDetail />} />
         <Route path="/pros" element={<Pros />} />
         <Route path="/admin/outreach" element={<AdminOutreach />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
       </Routes>
     </BrowserRouter>
   );
