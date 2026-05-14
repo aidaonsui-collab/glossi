@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import Modal from './Modal.jsx';
@@ -17,24 +17,13 @@ export default function SignInModal({ open, onClose, defaultRole = 'customer' })
   const [password, setPassword] = useState('');
   const [role, setRole] = useState(defaultRole);
   const [busy, setBusy] = useState(false);
-  // Set the moment a sign-in succeeds through this modal. The effect
-  // below uses it to route based on the *actual* account type — the
-  // role picker can't be trusted (a salon owner who leaves it on
-  // "Customer" would otherwise land on /quotes).
-  const justSignedIn = useRef(false);
 
-  // Once auth resolves, route to the account's real home. user.type is
-  // the source of truth — it's set from the JWT the instant the session
-  // lands, so it's reliable here. Also handles the "already signed in
-  // when the modal opened" case: just close, no navigation.
+  // If the user is already signed in when the modal opens, close it.
+  // (Fresh sign-ins route + close inside submit() using the
+  // authoritative account type returned by signInWithEmail.)
   useEffect(() => {
-    if (!open || !user) return;
-    if (justSignedIn.current) {
-      justSignedIn.current = false;
-      navigate(user.type === 'salon' ? '/salon/inbox' : '/quotes');
-    }
-    onClose?.();
-  }, [open, user, onClose, navigate]);
+    if (open && user) onClose?.();
+  }, [open, user, onClose]);
 
   const submit = async () => {
     if (!email.trim()) { toast(t('Email required.', 'Correo requerido.'), { tone: 'warn' }); return; }
@@ -48,21 +37,19 @@ export default function SignInModal({ open, onClose, defaultRole = 'customer' })
       toast(t('Sign-in is taking too long. Check your connection or try again.', 'El inicio de sesión está tardando demasiado. Revisa tu conexión o intenta de nuevo.'), { tone: 'warn' });
     }, 15000);
     try {
-      // Flag before awaiting so the auth-state listener can't populate
-      // `user` and run the effect above before we've marked this as a
-      // fresh sign-in.
-      justSignedIn.current = true;
       const result = await signInWithEmail(email.trim(), password, role);
       if (!result?.ok) {
-        justSignedIn.current = false;
         toast(result?.error || t('Sign in failed.', 'Falló el inicio de sesión.'), { tone: 'warn' });
         return;
       }
       toast(t('Signed in.', 'Sesión iniciada.'), { tone: 'success' });
-      // Closing + routing is handled by the effect once `user` resolves —
-      // we navigate on the real account type, not the role picker.
+      onClose?.();
+      // Route on the authoritative account type resolved by
+      // signInWithEmail (profiles.is_business) — NOT the role picker,
+      // and NOT user.type, which the auth listener fills from the JWT
+      // alone before the profile's is_business flag lands.
+      navigate(result.type === 'salon' ? '/salon/inbox' : '/quotes');
     } catch (err) {
-      justSignedIn.current = false;
       console.error('signIn error', err);
       toast(err?.message || t('Sign in failed unexpectedly.', 'El inicio de sesión falló inesperadamente.'), { tone: 'warn' });
     } finally {

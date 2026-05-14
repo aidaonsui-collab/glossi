@@ -153,12 +153,27 @@ export function AuthProvider({ children }) {
   const signInWithEmail = useCallback(async (email, password, role = 'customer') => {
     if (!isSupabaseConfigured) {
       setDemoUser({ ...DEMO_ACCOUNTS[role], email: email || DEMO_ACCOUNTS[role].email });
-      return { ok: true };
+      return { ok: true, type: role };
     }
     if (!password) return { ok: false, error: 'Password required.' };
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return { ok: false, error: error.message };
-    return { ok: true };
+    // Resolve the authoritative account type before returning. The auth
+    // listener populates `user` from the JWT alone, which only carries
+    // user_metadata.role — that can be absent or stale (accounts created
+    // early, or via SQL, or flipped to a business later). The profiles
+    // row's is_business flag is the source of truth, so callers that
+    // route on sign-in get a reliable type from here, not from user.type.
+    let type = data.user?.user_metadata?.role === 'salon' ? 'salon' : 'customer';
+    if (data.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_business')
+        .eq('id', data.user.id)
+        .maybeSingle();
+      if (profile?.is_business) type = 'salon';
+    }
+    return { ok: true, type };
   }, [setDemoUser]);
 
   const signUp = useCallback(async ({ name, email, password, role = 'customer' }) => {
