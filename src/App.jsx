@@ -1,6 +1,19 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Marketing from './pages/Marketing.jsx';
 import { useAuth } from './store.jsx';
+
+// React Router preserves window scroll position across navigations, so
+// jumping from a scrolled-down page (e.g. a service tile far down the
+// marketing page) to /request or /signup would land mid-page. Reset to
+// the top on every pathname change. One component covers every route.
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 // At "/", the marketing landing page is for visitors. A logged-in
 // salon hitting "/" — by clicking the logo, deep-linking, or via a
@@ -59,6 +72,7 @@ import AdminOutreach from './pages/AdminOutreach.jsx';
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomeRoute />} />
         <Route path="/quotes" element={<Customer />} />
