@@ -5,14 +5,25 @@ import { useNarrow } from '../hooks.js';
 import { useLang } from '../store.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 
+// Update PRICING_AS_OF when the competitor figures in COMPARE_ROWS are
+// re-verified — it stamps the "retrieved" date on the comparison table.
+const PRICING_AS_OF = { en: 'May 2026', es: 'mayo 2026' };
+
+// Live freshness stamp for the hero eyebrow — updates on its own.
+const monthYear = (lang) => {
+  const d = new Date();
+  const month = d.toLocaleString(lang === 'es' ? 'es-MX' : 'en-US', { month: 'long' });
+  return `${month} ${d.getFullYear()}`.toUpperCase();
+};
+
 const COPY = {
   en: {
     nav_signin: 'Sign in',
     nav_es: 'Mejor en español? Toca aquí.',
-    hero_eyebrow: 'FOR RGV STYLISTS · MAY 2026',
+    hero_eyebrow: 'FOR RGV STYLISTS',
     hero_h: ['They bid.', 'You book.'],
     hero_sub: 'Clients in the Valley post what they need. Salons send a price. You pick the bookings you actually want.',
-    hero_cta: 'Claim my spot — 60 seconds',
+    hero_cta: 'Claim my spot',
     hero_cta_scroll_target: 'claim',
     hero_stripe: 'NO MONTHLY FEE · NO PER-LEAD FEE · 5% PER BOOKING',
     steps_eyebrow: 'THE 60-SECOND PITCH',
@@ -25,12 +36,12 @@ const COPY = {
     step_3_d: 'She picks. You get notified. She shows up. You get paid.',
     compare_eyebrow: 'WHAT THIS COSTS YOU',
     compare_h: '$0 a month. 5% a booking.',
-    compare_sub: 'Real numbers, public as of May 2026. No monthly fee, no subscription tiers, no new-client commission — Glossi takes 5% of a booking, and only when you actually get paid.',
+    compare_sub: `Real numbers, public as of ${PRICING_AS_OF.en}. No monthly fee, no subscription tiers, no new-client commission — Glossi takes 5% of a booking, and only when you actually get paid.`,
     compare_col_monthly: 'Monthly fee',
     compare_col_booking: 'Per-booking fee',
     compare_col_card: 'Card processing',
     compare_col_newclient: 'New-client fee',
-    compare_note: 'Sources: squareup.com/appointments/pricing · glossgenius.com/pricing · biz.booksy.com/pricing · glossi.cc · all retrieved May 2026. Card rates vary by in-person vs. online.',
+    compare_note: `Sources: squareup.com/appointments/pricing · glossgenius.com/pricing · biz.booksy.com/pricing · glossi.cc · all retrieved ${PRICING_AS_OF.en}. Card rates vary by in-person vs. online.`,
     ticker_eyebrow: 'LIVE — REAL VALLEY REQUESTS',
     cohort_eyebrow: 'VALLEY FOUNDERS COHORT',
     cohort_h: 'First 100 pros in the Valley get something the rest never will.',
@@ -43,6 +54,9 @@ const COPY = {
     ],
     counter_of: 'of',
     counter_claimed: 'Valley spots claimed',
+    cohort_closed_h: 'The founding cohort is full.',
+    cohort_closed_sub: 'All 100 Valley founding spots are claimed. Glossi is still onboarding stylists across the Valley — join as a pro and start getting bids.',
+    cohort_closed_cta: 'Join Glossi as a pro →',
     form_h: 'Claim your spot',
     form_sub: "IG handle + phone. That's it. We'll DM you within 24 hours to finish setup.",
     form_ig: 'Instagram handle',
@@ -55,7 +69,7 @@ const COPY = {
     form_success_sub_a: "You're founding pro",
     form_success_sub_b: 'of 100. We\'ll DM you within 24 hours.',
     form_err_invalid: 'That doesn\'t look like a valid Instagram handle. Letters, numbers, dots, underscores only.',
-    form_err_generic: "Something broke on our end. Try again, or DM @glossi.cc.",
+    form_err_generic: 'Something broke on our end. Try again, or email support@glossi.cc.',
     share_h: 'Bring a friend in.',
     share_sub: 'Every Valley stylist you bring before the cohort closes locks her in too. Tap to send.',
     share_btn: 'Send to a stylist friend',
@@ -84,10 +98,10 @@ const COPY = {
   es: {
     nav_signin: 'Iniciar sesión',
     nav_es: 'In English? Tap here.',
-    hero_eyebrow: 'PARA ESTILISTAS DEL VALLE · MAYO 2026',
+    hero_eyebrow: 'PARA ESTILISTAS DEL VALLE',
     hero_h: ['Ellas piden.', 'Tú aceptas.'],
     hero_sub: 'Las clientas del Valle publican lo que necesitan. Los salones cotizan. Tú aceptas solo las citas que te convienen.',
-    hero_cta: 'Apartar mi lugar — 60 segundos',
+    hero_cta: 'Apartar mi lugar',
     hero_cta_scroll_target: 'claim',
     hero_stripe: 'SIN MENSUALIDAD · SIN CUOTA POR CONTACTO · 5% POR CITA',
     steps_eyebrow: 'EN 60 SEGUNDOS',
@@ -100,12 +114,12 @@ const COPY = {
     step_3_d: 'Ella elige. Te avisamos. Llega a su cita. Te pagan.',
     compare_eyebrow: 'LO QUE TE CUESTA',
     compare_h: '$0 al mes. 5% por cita.',
-    compare_sub: 'Números reales, públicos a mayo 2026. Sin mensualidad, sin planes por niveles, sin comisión por cliente nueva — Glossi cobra 5% de la cita, y solo cuando de verdad te pagan.',
+    compare_sub: `Números reales, públicos a ${PRICING_AS_OF.es}. Sin mensualidad, sin planes por niveles, sin comisión por cliente nueva — Glossi cobra 5% de la cita, y solo cuando de verdad te pagan.`,
     compare_col_monthly: 'Mensualidad',
     compare_col_booking: 'Cuota por cita',
     compare_col_card: 'Procesamiento de tarjeta',
     compare_col_newclient: 'Cuota por cliente nueva',
-    compare_note: 'Fuentes: squareup.com/appointments/pricing · glossgenius.com/pricing · biz.booksy.com/pricing · glossi.cc · consultadas en mayo 2026. Las tasas de tarjeta varían entre presencial y en línea.',
+    compare_note: `Fuentes: squareup.com/appointments/pricing · glossgenius.com/pricing · biz.booksy.com/pricing · glossi.cc · consultadas en ${PRICING_AS_OF.es}. Las tasas de tarjeta varían entre presencial y en línea.`,
     ticker_eyebrow: 'EN VIVO — SOLICITUDES REALES DEL VALLE',
     cohort_eyebrow: 'COHORTE FUNDADORA DEL VALLE',
     cohort_h: 'Las primeras 100 profesionales del Valle reciben algo que las demás nunca tendrán.',
@@ -118,6 +132,9 @@ const COPY = {
     ],
     counter_of: 'de',
     counter_claimed: 'lugares apartados del Valle',
+    cohort_closed_h: 'La cohorte fundadora está llena.',
+    cohort_closed_sub: 'Los 100 lugares fundadores del Valle ya están apartados. Glossi sigue dando de alta estilistas en todo el Valle — únete como profesional y empieza a recibir cotizaciones.',
+    cohort_closed_cta: 'Únete a Glossi como profesional →',
     form_h: 'Aparta tu lugar',
     form_sub: 'Usuario de Instagram + teléfono. Es todo. Te escribimos en menos de 24 horas para terminar tu perfil.',
     form_ig: 'Usuario de Instagram',
@@ -130,7 +147,7 @@ const COPY = {
     form_success_sub_a: 'Eres la profesional fundadora',
     form_success_sub_b: 'de 100. Te escribimos antes de 24 horas.',
     form_err_invalid: 'Ese no parece un usuario válido de Instagram. Solo letras, números, puntos, guiones bajos.',
-    form_err_generic: 'Algo falló de nuestro lado. Intenta otra vez o escríbenos a @glossi.cc.',
+    form_err_generic: 'Algo falló de nuestro lado. Intenta otra vez o escríbenos a support@glossi.cc.',
     share_h: 'Pasa el plug.',
     share_sub: 'Cada estilista del Valle que apuntes antes de cerrar la cohorte también entra. Toca para enviar.',
     share_btn: 'Mandar a una amiga estilista',
@@ -207,6 +224,7 @@ export default function Pros() {
     });
   }, []);
 
+  const cohortFull = count >= 100;
   const scrollToClaim = () => claimRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   const onSubmit = async (e) => {
@@ -269,7 +287,7 @@ export default function Pros() {
       {/* HERO */}
       <div style={{ padding: isPhone ? '36px 22px 12px' : '64px 64px 24px', display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1.3fr 1fr', gap: isPhone ? 28 : 64, alignItems: 'center' }}>
         <div>
-          <div style={{ fontFamily: type.mono, fontSize: 11, fontWeight: 600, letterSpacing: '0.18em', color: p.accent }}>{t.hero_eyebrow}</div>
+          <div style={{ fontFamily: type.mono, fontSize: 11, fontWeight: 600, letterSpacing: '0.18em', color: p.accent }}>{t.hero_eyebrow} · {monthYear(lang)}</div>
           <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? '15vw' : '7.2vw', fontWeight: type.displayWeight, letterSpacing: '-0.04em', lineHeight: 0.86, margin: '12px 0 0', color: p.ink, textWrap: 'balance' }}>
             <span>{t.hero_h[0]}</span><br />
             <span style={{ color: p.accent }}>{t.hero_h[1]}</span>
@@ -348,7 +366,7 @@ export default function Pros() {
         {/* Counter */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 32, flexWrap: 'wrap' }}>
           <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? '20vw' : '11vw', fontWeight: type.displayWeight, lineHeight: 0.9, color: p.accent, letterSpacing: '-0.04em' }}>
-            {count}
+            {Math.min(count, 100)}
           </div>
           <div style={{ fontFamily: type.mono, fontSize: 12, fontWeight: 600, letterSpacing: '0.16em', color: p.inkSoft, textTransform: 'uppercase' }}>
             {t.counter_of} 100<br /><span style={{ color: p.ink }}>{t.counter_claimed}</span>
@@ -384,6 +402,12 @@ export default function Pros() {
             copied={copied}
             setCopied={setCopied}
           />
+        ) : cohortFull ? (
+          <div style={{ background: p.surface, border: `0.5px solid ${p.line}`, borderRadius: 20, padding: isPhone ? 22 : 32, maxWidth: 540 }}>
+            <h3 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 28, fontWeight: type.displayWeight, margin: '0 0 6px', color: p.ink, letterSpacing: '-0.02em' }}>{t.cohort_closed_h}</h3>
+            <p style={{ fontSize: 14, color: p.inkSoft, lineHeight: 1.55, margin: '0 0 20px' }}>{t.cohort_closed_sub}</p>
+            <button onClick={() => navigate('/signup?role=salon')} style={{ width: '100%', background: p.ink, color: p.bg, border: 0, padding: '16px 22px', borderRadius: 99, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>{t.cohort_closed_cta}</button>
+          </div>
         ) : (
           <div style={{ background: p.surface, border: `0.5px solid ${p.line}`, borderRadius: 20, padding: isPhone ? 22 : 32, maxWidth: 540 }}>
             <form onSubmit={onSubmit}>
