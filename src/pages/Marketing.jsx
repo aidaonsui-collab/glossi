@@ -136,6 +136,19 @@ export default function Marketing() {
         </div>
       </div>
 
+      <div style={{ background: p.ink, color: p.bg, padding: isPhone ? '14px 0' : '18px 0', overflow: 'hidden', borderTop: `0.5px solid ${p.line}`, borderBottom: `0.5px solid ${p.line}`, marginTop: isPhone ? 12 : 20 }}>
+        <div style={{ display: 'flex', gap: isPhone ? 28 : 48, fontFamily: type.mono, fontSize: isPhone ? 11 : 13, fontWeight: 500, letterSpacing: '0.04em', whiteSpace: 'nowrap', alignItems: 'center', padding: '0 24px', width: 'max-content', animation: 'glossiTicker 60s linear infinite' }}>
+          {[...ticker, ...ticker].map((row, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ width: 6, height: 6, borderRadius: 99, background: p.accent }} />
+              <span style={{ color: 'rgba(255,255,255,0.5)' }}>{row.who}</span>
+              <span>{row.what}</span>
+              <span style={{ color: p.accent, fontWeight: 600 }}>{lang === 'es' ? row.metaEs : row.metaEn}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div ref={howRef} style={{ padding: isPhone ? '40px 18px 30px' : '80px 64px 80px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1.6fr', gap: isPhone ? 18 : 60, alignItems: 'flex-end', marginBottom: isPhone ? 28 : 44 }}>
           <div>
@@ -199,19 +212,6 @@ export default function Marketing() {
           <button onClick={() => navigate('/request')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '16px 28px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer' }}>
             {t('Post your first request →', 'Publica tu primera solicitud →')}
           </button>
-        </div>
-      </div>
-
-      <div style={{ background: p.ink, color: p.bg, padding: isPhone ? '14px 0' : '18px 0', overflow: 'hidden', borderTop: `0.5px solid ${p.line}`, borderBottom: `0.5px solid ${p.line}` }}>
-        <div style={{ display: 'flex', gap: isPhone ? 28 : 48, fontFamily: type.mono, fontSize: isPhone ? 11 : 13, fontWeight: 500, letterSpacing: '0.04em', whiteSpace: 'nowrap', alignItems: 'center', padding: '0 24px', width: 'max-content', animation: 'glossiTicker 60s linear infinite' }}>
-          {[...ticker, ...ticker].map((row, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ width: 6, height: 6, borderRadius: 99, background: p.accent }} />
-              <span style={{ color: 'rgba(255,255,255,0.5)' }}>{row.who}</span>
-              <span>{row.what}</span>
-              <span style={{ color: p.accent, fontWeight: 600 }}>{lang === 'es' ? row.metaEs : row.metaEn}</span>
-            </div>
-          ))}
         </div>
       </div>
 
