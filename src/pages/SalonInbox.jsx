@@ -27,7 +27,7 @@ export default function SalonInbox() {
 
   useEffect(() => {
     if (isSupabaseConfigured && !authLoading && !user) navigate('/signup?role=salon', { replace: true });
-  }, [user, navigate]);
+  }, [authLoading, user, navigate]);
 
   // Onboarding gate: a salon authed but with zero business rows hasn't
   // completed onboarding yet (typical after email confirmation, where

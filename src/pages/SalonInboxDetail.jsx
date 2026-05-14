@@ -41,7 +41,7 @@ export default function SalonInboxDetail() {
 
   useEffect(() => {
     if (isSupabaseConfigured && !authLoading && !user) navigate('/signup?role=salon', { replace: true });
-  }, [user, navigate]);
+  }, [authLoading, user, navigate]);
 
   useEffect(() => {
     let cancel = false;

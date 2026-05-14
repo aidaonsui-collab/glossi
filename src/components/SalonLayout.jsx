@@ -25,7 +25,7 @@ export default function SalonLayout({ active, children, mobileTitle }) {
   const location = useLocation();
   const navigate = useNavigate();
   const toast = useToast();
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const [signInOpen, setSignInOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const resolved = active || NAV.find(n => location.pathname === n.to)?.id;
@@ -90,7 +90,7 @@ export default function SalonLayout({ active, children, mobileTitle }) {
             </div>
           )}
         </div>
-      ) : (
+      ) : loading ? null : (
         <button onClick={() => setSignInOpen(true)} style={{ padding: '12px 14px', borderRadius: 12, background: p.ink, color: p.bg, border: 0, cursor: 'pointer', fontFamily: type.body, fontSize: 13.5, fontWeight: 600 }}>Sign in</button>
       )}
       <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} defaultRole="salon" />
@@ -108,7 +108,7 @@ export default function SalonLayout({ active, children, mobileTitle }) {
           {user && <NotificationsBell tone="light" />}
           {user ? (
             <button onClick={() => setMenuOpen(v => !v)} style={{ width: 34, height: 34, borderRadius: 99, background: user.type === 'salon' ? user.avatar : 'linear-gradient(135deg,#C28A6B,#8B4F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, border: 0, cursor: 'pointer', fontFamily: 'inherit', marginLeft: 8 }}>{user.type === 'salon' ? user.initials : 'MR'}</button>
-          ) : (
+          ) : loading ? null : (
             <button onClick={() => setSignInOpen(true)} style={{ padding: '7px 14px', borderRadius: 99, background: p.ink, color: p.bg, border: 0, cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'inherit' }}>Sign in</button>
           )}
         </div>
