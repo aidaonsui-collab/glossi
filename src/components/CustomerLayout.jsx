@@ -48,7 +48,7 @@ export default function CustomerLayout({ active, children, mobileTitle }) {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 12px 18px' }}>
         <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
-        {user && <NotificationsBell tone="light" />}
+        {user && <NotificationsBell tone="light" align="left" />}
       </div>
       {NAV.map(it => {
         const isActive = it.id === resolved;

@@ -23,7 +23,11 @@ const fmtAgo = (ts, lang) => {
 
 // Bell + popover dropdown. Used by both CustomerLayout and SalonLayout.
 // `tone` selects ring/icon color so the bell blends into either chrome.
-export default function NotificationsBell({ tone = 'light' }) {
+// `align` controls which way the 360px panel opens: 'right' (default,
+// for a top-right bell) drops it leftward; 'left' (for a bell in the
+// narrow left sidebar) drops it rightward into the content area so it
+// doesn't run off the left edge of the viewport.
+export default function NotificationsBell({ tone = 'light', align = 'right' }) {
   const navigate = useNavigate();
   const t = useT();
   const { lang } = useLang();
@@ -101,7 +105,8 @@ export default function NotificationsBell({ tone = 'light' }) {
 
       {open && (
         <div style={{
-          position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+          position: 'absolute', top: 'calc(100% + 8px)',
+          ...(align === 'left' ? { left: 0 } : { right: 0 }),
           width: 360, maxWidth: 'calc(100vw - 32px)', zIndex: 100,
           background: p.surface, color: p.ink,
           borderRadius: 14, border: `0.5px solid ${p.line}`,

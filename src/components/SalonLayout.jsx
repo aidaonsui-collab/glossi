@@ -53,7 +53,7 @@ export default function SalonLayout({ active, children, mobileTitle }) {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 12px 4px' }}>
         <Link to="/salon/inbox" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
-        {user && <NotificationsBell tone="light" />}
+        {user && <NotificationsBell tone="light" align="left" />}
       </div>
       <div style={{ fontSize: 10, color: p.accent, fontWeight: 700, letterSpacing: '0.18em', padding: '0 12px 14px' }}>FOR SALONS</div>
       {navItems.map(it => {
