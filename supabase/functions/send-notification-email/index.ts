@@ -114,14 +114,27 @@ Deno.serve(async (req) => {
       ctaLabel: "Open Glossi",
     });
 
-    await sendResend(user.email, record.title as string, html);
+    // Fire-and-forget the Resend call + email_sent_at stamp. Same
+    // reasoning as send-notification-sms: pg_net just needs us to
+    // return 200 quickly, and there's no value in blocking the DB
+    // trigger on a 500–1500ms HTTP call to Resend. Stamp only on
+    // success — if Resend errors we log and the row stays unstamped.
+    const notificationId = record.id as string;
+    const recipientEmail = user.email;
+    const subject = record.title as string;
+    EdgeRuntime.waitUntil((async () => {
+      try {
+        await sendResend(recipientEmail, subject, html);
+        await admin
+          .from("notifications")
+          .update({ email_sent_at: new Date().toISOString() })
+          .eq("id", notificationId);
+      } catch (err) {
+        console.error(`[email] async send failed for notification=${notificationId}:`, err);
+      }
+    })());
 
-    await admin
-      .from("notifications")
-      .update({ email_sent_at: new Date().toISOString() })
-      .eq("id", record.id as string);
-
-    return new Response(JSON.stringify({ ok: true, to: user.email }), {
+    return new Response(JSON.stringify({ ok: true, queued: true, to: recipientEmail }), {
       headers: { ...CORS, "Content-Type": "application/json" },
     });
   } catch (err) {

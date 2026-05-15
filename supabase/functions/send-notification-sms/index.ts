@@ -191,14 +191,31 @@ Deno.serve(async (req) => {
       (record.link as string | null) ?? null,
     );
 
-    await sendTwilio(to, body);
+    // Fire-and-forget the Twilio send + sms_sent_at stamp. The DB
+    // trigger that calls us via pg_net only cares that we return
+    // success quickly; the actual send takes 1–3s and there's no
+    // reason to make the trigger sit on it. waitUntil keeps the
+    // function worker alive until the send completes, so we don't
+    // lose the request when the response goes out the door.
+    //
+    // We stamp sms_sent_at only after a successful send. If Twilio
+    // errors, we log and leave the row unstamped — the notification
+    // is "lost" but that's an acceptable trade for not blocking the
+    // trigger on every outbound SMS.
+    const notificationId = record.id as string;
+    EdgeRuntime.waitUntil((async () => {
+      try {
+        await sendTwilio(to, body);
+        await admin
+          .from("notifications")
+          .update({ sms_sent_at: new Date().toISOString() })
+          .eq("id", notificationId);
+      } catch (err) {
+        console.error(`[sms] async send failed for notification=${notificationId}:`, err);
+      }
+    })());
 
-    await admin
-      .from("notifications")
-      .update({ sms_sent_at: new Date().toISOString() })
-      .eq("id", record.id as string);
-
-    return new Response(JSON.stringify({ ok: true, to }), {
+    return new Response(JSON.stringify({ ok: true, queued: true, to }), {
       headers: { ...CORS, "Content-Type": "application/json" },
     });
   } catch (err) {
