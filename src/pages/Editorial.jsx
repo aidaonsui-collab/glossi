@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import CustomerLayout from '../components/CustomerLayout.jsx';
+import PublicChrome from '../components/PublicChrome.jsx';
 import SalonPhoto from '../components/SalonPhoto.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
@@ -8,13 +9,14 @@ import { GUIDES } from '../ios/data.js';
 import { GUIDE_BODIES } from '../ios/guideBodies.js';
 import { useToast } from '../components/Toast.jsx';
 import { useT } from '../lib/i18n.js';
-import { useLang } from '../store.jsx';
+import { useAuth, useLang } from '../store.jsx';
 
 export default function Editorial() {
   const isPhone = useNarrow();
   const toast = useToast();
   const t = useT();
   const { lang } = useLang();
+  const { user } = useAuth();
   const L = lang === 'es' ? 'es' : 'en';
   const kickerKey = L === 'es' ? 'kicker_es' : 'kicker_en';
   const titleKey = L === 'es' ? 't_es' : 't_en';
@@ -29,9 +31,11 @@ export default function Editorial() {
     setSubscribed(true);
     toast(t('Subscribed. First drop lands Thursday.', 'Suscrita. La primera entrega llega el jueves.'), { tone: 'success' });
   };
-  return (
-    <CustomerLayout active="editorial" mobileTitle={t('Editorial', 'Editorial')}>
-      <div style={{ padding: isPhone ? '20px 18px 24px' : '34px 40px 60px', maxWidth: 1100 }}>
+  // Signed-out visitors land in the public top-nav/footer chrome
+  // (matches Marketing.jsx) so editorial reads like a magazine, not
+  // a customer dashboard. Signed-in users keep the app sidebar.
+  const content = (
+    <div style={{ padding: isPhone ? '20px 18px 24px' : '34px 40px 60px', maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>{t('THE GLOSSI FIELD GUIDE', 'LA GUÍA DE CAMPO GLOSSI')}</div>
         <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 40 : 64, fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.95, margin: '8px 0 0', textWrap: 'balance' }}>
           {lang === 'es' ? (<>Belleza tejana,<br />por colonia.</>) : (<>Texas beauty,<br />by neighborhood.</>)}
@@ -105,6 +109,9 @@ export default function Editorial() {
           )}
         </div>
       </div>
-    </CustomerLayout>
   );
+
+  return user
+    ? <CustomerLayout active="editorial" mobileTitle={t('Editorial', 'Editorial')}>{content}</CustomerLayout>
+    : <PublicChrome>{content}</PublicChrome>;
 }

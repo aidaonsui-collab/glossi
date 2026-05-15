@@ -1,12 +1,19 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import CustomerLayout from '../components/CustomerLayout.jsx';
+import PublicChrome from '../components/PublicChrome.jsx';
 import SalonPhoto from '../components/SalonPhoto.jsx';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
 import { GUIDES } from '../ios/data.js';
 import { GUIDE_BODIES } from '../ios/guideBodies.js';
 import { useT } from '../lib/i18n.js';
-import { useLang } from '../store.jsx';
+import { useAuth, useLang } from '../store.jsx';
+
+// Signed-out readers get the public top-nav/footer chrome; signed-in
+// users keep the customer sidebar.
+const Chrome = ({ user, t, children }) => user
+  ? <CustomerLayout active="editorial" mobileTitle={t('Article', 'Artículo')}>{children}</CustomerLayout>
+  : <PublicChrome>{children}</PublicChrome>;
 
 export default function Article() {
   const isPhone = useNarrow();
@@ -14,6 +21,7 @@ export default function Article() {
   const { id } = useParams();
   const t = useT();
   const { lang } = useLang();
+  const { user } = useAuth();
   const L = lang === 'es' ? 'es' : 'en';
   const kickerKey = L === 'es' ? 'kicker_es' : 'kicker_en';
   const titleKey = L === 'es' ? 't_es' : 't_en';
@@ -23,17 +31,17 @@ export default function Article() {
 
   if (!g || !body) {
     return (
-      <CustomerLayout active="editorial">
+      <Chrome user={user} t={t}>
         <div style={{ padding: '80px 32px', textAlign: 'center' }}>
           <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 36 }}>{t('Article not found', 'Artículo no encontrado')}</h1>
           <Link to="/editorial" style={{ display: 'inline-block', marginTop: 16, color: p.accent, textDecoration: 'none', fontWeight: 600 }}>{t('← Back to editorial', '← Regresar a editorial')}</Link>
         </div>
-      </CustomerLayout>
+      </Chrome>
     );
   }
 
   return (
-    <CustomerLayout active="editorial" mobileTitle={t('Article', 'Artículo')}>
+    <Chrome user={user} t={t}>
       <div style={{ maxWidth: 720, margin: '0 auto', padding: isPhone ? '0' : '0 40px' }}>
         {/* Hero */}
         <div style={{ position: 'relative', height: isPhone ? 280 : 400, overflow: 'hidden', borderRadius: isPhone ? 0 : 20, marginTop: isPhone ? 0 : 24 }}>
@@ -121,6 +129,6 @@ export default function Article() {
           </div>
         </div>
       </div>
-    </CustomerLayout>
+    </Chrome>
   );
 }
