@@ -7,6 +7,8 @@ import { useAuth, useLang } from '../store.jsx';
 import { useT } from '../lib/i18n.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import SignInModal from '../components/SignInModal.jsx';
+import SalonPhoto from '../components/SalonPhoto.jsx';
+import { GUIDES } from '../ios/data.js';
 
 // RGV cities Glossi serves — surfaced as pills under the salon-recruit
 // section as local-proof. Beats "1,400+ salons globally" type stats
@@ -269,6 +271,52 @@ export default function Marketing() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Editorial / Field Guide — surfaces /editorial to logged-out
+          visitors so they can see Glossi's editorial voice without
+          having to sign up first. Mirrors the hero's issue/vol
+          nameplate so the magazine framing carries through the scroll. */}
+      <div style={{ padding: isPhone ? '40px 18px' : '90px 64px', borderTop: `0.5px solid ${p.line}` }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1.6fr', gap: isPhone ? 18 : 60, alignItems: 'flex-end', marginBottom: isPhone ? 24 : 36 }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent, fontFamily: type.mono }}>
+              {t('THE FIELD GUIDE', 'LA GUÍA DE CAMPO')}
+            </div>
+            <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 62, fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.92, margin: '10px 0 0', textWrap: 'balance', color: p.ink }}>
+              {lang === 'es' ? <>Belleza tejana,<br /><span style={{ color: p.accent }}>por colonia.</span></> : <>Texas beauty,<br /><span style={{ color: p.accent }}>by neighborhood.</span></>}
+            </h2>
+          </div>
+          <p style={{ fontSize: isPhone ? 14 : 17, color: p.inkSoft, lineHeight: 1.55, margin: 0, maxWidth: 480 }}>
+            {t(
+              'Pricing data, salon picks, and how-to-talk-to-your-colorist guides — written by people actually in the chair, every week.',
+              'Datos de precios, recomendaciones y guías para hablar con tu colorista — escritas por gente que está en la silla, cada semana.'
+            )}
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : 'repeat(3, 1fr)', gap: isPhone ? 14 : 22 }}>
+          {GUIDES.map((g, i) => (
+            <Link key={i} to={`/editorial/${i}`} style={{ textDecoration: 'none', color: p.ink, cursor: 'pointer' }}>
+              <SalonPhoto mood={g.mood} h={isPhone ? 200 : 240} style={{ borderRadius: 14 }} />
+              <div style={{ marginTop: 12, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, fontFamily: type.mono }}>
+                {lang === 'es' ? g.kicker_es : g.kicker_en}
+              </div>
+              <h3 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 22 : 26, fontWeight: type.displayWeight, letterSpacing: '-0.015em', margin: '6px 0 0', lineHeight: 1.1, textWrap: 'balance' }}>
+                {lang === 'es' ? g.t_es : g.t_en}
+              </h3>
+            </Link>
+          ))}
+        </div>
+
+        <div style={{ marginTop: isPhone ? 22 : 32, paddingTop: isPhone ? 18 : 24, borderTop: `0.5px solid ${p.line}`, display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontFamily: type.mono, fontSize: 12, color: p.inkSoft, letterSpacing: '0.06em' }}>
+            {t('WEEKLY · NO SIGN-IN REQUIRED · EN / ES', 'SEMANAL · SIN CUENTA · EN / ES')}
+          </span>
+          <Link to="/editorial" style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '16px 28px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer', textDecoration: 'none', display: 'inline-block' }}>
+            {t('Read the field guide →', 'Lee la guía de campo →')}
+          </Link>
         </div>
       </div>
 
