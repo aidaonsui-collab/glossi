@@ -28,11 +28,30 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { requireEnv } from "../_shared/env.ts";
+import { checkRateLimit } from "../_shared/rateLimit.ts";
+
+// Fail loud at cold start if any required secret is missing. Better
+// to see a clear startup error in function logs than a Stripe call
+// that reads "Bearer undefined" three layers down.
+requireEnv([
+  "STRIPE_SECRET_KEY",
+  "SUPABASE_URL",
+  "SUPABASE_ANON_KEY",
+  "SUPABASE_SERVICE_ROLE_KEY",
+]);
 
 const PLATFORM_FEE_BPS = 500; // 5.00% in basis points — must match PLATFORM_FEE_PCT in src/lib/stripe.js
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+// Per-user payment-intent rate limit. A real checkout is one click;
+// 10/min is well above any honest retry burst but blunts scripted abuse
+// (e.g. a stolen JWT trying to create a flood of intents to hit
+// Stripe's request-volume limits or probe Connect destinations).
+const PAY_RATE_LIMIT_PER_MIN = 10;
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -60,8 +79,6 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: CORS_HEADERS });
 
   try {
-    if (!STRIPE_SECRET_KEY) throw new Error("STRIPE_SECRET_KEY not configured");
-
     const authHeader = req.headers.get("authorization") ?? "";
     const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
       global: { headers: { Authorization: authHeader } },
@@ -69,6 +86,25 @@ Deno.serve(async (req) => {
     });
     const { data: { user } } = await userClient.auth.getUser();
     if (!user) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } });
+
+    // Per-user rate limit. Service-role client because check_rate_limit
+    // is granted only to service_role (RLS-bypassing edge functions).
+    // failClosed: false — a transient RPC error during checkout is
+    // worse UX than letting a few extra requests through; we just log.
+    const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      auth: { persistSession: false },
+    });
+    const allowed = await checkRateLimit(adminClient, `pay:${user.id}`, {
+      max: PAY_RATE_LIMIT_PER_MIN,
+      windowSeconds: 60,
+      failClosed: false,
+    });
+    if (!allowed) {
+      return new Response(
+        JSON.stringify({ error: "rate_limited", message: "Too many checkout attempts. Wait a minute and try again." }),
+        { status: 429, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } },
+      );
+    }
 
     const { bidId } = await req.json().catch(() => ({}));
     if (!bidId) throw new Error("bidId required");

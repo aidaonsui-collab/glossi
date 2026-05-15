@@ -37,6 +37,14 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { requireEnv } from "../_shared/env.ts";
+import { checkRateLimit } from "../_shared/rateLimit.ts";
+
+// Fail loud at cold start if Supabase secrets are missing. Twilio creds
+// stay lazy because the function legitimately returns 200 + skipped for
+// opt-out / no-phone notifications without ever needing Twilio; the
+// sendTwilio() helper validates them at the point of actual send.
+requireEnv(["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]);
 
 const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID");
 const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN");
@@ -45,6 +53,13 @@ const TWILIO_MESSAGING_SERVICE_SID = Deno.env.get("TWILIO_MESSAGING_SERVICE_SID"
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const APP_URL = Deno.env.get("APP_URL") || "https://glossi.cc";
+
+// Per-recipient SMS rate limit. SMS sends cost real money — if a
+// notification-flood bug ever ships, we'd rather drop a few late
+// messages to one user than hand Twilio a $500 bill overnight.
+// 5 sends per user per minute is well above any legitimate burst
+// (the app sends one SMS per accepted-bid / message / booking event).
+const SMS_RATE_LIMIT_PER_MIN = 5;
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -151,6 +166,21 @@ Deno.serve(async (req) => {
     const to = toE164(profile.phone);
     if (!to) {
       return new Response(JSON.stringify({ ok: true, skipped: "no_phone" }), {
+        headers: { ...CORS, "Content-Type": "application/json" },
+      });
+    }
+
+    // Per-user SMS rate limit — fail-closed so a runaway loop can't
+    // turn into a Twilio bill. Skip-and-200 (not 429) so the calling
+    // DB trigger doesn't retry.
+    const allowed = await checkRateLimit(admin, `sms:${record.user_id}`, {
+      max: SMS_RATE_LIMIT_PER_MIN,
+      windowSeconds: 60,
+      failClosed: true,
+    });
+    if (!allowed) {
+      console.warn(`[sms] rate-limited user_id=${record.user_id}`);
+      return new Response(JSON.stringify({ ok: true, skipped: "rate_limited" }), {
         headers: { ...CORS, "Content-Type": "application/json" },
       });
     }
