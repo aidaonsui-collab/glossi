@@ -1,10 +1,12 @@
 import { Component } from 'react';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
+import { reportError } from '../lib/sentry.js';
 
 // Top-level error boundary so a render-time crash on any page shows
 // a usable message instead of blanking the whole app. Picks up the
-// error from componentDidCatch and shows it with a reload button —
-// way better than the silent white screen we used to get.
+// error from componentDidCatch, forwards it to Sentry (if configured),
+// and shows it with a reload button — way better than the silent
+// white screen we used to get.
 export default class ErrorBoundary extends Component {
   state = { error: null, info: null };
 
@@ -13,9 +15,10 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    // Log to console so the devtools captures it. When we add Sentry
-    // or Logflare this is the place to forward to it.
+    // Log to devtools and forward to Sentry. reportError is a no-op
+    // when VITE_SENTRY_DSN isn't set, so this is safe in dev/forks.
     console.error('App-level error caught:', error, info);
+    reportError(error, info);
     this.setState({ info });
   }
 
