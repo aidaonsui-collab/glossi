@@ -88,6 +88,7 @@ function parseArticle(md) {
 
   let para = []; // buffered paragraph lines
   let bullets = []; // buffered bullet items
+  let tableRows = []; // buffered markdown table rows
   let pendingHeading = null; // heading awaiting its first content block
   let pendingQuestion = null; // FAQ question awaiting its answer
   let faqMode = false;
@@ -126,9 +127,39 @@ function parseArticle(md) {
     }
   };
 
+  // A markdown table. A 2-column table is term/definition pairs and maps
+  // cleanly onto Glossi's `list` type (same shape as guide #0's word
+  // list); 3+ columns map onto the `table` type.
+  const flushTable = () => {
+    if (!tableRows.length) return;
+    const parsed = tableRows
+      .map((line) =>
+        line
+          .replace(/^\|/, '')
+          .replace(/\|$/, '')
+          .split('|')
+          .map((c) => stripInline(c.trim())),
+      )
+      // drop the |---|---| separator row
+      .filter((cells) => !cells.every((c) => /^:?-+:?$/.test(c)));
+    tableRows = [];
+    if (!parsed.length) return;
+    const cols = Math.max(...parsed.map((r) => r.length));
+    const section =
+      cols === 2
+        ? { list: parsed.slice(1).map((r) => [r[0] ?? '', r[1] ?? '']) }
+        : { table: parsed };
+    if (pendingHeading) {
+      section.h = pendingHeading;
+      pendingHeading = null;
+    }
+    sections.push(section);
+  };
+
   const flushBlocks = () => {
     flushPara();
     flushBullets();
+    flushTable();
   };
 
   // Emit a heading that never got attached to a content block (e.g. an
@@ -195,15 +226,25 @@ function parseArticle(md) {
       continue;
     }
 
+    // Markdown table row ( | col | col | ).
+    if (/^\|.*\|$/.test(trimmed)) {
+      flushPara();
+      flushBullets();
+      tableRows.push(trimmed);
+      continue;
+    }
+
     // Bullet / numbered list item.
     if (isBullet(trimmed)) {
       flushPara();
+      flushTable();
       bullets.push(bulletText(trimmed));
       continue;
     }
 
     // Otherwise: paragraph text.
     flushBullets();
+    flushTable();
     para.push(trimmed);
   }
   flushBlocks();
