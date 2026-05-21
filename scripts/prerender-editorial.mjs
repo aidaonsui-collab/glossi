@@ -25,9 +25,10 @@ import { dirname, join } from 'node:path';
 import { GUIDES } from '../src/ios/data.js';
 import { GUIDE_BODIES } from '../src/ios/guideBodies.js';
 
-// Canonical origin. If glossi.cc redirects apex<->www, set this to the
-// destination of that redirect so canonical URLs don't bounce.
-const SITE_ORIGIN = 'https://glossi.cc';
+// Canonical origin. glossi.cc 307-redirects to www.glossi.cc, so the
+// canonical/og URLs must use www — pointing them at a redirecting URL
+// hurts SEO/AEO.
+const SITE_ORIGIN = 'https://www.glossi.cc';
 const OG_IMAGE = `${SITE_ORIGIN}/icon-512.png`;
 // English only — language is a runtime store toggle, not a URL, so
 // there is no distinct /es route to prerender. English is also the
