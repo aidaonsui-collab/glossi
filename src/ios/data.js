@@ -65,6 +65,13 @@ export const GUIDES = [
   { kicker_en: 'GUIDE · 6 MIN', kicker_es: 'GUÍA · 6 MIN', t_en: 'How to talk about color in Spanglish', t_es: 'Cómo hablar de color en spanglish', mood: 5 },
   { kicker_en: 'RGV PICKS · 4 MIN', kicker_es: 'EL VALLE · 4 MIN', t_en: 'Six neighborhood salons we love this month', t_es: 'Seis salones del barrio que amamos', mood: 0 },
   { kicker_en: 'PRICING · 3 MIN', kicker_es: 'PRECIOS · 3 MIN', t_en: 'What a fair price looks like in the Valley', t_es: 'Qué es un precio justo en el Valle', mood: 4 },
+  {
+    "kicker_en": "GUIDE · 5 MIN",
+    "kicker_es": "GUÍA · 5 MIN",
+    "t_en": "Hair Color Vocabulary in Spanish and English: Your Complete Guide to Talking About Hair in Both Languages",
+    "t_es": "Hair Color Vocabulary in Spanish and English: Your Complete Guide to Talking About Hair in Both Languages",
+    "mood": 3
+  }
 ];
 
 export const REQUESTS = [

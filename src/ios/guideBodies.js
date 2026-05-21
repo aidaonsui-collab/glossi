@@ -63,4 +63,266 @@ export const GUIDE_BODIES = {
       ],
     },
   },
+  "3": {
+    "en": {
+      "dek": "The Spanish phrase for hair color is el color de pelo — el because the noun color is masculine, and pelo because that's the word for hair in this context. This one phrase unlocks most of what you need at a salon or describing someone at a birthday party. Here's everything else.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Six core words cover every natural hair color — rubio, castaño, pelirrojo, negro, canoso, güero",
+            "Two sentence formulas let you describe any hair color naturally: tener (what you have) and ser (what you are)",
+            "Salon terms split by gender: el tinte is masculine, la tintura is feminine — both mean hair dye",
+            "Güero is Valley/Mexican slang for blonde — your Tía actually uses it",
+            "Regional vocabulary matters: rubio and güero both mean blonde but one is textbook, one is home"
+          ]
+        },
+        {
+          "h": "The Core Hair Color Words in Spanish",
+          "p": "Here's the whole list in one place. No fluff."
+        },
+        {
+          "list": [
+            [
+              "Rubio",
+              "Blond"
+            ],
+            [
+              "Güero",
+              "Blond (Mexican slang)"
+            ],
+            [
+              "Castaño",
+              "Chestnut / Brown / Brunette"
+            ],
+            [
+              "Pelirrojo",
+              "Redheaded"
+            ],
+            [
+              "Negro",
+              "Black"
+            ],
+            [
+              "Canoso",
+              "Grey-haired"
+            ]
+          ]
+        },
+        {
+          "p": "Rubio is the standard textbook word for blonde — both rubio and blond appear in Spanish-English dictionaries as direct translations. Güero means the same thing but it's Valley slang, the word your Tía actually uses, and it can also function as a nickname for fair-skinned people in general. Castaño covers a wide range — brown, chestnut, brunette — it's the word you reach for when someone isn't blonde or red, just about everything in between. Negro is black and it works exactly as you'd expect. Canoso is for grey or silver hair, and it's less common in casual conversation than the other terms but you'll hear it. Pelirrojo means redheaded — literally the person who has red hair."
+        },
+        {
+          "h": "How to Say It: Two Sentence Formulas",
+          "p": "Spanish gives you two ways to describe hair color, and once you know the pattern, you can build hundreds of sentences."
+        },
+        {
+          "p": "Example: Tengo el pelo rubio. — I have blonde hair."
+        },
+        {
+          "p": "This is the literal way to say it — you're stating a possession, which sounds natural in Spanish even though it sounds a little odd in English. María es pelirroja uses the ser formula — she's ginger. Both sentences say the same thing about the same person, just with different grammar."
+        },
+        {
+          "p": "Formula two — what you are (ser): (pronoun or name) + ser (conjugated) + hair/skin color"
+        },
+        {
+          "p": "This one drops the body part entirely. You're not saying \"I have blonde hair\" — you're saying \"I am blonde,\" which is how most people actually talk. María es pelirroja. That's it. Six words, done."
+        },
+        {
+          "p": "Both formulas are correct. The tener version is more precise about the body part; the ser version is faster and more conversational."
+        },
+        {
+          "h": "Salon Spanish: Hair Dye Vocabulary",
+          "p": "When you're booking a color service or talking to your stylist, the vocabulary splits by grammatical gender — and knowing which word to use signals that you know what you're asking for."
+        },
+        {
+          "bullets": [
+            "el color de pelo — \"hair color\" (masculine noun)",
+            "el color de cabello — \"hair color\" (also masculine, same meaning)",
+            "el tinte — \"hair dye\" (masculine)",
+            "la tintura — \"hair dye\" (feminine)"
+          ]
+        },
+        {
+          "p": "El tinte and la tintura both mean hair dye, but el tinte is what you'll hear in most salons and what most people say when they want to paint their hair a different color. La tintura shows up more in formal or medical contexts. El tinte is the word you want when you're in the chair."
+        },
+        {
+          "h": "Practical Sentences for Real Conversations",
+          "p": "Letty se quiere pintar el cabello rojo. — Letty wants to dye her hair red."
+        },
+        {
+          "p": "Creo que Paola tiene el cabello castaño claro. — I think Paola has light chestnut hair."
+        },
+        {
+          "p": "La novia de Paco tiene el cabello muy güero. — Paco's girlfriend has very blond hair."
+        },
+        {
+          "p": "These three sentences cover three real scenarios — requesting a color change, describing someone you've just met, and commenting on someone's natural color at a family gathering. Castaño claro is a useful phrase because plain castaño can mean anything from medium brown to dark brunette; claro specifies the lighter end of that range."
+        },
+        {
+          "h": "Frequently Asked Questions"
+        },
+        {
+          "q": "What is the Spanish word for hair color?",
+          "a": "The most common term is el color de pelo. El color de cabello means the same thing — both are masculine nouns. You might also hear el tinte used to mean hair dye specifically."
+        },
+        {
+          "q": "What is rubio in English?",
+          "a": "Rubio means blond or blonde in English. It's the standard word for light blonde to medium yellow hair. Güero is a Mexican slang alternative with the same meaning, commonly used in South Texas and the RGV."
+        },
+        {
+          "q": "What is pelirrojo in English?",
+          "a": "Pelirrojo means redheaded in English. It describes someone with red hair, from light strawberry blonde all the way to deep auburn — the word covers the whole spectrum of natural red hair."
+        },
+        {
+          "q": "How do you say black hair in Spanish?",
+          "a": "Negro means black. So pelo negro is black hair, and alguien tiene el pelo negro means someone has black hair. The word works exactly as you'd expect from its English cousin."
+        },
+        {
+          "q": "What's the difference between el tinte and la tintura?",
+          "a": "Both mean hair dye. El tinte is masculine and the more common salon word — it's what your stylist says when talking about a color service. La tintura is feminine and slightly more formal or clinical in tone. Use el tinte in everyday salon conversations."
+        },
+        {
+          "q": "What does güero mean?",
+          "a": "Güero means blond in Mexican Spanish slang. On top of referring to blond hair, it can also be used as a nickname for blond or white-skinned people. It's the word you'll hear at home, at the abuelita's house, and at neighborhood salons across the Valley — not in textbooks, but everywhere that matters."
+        },
+        {
+          "q": "How do you talk about grey hair in Spanish?",
+          "a": "Canoso means grey-haired. The word describes someone whose hair has turned grey or silver, and it's the standard term for that stage of life across most Spanish-speaking regions."
+        }
+      ]
+    },
+    "es": {
+      "dek": "The Spanish phrase for hair color is el color de pelo — el because the noun color is masculine, and pelo because that's the word for hair in this context. This one phrase unlocks most of what you need at a salon or describing someone at a birthday party. Here's everything else.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Six core words cover every natural hair color — rubio, castaño, pelirrojo, negro, canoso, güero",
+            "Two sentence formulas let you describe any hair color naturally: tener (what you have) and ser (what you are)",
+            "Salon terms split by gender: el tinte is masculine, la tintura is feminine — both mean hair dye",
+            "Güero is Valley/Mexican slang for blonde — your Tía actually uses it",
+            "Regional vocabulary matters: rubio and güero both mean blonde but one is textbook, one is home"
+          ]
+        },
+        {
+          "h": "The Core Hair Color Words in Spanish",
+          "p": "Here's the whole list in one place. No fluff."
+        },
+        {
+          "list": [
+            [
+              "Rubio",
+              "Blond"
+            ],
+            [
+              "Güero",
+              "Blond (Mexican slang)"
+            ],
+            [
+              "Castaño",
+              "Chestnut / Brown / Brunette"
+            ],
+            [
+              "Pelirrojo",
+              "Redheaded"
+            ],
+            [
+              "Negro",
+              "Black"
+            ],
+            [
+              "Canoso",
+              "Grey-haired"
+            ]
+          ]
+        },
+        {
+          "p": "Rubio is the standard textbook word for blonde — both rubio and blond appear in Spanish-English dictionaries as direct translations. Güero means the same thing but it's Valley slang, the word your Tía actually uses, and it can also function as a nickname for fair-skinned people in general. Castaño covers a wide range — brown, chestnut, brunette — it's the word you reach for when someone isn't blonde or red, just about everything in between. Negro is black and it works exactly as you'd expect. Canoso is for grey or silver hair, and it's less common in casual conversation than the other terms but you'll hear it. Pelirrojo means redheaded — literally the person who has red hair."
+        },
+        {
+          "h": "How to Say It: Two Sentence Formulas",
+          "p": "Spanish gives you two ways to describe hair color, and once you know the pattern, you can build hundreds of sentences."
+        },
+        {
+          "p": "Example: Tengo el pelo rubio. — I have blonde hair."
+        },
+        {
+          "p": "This is the literal way to say it — you're stating a possession, which sounds natural in Spanish even though it sounds a little odd in English. María es pelirroja uses the ser formula — she's ginger. Both sentences say the same thing about the same person, just with different grammar."
+        },
+        {
+          "p": "Formula two — what you are (ser): (pronoun or name) + ser (conjugated) + hair/skin color"
+        },
+        {
+          "p": "This one drops the body part entirely. You're not saying \"I have blonde hair\" — you're saying \"I am blonde,\" which is how most people actually talk. María es pelirroja. That's it. Six words, done."
+        },
+        {
+          "p": "Both formulas are correct. The tener version is more precise about the body part; the ser version is faster and more conversational."
+        },
+        {
+          "h": "Salon Spanish: Hair Dye Vocabulary",
+          "p": "When you're booking a color service or talking to your stylist, the vocabulary splits by grammatical gender — and knowing which word to use signals that you know what you're asking for."
+        },
+        {
+          "bullets": [
+            "el color de pelo — \"hair color\" (masculine noun)",
+            "el color de cabello — \"hair color\" (also masculine, same meaning)",
+            "el tinte — \"hair dye\" (masculine)",
+            "la tintura — \"hair dye\" (feminine)"
+          ]
+        },
+        {
+          "p": "El tinte and la tintura both mean hair dye, but el tinte is what you'll hear in most salons and what most people say when they want to paint their hair a different color. La tintura shows up more in formal or medical contexts. El tinte is the word you want when you're in the chair."
+        },
+        {
+          "h": "Practical Sentences for Real Conversations",
+          "p": "Letty se quiere pintar el cabello rojo. — Letty wants to dye her hair red."
+        },
+        {
+          "p": "Creo que Paola tiene el cabello castaño claro. — I think Paola has light chestnut hair."
+        },
+        {
+          "p": "La novia de Paco tiene el cabello muy güero. — Paco's girlfriend has very blond hair."
+        },
+        {
+          "p": "These three sentences cover three real scenarios — requesting a color change, describing someone you've just met, and commenting on someone's natural color at a family gathering. Castaño claro is a useful phrase because plain castaño can mean anything from medium brown to dark brunette; claro specifies the lighter end of that range."
+        },
+        {
+          "h": "Frequently Asked Questions"
+        },
+        {
+          "q": "What is the Spanish word for hair color?",
+          "a": "The most common term is el color de pelo. El color de cabello means the same thing — both are masculine nouns. You might also hear el tinte used to mean hair dye specifically."
+        },
+        {
+          "q": "What is rubio in English?",
+          "a": "Rubio means blond or blonde in English. It's the standard word for light blonde to medium yellow hair. Güero is a Mexican slang alternative with the same meaning, commonly used in South Texas and the RGV."
+        },
+        {
+          "q": "What is pelirrojo in English?",
+          "a": "Pelirrojo means redheaded in English. It describes someone with red hair, from light strawberry blonde all the way to deep auburn — the word covers the whole spectrum of natural red hair."
+        },
+        {
+          "q": "How do you say black hair in Spanish?",
+          "a": "Negro means black. So pelo negro is black hair, and alguien tiene el pelo negro means someone has black hair. The word works exactly as you'd expect from its English cousin."
+        },
+        {
+          "q": "What's the difference between el tinte and la tintura?",
+          "a": "Both mean hair dye. El tinte is masculine and the more common salon word — it's what your stylist says when talking about a color service. La tintura is feminine and slightly more formal or clinical in tone. Use el tinte in everyday salon conversations."
+        },
+        {
+          "q": "What does güero mean?",
+          "a": "Güero means blond in Mexican Spanish slang. On top of referring to blond hair, it can also be used as a nickname for blond or white-skinned people. It's the word you'll hear at home, at the abuelita's house, and at neighborhood salons across the Valley — not in textbooks, but everywhere that matters."
+        },
+        {
+          "q": "How do you talk about grey hair in Spanish?",
+          "a": "Canoso means grey-haired. The word describes someone whose hair has turned grey or silver, and it's the standard term for that stage of life across most Spanish-speaking regions."
+        }
+      ]
+    }
+  }
 };
