@@ -65,6 +65,11 @@ function renderSection(s) {
     }
     out.push('</dl>');
   }
+  if (s.bullets) {
+    out.push('<ul>');
+    for (const b of s.bullets) out.push(`<li>${esc(b)}</li>`);
+    out.push('</ul>');
+  }
   if (s.table) {
     const [head, ...rows] = s.table;
     out.push('<table><thead><tr>');
@@ -139,6 +144,8 @@ const PRERENDER_STYLE = `<style id="gprx-style">
   .gprx dl{margin:14px 0}
   .gprx dt{font-weight:700;margin-top:10px}
   .gprx dd{margin:2px 0 0;color:#5C5651}
+  .gprx ul{padding-left:20px;margin:12px 0}
+  .gprx li{margin:6px 0;color:#5C5651}
   .gprx table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px}
   .gprx th,.gprx td{border:1px solid #E9E2D6;padding:8px 12px;text-align:left}
   .gprx th{background:#F6F1E8}

@@ -91,6 +91,13 @@ export default function Article() {
                   ))}
                 </div>
               )}
+              {s.bullets && (
+                <ul style={{ marginTop: 8, marginBottom: 0, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {s.bullets.map((b, j) => (
+                    <li key={j} style={{ fontFamily: type.body, fontSize: isPhone ? 15 : 16, color: p.inkSoft, lineHeight: 1.6 }}>{b}</li>
+                  ))}
+                </ul>
+              )}
               {s.table && (
                 <div style={{ marginTop: 6, borderRadius: 14, overflow: 'hidden', border: `0.5px solid ${p.line}`, background: p.surface }}>
                   {s.table.map((row, j) => (
@@ -112,6 +119,14 @@ export default function Article() {
               )}
               {s.pull && (
                 <blockquote style={{ marginTop: 14, padding: isPhone ? '20px 22px' : '24px 28px', borderRadius: 16, background: p.accentSoft, color: p.ink, fontFamily: type.display, fontSize: isPhone ? 20 : 24, lineHeight: 1.3, fontStyle: 'italic', letterSpacing: '-0.01em' }}>{s.pull}</blockquote>
+              )}
+              {/* FAQ pair — Bylined-generated articles end with a Q&A
+                  section; q renders as a question, a as its answer. */}
+              {s.q && (
+                <div style={{ fontFamily: type.body, fontSize: isPhone ? 16 : 17, fontWeight: 700, color: p.ink, lineHeight: 1.4 }}>{s.q}</div>
+              )}
+              {s.a && (
+                <p style={{ fontFamily: type.body, fontSize: isPhone ? 15 : 16, color: p.inkSoft, lineHeight: 1.65, margin: '6px 0 0' }}>{s.a}</p>
               )}
             </div>
           ))}
