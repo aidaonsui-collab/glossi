@@ -324,5 +324,269 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "4": {
+    "en": {
+      "dek": "You walk in, claim your chair, and the first thing anyone asks is what you're getting done. If you're requesting color in Spanglish or full Spanish, knowing the right words gets you a better result — and saves you the awkward hand gestures. Here's how to ask for hair color in Spanish, the way your Tía actually uses at her favorite salon on Military Highway.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Hair color is \"el color de pelo\"",
+            "\"Teñir\" and \"pintar pelo\" both mean to dye your hair",
+            "Describe your current color first, then the one you want",
+            "\"Me quiero teñir de rubio\" is the go-to phrase for requesting a color",
+            "Asking clarifying questions in Spanish keeps you in control of the outcome"
+          ]
+        },
+        {
+          "h": "What to Call Hair Color in Spanish",
+          "p": "The basics are simple. Hair color is \"el color de pelo.\" Dye is \"el tinte.\" These two cover most conversations."
+        },
+        {
+          "p": "When you're talking about the action, you have options. \"Teñir\" and \"pintar pelo\" both mean to dye your hair. Either works in a salon — \"teñir\" tends to feel more formal, \"pintar pelo\" more casual."
+        },
+        {
+          "p": "Quick reference:"
+        },
+        {
+          "bullets": [
+            "Hair color — el color de pelo",
+            "Dye — el tinte",
+            "To dye — teñir / pintar pelo"
+          ]
+        },
+        {
+          "h": "How to Request a Color",
+          "p": "Start with what you want. \"Me quiero teñir de rubio\" directly says you want to dye your hair blonde. Swap in your color — castaño for brown, negro for black, rojo for red."
+        },
+        {
+          "p": "Another natural opener: Me gustaría teñirme el pelo — I would like to dye my hair. Your stylist will ask follow-up questions from there."
+        },
+        {
+          "h": "Describing Your Current Hair",
+          "p": "Before you get to the color you want, your stylist will want to know where you're starting. Here's how to describe your natural hair:"
+        },
+        {
+          "bullets": [
+            "Mi cabello es castaño y rizado — I have curly brown hair",
+            "Su cabello es fino, liso y rubio — She has thin and straight blonde hair"
+          ]
+        },
+        {
+          "p": "For damaged or over-processed hair, say: Mi cabello está dañado, ¿puedo arreglarlo? That opens the conversation honestly so your colorist can plan a safe fix."
+        },
+        {
+          "h": "Asking for Specific Services",
+          "p": "Once you're in the chair, these phrases cover the most common follow-up requests:"
+        },
+        {
+          "bullets": [
+            "¿Me puede pintar y rizar el cabello? — Could you dye and curl my hair?",
+            "Las raíces — the roots (the part near your scalp)",
+            "¿Podrías alaciar mi cabello? — Could you straighten my hair?"
+          ]
+        },
+        {
+          "p": "If you want a look from a photo: ¿Puedes hacer que se vea como esta imagen?"
+        },
+        {
+          "h": "Questions to Ask Before You Sit Down",
+          "p": "Save yourself the surprise bill. Ask pricing questions before you commit:"
+        },
+        {
+          "bullets": [
+            "¿Este precio incluye lavado de cabello? — Does this price include a wash?",
+            "¿Alrededor de qué hora terminaremos? — About what time will we be done?"
+          ]
+        },
+        {
+          "p": "These two questions alone prevent the two most common checkout surprises at Valley salons."
+        },
+        {
+          "h": "Adjusting During the Appointment",
+          "p": "Stylists expect you to speak up. These phrases cover mid-appointment adjustments:"
+        },
+        {
+          "bullets": [
+            "¿Podrías cortar un poco más? — Could you cut a little more?",
+            "Quiero probar algo diferente hoy — I want to try something different today"
+          ]
+        },
+        {
+          "p": "If something isn't working, say it directly. Your stylist can't read your mind through the foil."
+        },
+        {
+          "h": "Other Phrases Worth Knowing",
+          "p": "A few more that come up regularly:"
+        },
+        {
+          "bullets": [
+            "Me gustaría un simple corte de pelo — I'd like a simple haircut",
+            "¿Me puedes mostrar diferentes peinados? — Can you show me different hairstyles?",
+            "¿Qué tipo de peinado me recomiendan? — What kind of hairstyle do you recommend?"
+          ]
+        },
+        {
+          "p": "If you're walking in without an appointment: No tengo cita, ¿tienes tiempo hoy?"
+        },
+        {
+          "h": "Frequently Asked Questions"
+        },
+        {
+          "q": "What's the difference between \"teñir\" and \"pintar pelo\"?",
+          "a": "Both mean to dye your hair, and either works in a salon. \"Teñir\" sounds slightly more formal — useful when you're booking appointments or asking precise questions. \"Pintar pelo\" shows up more in everyday conversation."
+        },
+        {
+          "q": "What if I don't understand the stylist's response?",
+          "a": "Pull up a photo on your phone or ask to see one of theirs. Visuals work across language barriers and most Valley salons are used to mixed-language appointments."
+        },
+        {
+          "q": "Can I book in Spanish and switch to English during the service?",
+          "a": "Absolutely. Spanglish is normal here. Your stylist will follow your lead — switch whenever you're comfortable."
+        },
+        {
+          "q": "How do I ask about correcting a bad dye job?",
+          "a": "Use the same phrase from the *Describing Your Current Hair* section — it opens the conversation directly. Be honest about what was done previously so your colorist can plan a safe fix."
+        },
+        {
+          "q": "How do I say \"balayage\" or \"highlights\" in Spanish?",
+          "a": "Salon-specific terms vary by region, so when in doubt, show a photo and ask ¿Puedes hacer que se vea como esta imagen?"
+        }
+      ]
+    },
+    "es": {
+      "dek": "You walk in, claim your chair, and the first thing anyone asks is what you're getting done. If you're requesting color in Spanglish or full Spanish, knowing the right words gets you a better result — and saves you the awkward hand gestures. Here's how to ask for hair color in Spanish, the way your Tía actually uses at her favorite salon on Military Highway.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Hair color is \"el color de pelo\"",
+            "\"Teñir\" and \"pintar pelo\" both mean to dye your hair",
+            "Describe your current color first, then the one you want",
+            "\"Me quiero teñir de rubio\" is the go-to phrase for requesting a color",
+            "Asking clarifying questions in Spanish keeps you in control of the outcome"
+          ]
+        },
+        {
+          "h": "What to Call Hair Color in Spanish",
+          "p": "The basics are simple. Hair color is \"el color de pelo.\" Dye is \"el tinte.\" These two cover most conversations."
+        },
+        {
+          "p": "When you're talking about the action, you have options. \"Teñir\" and \"pintar pelo\" both mean to dye your hair. Either works in a salon — \"teñir\" tends to feel more formal, \"pintar pelo\" more casual."
+        },
+        {
+          "p": "Quick reference:"
+        },
+        {
+          "bullets": [
+            "Hair color — el color de pelo",
+            "Dye — el tinte",
+            "To dye — teñir / pintar pelo"
+          ]
+        },
+        {
+          "h": "How to Request a Color",
+          "p": "Start with what you want. \"Me quiero teñir de rubio\" directly says you want to dye your hair blonde. Swap in your color — castaño for brown, negro for black, rojo for red."
+        },
+        {
+          "p": "Another natural opener: Me gustaría teñirme el pelo — I would like to dye my hair. Your stylist will ask follow-up questions from there."
+        },
+        {
+          "h": "Describing Your Current Hair",
+          "p": "Before you get to the color you want, your stylist will want to know where you're starting. Here's how to describe your natural hair:"
+        },
+        {
+          "bullets": [
+            "Mi cabello es castaño y rizado — I have curly brown hair",
+            "Su cabello es fino, liso y rubio — She has thin and straight blonde hair"
+          ]
+        },
+        {
+          "p": "For damaged or over-processed hair, say: Mi cabello está dañado, ¿puedo arreglarlo? That opens the conversation honestly so your colorist can plan a safe fix."
+        },
+        {
+          "h": "Asking for Specific Services",
+          "p": "Once you're in the chair, these phrases cover the most common follow-up requests:"
+        },
+        {
+          "bullets": [
+            "¿Me puede pintar y rizar el cabello? — Could you dye and curl my hair?",
+            "Las raíces — the roots (the part near your scalp)",
+            "¿Podrías alaciar mi cabello? — Could you straighten my hair?"
+          ]
+        },
+        {
+          "p": "If you want a look from a photo: ¿Puedes hacer que se vea como esta imagen?"
+        },
+        {
+          "h": "Questions to Ask Before You Sit Down",
+          "p": "Save yourself the surprise bill. Ask pricing questions before you commit:"
+        },
+        {
+          "bullets": [
+            "¿Este precio incluye lavado de cabello? — Does this price include a wash?",
+            "¿Alrededor de qué hora terminaremos? — About what time will we be done?"
+          ]
+        },
+        {
+          "p": "These two questions alone prevent the two most common checkout surprises at Valley salons."
+        },
+        {
+          "h": "Adjusting During the Appointment",
+          "p": "Stylists expect you to speak up. These phrases cover mid-appointment adjustments:"
+        },
+        {
+          "bullets": [
+            "¿Podrías cortar un poco más? — Could you cut a little more?",
+            "Quiero probar algo diferente hoy — I want to try something different today"
+          ]
+        },
+        {
+          "p": "If something isn't working, say it directly. Your stylist can't read your mind through the foil."
+        },
+        {
+          "h": "Other Phrases Worth Knowing",
+          "p": "A few more that come up regularly:"
+        },
+        {
+          "bullets": [
+            "Me gustaría un simple corte de pelo — I'd like a simple haircut",
+            "¿Me puedes mostrar diferentes peinados? — Can you show me different hairstyles?",
+            "¿Qué tipo de peinado me recomiendan? — What kind of hairstyle do you recommend?"
+          ]
+        },
+        {
+          "p": "If you're walking in without an appointment: No tengo cita, ¿tienes tiempo hoy?"
+        },
+        {
+          "h": "Frequently Asked Questions"
+        },
+        {
+          "q": "What's the difference between \"teñir\" and \"pintar pelo\"?",
+          "a": "Both mean to dye your hair, and either works in a salon. \"Teñir\" sounds slightly more formal — useful when you're booking appointments or asking precise questions. \"Pintar pelo\" shows up more in everyday conversation."
+        },
+        {
+          "q": "What if I don't understand the stylist's response?",
+          "a": "Pull up a photo on your phone or ask to see one of theirs. Visuals work across language barriers and most Valley salons are used to mixed-language appointments."
+        },
+        {
+          "q": "Can I book in Spanish and switch to English during the service?",
+          "a": "Absolutely. Spanglish is normal here. Your stylist will follow your lead — switch whenever you're comfortable."
+        },
+        {
+          "q": "How do I ask about correcting a bad dye job?",
+          "a": "Use the same phrase from the *Describing Your Current Hair* section — it opens the conversation directly. Be honest about what was done previously so your colorist can plan a safe fix."
+        },
+        {
+          "q": "How do I say \"balayage\" or \"highlights\" in Spanish?",
+          "a": "Salon-specific terms vary by region, so when in doubt, show a photo and ask ¿Puedes hacer que se vea como esta imagen?"
+        }
+      ]
+    }
   }
 };
