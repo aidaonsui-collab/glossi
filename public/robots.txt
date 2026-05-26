@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Don't waste crawl budget on auth-walled / session-only pages.
+Disallow: /quotes/
+Disallow: /salon/
+Disallow: /inbox/
+Disallow: /checkout/
+Disallow: /pay/
+Disallow: /me
+Disallow: /settings
+Disallow: /notifications
+Disallow: /signup
+Disallow: /onboarding/
+Disallow: /admin/
+Disallow: /auth/
+
+Sitemap: https://www.glossi.cc/sitemap.xml

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Analytics } from '@vercel/analytics/react';
 import App from './App.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { ToastProvider } from './components/Toast.jsx';
@@ -17,6 +18,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <ToastProvider>
           <App />
+          {/* Vercel Analytics — page-view + route-change tracking. No-op
+              in dev; sends beacons only on Vercel-hosted deploys. */}
+          <Analytics />
         </ToastProvider>
       </AuthProvider>
     </ErrorBoundary>

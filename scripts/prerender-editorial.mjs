@@ -312,6 +312,55 @@ async function main() {
   console.log(
     `[prerender] wrote ${count} editorial page(s) → dist/editorial/`
   );
+
+  await writeSitemap();
+}
+
+// Sitemap covers the public/indexable surface only: home, editorial
+// index + every guide, and the few marketing-ish landings. Session-only
+// routes (/quotes, /salon, /inbox, /me, etc.) are walled off in
+// robots.txt so we don't bother listing them.
+async function writeSitemap() {
+  const today = new Date().toISOString().slice(0, 10);
+
+  // [url, changefreq, priority] — keep the editorial index + articles
+  // weighted highest since they're the AI-citation target.
+  const staticUrls = [
+    ['/', 'weekly', '1.0'],
+    ['/editorial', 'weekly', '0.9'],
+    ['/pros', 'monthly', '0.7'],
+    ['/cities', 'monthly', '0.6'],
+    ['/help', 'yearly', '0.4'],
+    ['/terms', 'yearly', '0.3'],
+    ['/privacy', 'yearly', '0.3'],
+  ];
+
+  const editorialUrls = GUIDES.map((_, i) => [
+    `/editorial/${i}`,
+    'monthly',
+    '0.8',
+  ]);
+
+  const all = [...staticUrls, ...editorialUrls];
+
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    all
+      .map(
+        ([path, freq, prio]) =>
+          `  <url>\n` +
+          `    <loc>${SITE_ORIGIN}${path}</loc>\n` +
+          `    <lastmod>${today}</lastmod>\n` +
+          `    <changefreq>${freq}</changefreq>\n` +
+          `    <priority>${prio}</priority>\n` +
+          `  </url>`
+      )
+      .join('\n') +
+    `\n</urlset>\n`;
+
+  await writeFile(join(DIST, 'sitemap.xml'), xml);
+  console.log(`[prerender] wrote sitemap.xml → ${all.length} URLs`);
 }
 
 main().catch((err) => {
