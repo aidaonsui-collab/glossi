@@ -862,5 +862,119 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "6": {
+    "en": {
+      "dek": "The standard tip for hairstylists is 15%–20% of the total service cost. Going with 20% is the easiest math — fair to the stylist and easy to do in your head across most services.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Basic cuts: 15%–20%",
+            "Color and highlights: 20%–30%",
+            "Balayage and complex color: 22%–30%",
+            "Tip assistants separately: $5–$10",
+            "Never skip the tip — even if you're not thrilled"
+          ]
+        },
+        {
+          "h": "How much should you tip for a haircut?",
+          "p": "For a basic haircut, 15%–20% is standard. At a $50 service, that's $7.50–$10. It's acceptable to tip closer to 15% for simpler styles, like a routine barber cut."
+        },
+        {
+          "h": "How much should you tip for color or highlights?",
+          "p": "Color and highlights call for 20%–30%. For a $150 color service, that's $22.50–$30. If you're getting balayage or another complex color, tip on the higher end — 22%–30% for premium or complex styles. On a $200 balayage, that puts you at $30–$40."
+        },
+        {
+          "h": "Should you tip the shampoo assistant separately?",
+          "p": "Yes. A general rule is to tip anyone who touches your hair. Tip shampoo assistants separately if possible: $5–$10 is standard, depending on how much they did. If multiple people worked on your service, split the tip accordingly."
+        },
+        {
+          "h": "What if the service wasn't great?",
+          "p": "If you're not pleased with how your hair turned out, it's OK to leave closer to 15% — but do not skip the tip. Many stylists rely on tips as a meaningful portion of their income. Tips are always appreciated, but never expected. If money is tight, leave what you can — 15% is fair."
+        },
+        {
+          "h": "Cash or card — does it matter?",
+          "p": "Cash is king in most salons, but card and digital tips work fine too. Most salons add a tip line at checkout; some stylists also accept Venmo or Zelle. Either way, leave something."
+        },
+        {
+          "h": "How to figure 20% fast",
+          "p": "Move the decimal one place left, then double it. For a $75 service: $7.50 doubled = $15. For a $150 color: $30. For a $200 balayage at 25%: $50. Round up if you're paying cash."
+        },
+        {
+          "h": "Frequently Asked Questions"
+        },
+        {
+          "q": "Should you tip more for a complex style?",
+          "a": "If your stylist is doing color correction, balayage, or precision work, lean to the higher end of the range — 22%–30% for premium or complex services."
+        },
+        {
+          "q": "What if you can't afford to tip 20%?",
+          "a": "15% is acceptable. The point is don't skip — leave what you can. Tips are always appreciated, but never expected."
+        },
+        {
+          "q": "Should you tip cash or on the card?",
+          "a": "Either works. Cash goes straight to the stylist the same day; card tips usually process with the salon's payroll cycle. If you want the stylist to have it in hand right away, cash is better."
+        }
+      ]
+    },
+    "es": {
+      "dek": "The standard tip for hairstylists is 15%–20% of the total service cost. Going with 20% is the easiest math — fair to the stylist and easy to do in your head across most services.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Basic cuts: 15%–20%",
+            "Color and highlights: 20%–30%",
+            "Balayage and complex color: 22%–30%",
+            "Tip assistants separately: $5–$10",
+            "Never skip the tip — even if you're not thrilled"
+          ]
+        },
+        {
+          "h": "How much should you tip for a haircut?",
+          "p": "For a basic haircut, 15%–20% is standard. At a $50 service, that's $7.50–$10. It's acceptable to tip closer to 15% for simpler styles, like a routine barber cut."
+        },
+        {
+          "h": "How much should you tip for color or highlights?",
+          "p": "Color and highlights call for 20%–30%. For a $150 color service, that's $22.50–$30. If you're getting balayage or another complex color, tip on the higher end — 22%–30% for premium or complex styles. On a $200 balayage, that puts you at $30–$40."
+        },
+        {
+          "h": "Should you tip the shampoo assistant separately?",
+          "p": "Yes. A general rule is to tip anyone who touches your hair. Tip shampoo assistants separately if possible: $5–$10 is standard, depending on how much they did. If multiple people worked on your service, split the tip accordingly."
+        },
+        {
+          "h": "What if the service wasn't great?",
+          "p": "If you're not pleased with how your hair turned out, it's OK to leave closer to 15% — but do not skip the tip. Many stylists rely on tips as a meaningful portion of their income. Tips are always appreciated, but never expected. If money is tight, leave what you can — 15% is fair."
+        },
+        {
+          "h": "Cash or card — does it matter?",
+          "p": "Cash is king in most salons, but card and digital tips work fine too. Most salons add a tip line at checkout; some stylists also accept Venmo or Zelle. Either way, leave something."
+        },
+        {
+          "h": "How to figure 20% fast",
+          "p": "Move the decimal one place left, then double it. For a $75 service: $7.50 doubled = $15. For a $150 color: $30. For a $200 balayage at 25%: $50. Round up if you're paying cash."
+        },
+        {
+          "h": "Frequently Asked Questions"
+        },
+        {
+          "q": "Should you tip more for a complex style?",
+          "a": "If your stylist is doing color correction, balayage, or precision work, lean to the higher end of the range — 22%–30% for premium or complex services."
+        },
+        {
+          "q": "What if you can't afford to tip 20%?",
+          "a": "15% is acceptable. The point is don't skip — leave what you can. Tips are always appreciated, but never expected."
+        },
+        {
+          "q": "Should you tip cash or on the card?",
+          "a": "Either works. Cash goes straight to the stylist the same day; card tips usually process with the salon's payroll cycle. If you want the stylist to have it in hand right away, cash is better."
+        }
+      ]
+    }
   }
 };

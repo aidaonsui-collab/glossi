@@ -85,6 +85,13 @@ export const GUIDES = [
     "t_en": "Hair Color Vocabulary in Spanish and English: A Practical Guide",
     "t_es": "Hair Color Vocabulary in Spanish and English: A Practical Guide",
     "mood": 5
+  },
+  {
+    "kicker_en": "GUIDE · 2 MIN",
+    "kicker_es": "GUÍA · 2 MIN",
+    "t_en": "How Much Should You Tip Your Hair Stylist? A Simple Guide",
+    "t_es": "How Much Should You Tip Your Hair Stylist? A Simple Guide",
+    "mood": 0
   }
 ];
 
