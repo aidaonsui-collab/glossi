@@ -976,5 +976,185 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "7": {
+    "en": {
+      "dek": "Brazilian Blowouts and Keratin Treatments are semi-permanent smoothing treatments that eliminate frizz and enhance shine. The key difference is what coats your hair: Brazilian Blowouts use amino acids and proteins to create a protective layer around each strand, while Keratin Treatments use pure keratin protein that penetrates inside the hair to rebuild it from within. One lets you wash the same day; the other asks for three days of patience. Here's how to pick.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Brazilian Blowouts coat the strand; Keratin Treatments penetrate and repair from inside",
+            "Brazilian Blowout: wash same day, lasts 2–3 months",
+            "Keratin: 72-hour wait before first wash, lasts 3–5 months",
+            "Keratin is healthier long-term because it rebuilds rather than coats",
+            "Both need sulfate-free shampoo and pool avoidance to last"
+          ]
+        },
+        {
+          "h": "What is a Brazilian Blowout?",
+          "p": "A Brazilian Blowout is a professional hair-smoothing treatment that uses amino acids and proteins. It works by creating a protective protein layer around each hair strand, sealing the cuticle and smoothing the surface. Think of it like a topcoat — it sits on the outside of your hair rather than soaking in."
+        },
+        {
+          "p": "Results are immediate: you can wash, exercise, and put your hair in a ponytail the same day."
+        },
+        {
+          "p": "The treatment is customizable — you can choose from a gentle reduction in frizz up to three levels of curl reduction, depending on how sleek you want to go."
+        },
+        {
+          "h": "What is a Keratin Treatment?",
+          "p": "A Keratin Treatment is a semi-permanent smoothing process that uses keratin — a natural protein already in your hair, skin, and nails. The keratin molecules are small enough to penetrate the individual hair strands, replenishing and repairing them from the inside out. That's the structural difference: keratin rebuilds, Brazilian coats."
+        },
+        {
+          "p": "Keratin treatments offer deeper conditioning and smoothing benefits than a Brazilian Blowout. They're also gentler on hair if you use hot tools or a blow dryer afterward."
+        },
+        {
+          "p": "The tradeoff: you must wait 72 hours before shampooing to let the treatment fully set. During that window, avoid swimming, heavy exercise, or anything that causes sweat or moisture. Headbands and clips can also dent the hair while it's setting."
+        },
+        {
+          "h": "Downtime and aftercare",
+          "p": "Brazilian Blowouts win on convenience — no waiting period."
+        },
+        {
+          "p": "Keratin needs the full 72-hour pause before the first wash. Skip the gym, the pool, and clips that might leave impressions while it sets."
+        },
+        {
+          "p": "After the initial window, both treatments share the same maintenance habits:"
+        },
+        {
+          "bullets": [
+            "Use sulfate-free shampoo to extend the life of either treatment",
+            "Avoid swimming in pools — chlorine compromises both",
+            "Skip heavy conditioners near the scalp; focus on the lengths"
+          ]
+        },
+        {
+          "h": "How long do results last?",
+          "p": "Brazilian Blowout typically lasts 2 to 3 months with proper aftercare. Keratin lasts 3 to 5 months. The longer lifespan comes from the keratin actually repairing the hair rather than coating it."
+        },
+        {
+          "p": "Results are cumulative with either treatment — the more you do them, the healthier your hair becomes over time."
+        },
+        {
+          "p": "Longevity depends on how you care for your hair after leaving the salon. Sulfate-free shampoo and skipping pools push either treatment toward the longer end of its range. Daily heat styling or weekly swimming cut that timeline short."
+        },
+        {
+          "h": "Which is healthier for your hair?",
+          "p": "Keratin treatments are the healthier long-term choice. Because the keratin molecule fortifies hair internally and externally, you're actually rebuilding the hair with each treatment. Brazilian Blowouts smooth without rebuilding — fine for shine, less useful for structural repair."
+        },
+        {
+          "p": "Both treatments work well for curly hair. Keep in mind these are smoothing, not straightening — curly hair will still have movement and wave after either option."
+        },
+        {
+          "p": "If your goal is stronger, healthier hair over time, keratin is the better investment. If you want same-day results and shorter total downtime, Brazilian Blowout is the call."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Which lasts longer — Keratin or Brazilian Blowout?",
+          "a": "Keratin. With proper aftercare it typically holds for 3 to 5 months; Brazilian Blowout sits at 2 to 3 months."
+        },
+        {
+          "q": "Will either treatment make my hair completely straight?",
+          "a": "No — both are smoothing, not straightening. You'll still have natural wave and movement. If you want bone-straight hair, ask your stylist about Japanese thermal straightening instead."
+        },
+        {
+          "q": "Can I swim after either treatment?",
+          "a": "Not right away. For keratin, wait the full 72 hours. For Brazilian Blowout, you can technically wash immediately but should still avoid pools for the first few days. Long-term, chlorine in pools compromises both treatments."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Brazilian Blowouts and Keratin Treatments are semi-permanent smoothing treatments that eliminate frizz and enhance shine. The key difference is what coats your hair: Brazilian Blowouts use amino acids and proteins to create a protective layer around each strand, while Keratin Treatments use pure keratin protein that penetrates inside the hair to rebuild it from within. One lets you wash the same day; the other asks for three days of patience. Here's how to pick.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Brazilian Blowouts coat the strand; Keratin Treatments penetrate and repair from inside",
+            "Brazilian Blowout: wash same day, lasts 2–3 months",
+            "Keratin: 72-hour wait before first wash, lasts 3–5 months",
+            "Keratin is healthier long-term because it rebuilds rather than coats",
+            "Both need sulfate-free shampoo and pool avoidance to last"
+          ]
+        },
+        {
+          "h": "What is a Brazilian Blowout?",
+          "p": "A Brazilian Blowout is a professional hair-smoothing treatment that uses amino acids and proteins. It works by creating a protective protein layer around each hair strand, sealing the cuticle and smoothing the surface. Think of it like a topcoat — it sits on the outside of your hair rather than soaking in."
+        },
+        {
+          "p": "Results are immediate: you can wash, exercise, and put your hair in a ponytail the same day."
+        },
+        {
+          "p": "The treatment is customizable — you can choose from a gentle reduction in frizz up to three levels of curl reduction, depending on how sleek you want to go."
+        },
+        {
+          "h": "What is a Keratin Treatment?",
+          "p": "A Keratin Treatment is a semi-permanent smoothing process that uses keratin — a natural protein already in your hair, skin, and nails. The keratin molecules are small enough to penetrate the individual hair strands, replenishing and repairing them from the inside out. That's the structural difference: keratin rebuilds, Brazilian coats."
+        },
+        {
+          "p": "Keratin treatments offer deeper conditioning and smoothing benefits than a Brazilian Blowout. They're also gentler on hair if you use hot tools or a blow dryer afterward."
+        },
+        {
+          "p": "The tradeoff: you must wait 72 hours before shampooing to let the treatment fully set. During that window, avoid swimming, heavy exercise, or anything that causes sweat or moisture. Headbands and clips can also dent the hair while it's setting."
+        },
+        {
+          "h": "Downtime and aftercare",
+          "p": "Brazilian Blowouts win on convenience — no waiting period."
+        },
+        {
+          "p": "Keratin needs the full 72-hour pause before the first wash. Skip the gym, the pool, and clips that might leave impressions while it sets."
+        },
+        {
+          "p": "After the initial window, both treatments share the same maintenance habits:"
+        },
+        {
+          "bullets": [
+            "Use sulfate-free shampoo to extend the life of either treatment",
+            "Avoid swimming in pools — chlorine compromises both",
+            "Skip heavy conditioners near the scalp; focus on the lengths"
+          ]
+        },
+        {
+          "h": "How long do results last?",
+          "p": "Brazilian Blowout typically lasts 2 to 3 months with proper aftercare. Keratin lasts 3 to 5 months. The longer lifespan comes from the keratin actually repairing the hair rather than coating it."
+        },
+        {
+          "p": "Results are cumulative with either treatment — the more you do them, the healthier your hair becomes over time."
+        },
+        {
+          "p": "Longevity depends on how you care for your hair after leaving the salon. Sulfate-free shampoo and skipping pools push either treatment toward the longer end of its range. Daily heat styling or weekly swimming cut that timeline short."
+        },
+        {
+          "h": "Which is healthier for your hair?",
+          "p": "Keratin treatments are the healthier long-term choice. Because the keratin molecule fortifies hair internally and externally, you're actually rebuilding the hair with each treatment. Brazilian Blowouts smooth without rebuilding — fine for shine, less useful for structural repair."
+        },
+        {
+          "p": "Both treatments work well for curly hair. Keep in mind these are smoothing, not straightening — curly hair will still have movement and wave after either option."
+        },
+        {
+          "p": "If your goal is stronger, healthier hair over time, keratin is the better investment. If you want same-day results and shorter total downtime, Brazilian Blowout is the call."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Which lasts longer — Keratin or Brazilian Blowout?",
+          "a": "Keratin. With proper aftercare it typically holds for 3 to 5 months; Brazilian Blowout sits at 2 to 3 months."
+        },
+        {
+          "q": "Will either treatment make my hair completely straight?",
+          "a": "No — both are smoothing, not straightening. You'll still have natural wave and movement. If you want bone-straight hair, ask your stylist about Japanese thermal straightening instead."
+        },
+        {
+          "q": "Can I swim after either treatment?",
+          "a": "Not right away. For keratin, wait the full 72 hours. For Brazilian Blowout, you can technically wash immediately but should still avoid pools for the first few days. Long-term, chlorine in pools compromises both treatments."
+        }
+      ]
+    }
   }
 };

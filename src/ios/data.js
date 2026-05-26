@@ -92,6 +92,13 @@ export const GUIDES = [
     "t_en": "How Much Should You Tip Your Hair Stylist? A Simple Guide",
     "t_es": "How Much Should You Tip Your Hair Stylist? A Simple Guide",
     "mood": 14
+  },
+  {
+    "kicker_en": "GUIDE · 3 MIN",
+    "kicker_es": "GUÍA · 3 MIN",
+    "t_en": "Brazilian Blowout vs Keratin Treatment: Which Smoothing Treatment Is Right for You?",
+    "t_es": "Brazilian Blowout vs Keratin Treatment: Which Smoothing Treatment Is Right for You?",
+    "mood": 15
   }
 ];
 
