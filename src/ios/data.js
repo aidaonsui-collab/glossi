@@ -78,6 +78,13 @@ export const GUIDES = [
     "t_en": "How to Ask for Hair Color in Spanish at the Salon",
     "t_es": "How to Ask for Hair Color in Spanish at the Salon",
     "mood": 4
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "Hair Color Vocabulary in Spanish and English: A Practical Guide",
+    "t_es": "Hair Color Vocabulary in Spanish and English: A Practical Guide",
+    "mood": 5
   }
 ];
 

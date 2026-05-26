@@ -588,5 +588,279 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "5": {
+    "en": {
+      "dek": "Whether you're booking a balayage appointment or explaining what mechas you want to your colorista, knowing hair color vocabulary in both languages makes everything smoother. Here's what you actually need to know.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Castaño and pelirrojo are your go-to terms — forget café for hair",
+            "Color adjectives must agree in gender and number with the noun they modify",
+            "All color nouns are masculine, even when they end in -a",
+            "Güero is Valley/Mexican slang with broader meaning than just \"blond\"",
+            "Las canas refers to grey or white hairs; canoso describes the person"
+          ]
+        },
+        {
+          "h": "How Do You Say Hair Colors in Spanish?",
+          "p": "Here's the basic vocabulary you need at a salon:"
+        },
+        {
+          "bullets": [
+            "Rubio / rubia — blond or fair-haired",
+            "Castaño / castaña — brown or chestnut",
+            "Pelirrojo / pelirroja — redhead or red-haired",
+            "Negro / negra — black-haired",
+            "Gris — grey"
+          ]
+        },
+        {
+          "p": "The three primary colors — azul (blue), amarillo (yellow), and rojo (red) — also come up when describing undertones in your hair. Knowing them helps you describe whether your color runs cool or warm."
+        },
+        {
+          "h": "Why Is Café Wrong for Hair Color?",
+          "p": "Café does mean \"brown\", but is not used to describe hair color. Marrón (dark brown) or castaño (chestnut-colored) are better choices."
+        },
+        {
+          "p": "At the salon, your stylist will understand castaño immediately. If you're describing highlights in brown hair, try \"mechas castañas\" or \"reflejos castaños.\""
+        },
+        {
+          "h": "How Does Gender Agreement Work with Color Adjectives?",
+          "p": "Color adjectives must agree in gender and number with the noun they modify."
+        },
+        {
+          "p": "In practice:"
+        },
+        {
+          "bullets": [
+            "Cabello rubio (masculine noun, masculine adjective)",
+            "Cabello castaño (masculine noun, masculine adjective)",
+            "Cabello rojo (masculine noun, masculine adjective)"
+          ]
+        },
+        {
+          "p": "All color nouns are masculine, even when they end in -a. So you say \"el azul,\" not \"la azul.\" This trips people up because morado and rosa both end in -a but are grammatically masculine."
+        },
+        {
+          "p": "This doesn't apply to colors that end with 'e', consonants, or 'a' — those stay the same for gender. Verde, gris, and marrón don't change form for gender, only for number (verde vs verdes)."
+        },
+        {
+          "h": "What About Grey Hair?",
+          "p": "White or grey hairs are called las canas and a white or grey haired person is referred to as being canoso. If you're booking color to cover your canas, say \"tinte para cubrir las canas\" or \"color para canas.\""
+        },
+        {
+          "h": "What Regional Slang Should You Know?",
+          "p": "Güero is a Mexican slang word that, on top of referring to blond hair, can also be used as a nickname for blond or white people. In the Valley, you'll hear güero and its feminine form güera used casually all the time — it's not offensive, just everyday talk."
+        },
+        {
+          "h": "Where Do Spanish Color Words Come From?",
+          "p": "Spanish colors have interesting roots:"
+        },
+        {
+          "bullets": [
+            "Rojo (red) comes from \"Russus\"",
+            "Verde (green) comes from \"Viridus\" which links back to meanings of youth and life",
+            "Azul comes from the precious blue stone \"lazawardy\" — the word was originally taken from Persian but entered Spanish through contact with Arabic",
+            "Naranja (orange) comes from Persian originally, but was introduced to Spanish via Arabic"
+          ]
+        },
+        {
+          "p": "Knowing these origins helps you remember why colors work the way they do in Spanish."
+        },
+        {
+          "h": "How Do You Describe Hair Techniques in Both Languages?",
+          "p": "When booking appointments, these terms come up constantly:"
+        },
+        {
+          "bullets": [
+            "Highlights — mechas or reflejos",
+            "Balayage — usually just called balayage in both languages",
+            "Lowlights — reflejos oscuros or mechas oscuras",
+            "Root touch-up — retoque de raíz",
+            "Gloss — glos or baño de brillo"
+          ]
+        },
+        {
+          "p": "Your colorista will appreciate you using these terms correctly. It cuts down on the back-and-forth and gets you to the chair faster."
+        },
+        {
+          "h": "Common Color Idioms in Spanish",
+          "p": "Spanish uses color in expressions that don't translate literally:"
+        },
+        {
+          "bullets": [
+            "Estar verde is an informal expression used to describe that a person has no experience with something",
+            "Ponerse rojo como un tomate is used to describe that a person is blushing because he or she is embarrassed about something",
+            "Sacar canas verdes is a Latin American Spanish phrase used to describe that someone is upsetting or making another person worried because of their actions"
+          ]
+        },
+        {
+          "p": "These won't come up at the salon, but knowing them shows you're not just memorizing vocabulary — you're understanding how color works in real Spanish."
+        },
+        {
+          "h": "Frequently Asked Questions"
+        },
+        {
+          "q": "Can I use café to describe brown hair?",
+          "a": "No. Café does mean \"brown\", but is not used to describe hair color. Use castaño for brown hair or marrón for darker brown tones instead."
+        },
+        {
+          "q": "Do color adjectives change for masculine and feminine nouns?",
+          "a": "Yes. Color adjectives must agree in gender and number with the noun they modify. Rubio becomes rubia when describing a feminine noun like mujer. Colors ending in -e, consonants, or -a (like rosa, morado) stay the same for gender but change for number."
+        },
+        {
+          "q": "What do you call grey hairs in Spanish?",
+          "a": "White or grey hairs are called las canas. A grey-haired person is canoso or canosa depending on gender."
+        },
+        {
+          "q": "What does güero mean?",
+          "a": "Güero is a Mexican slang word that, on top of referring to blond hair, can also be used as a nickname for blond or white people. It's common throughout South Texas and northern Mexico."
+        },
+        {
+          "q": "How do I ask for highlights in Spanish?",
+          "a": "Say \"mechas\" for highlights or \"reflejos\" for a more natural, sun-kissed look. \"Balayage\" is used in both languages now. Describe the color with the base term — \"mechas rubias\" for blonde highlights, \"mechas castañas\" for brown."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Whether you're booking a balayage appointment or explaining what mechas you want to your colorista, knowing hair color vocabulary in both languages makes everything smoother. Here's what you actually need to know.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Castaño and pelirrojo are your go-to terms — forget café for hair",
+            "Color adjectives must agree in gender and number with the noun they modify",
+            "All color nouns are masculine, even when they end in -a",
+            "Güero is Valley/Mexican slang with broader meaning than just \"blond\"",
+            "Las canas refers to grey or white hairs; canoso describes the person"
+          ]
+        },
+        {
+          "h": "How Do You Say Hair Colors in Spanish?",
+          "p": "Here's the basic vocabulary you need at a salon:"
+        },
+        {
+          "bullets": [
+            "Rubio / rubia — blond or fair-haired",
+            "Castaño / castaña — brown or chestnut",
+            "Pelirrojo / pelirroja — redhead or red-haired",
+            "Negro / negra — black-haired",
+            "Gris — grey"
+          ]
+        },
+        {
+          "p": "The three primary colors — azul (blue), amarillo (yellow), and rojo (red) — also come up when describing undertones in your hair. Knowing them helps you describe whether your color runs cool or warm."
+        },
+        {
+          "h": "Why Is Café Wrong for Hair Color?",
+          "p": "Café does mean \"brown\", but is not used to describe hair color. Marrón (dark brown) or castaño (chestnut-colored) are better choices."
+        },
+        {
+          "p": "At the salon, your stylist will understand castaño immediately. If you're describing highlights in brown hair, try \"mechas castañas\" or \"reflejos castaños.\""
+        },
+        {
+          "h": "How Does Gender Agreement Work with Color Adjectives?",
+          "p": "Color adjectives must agree in gender and number with the noun they modify."
+        },
+        {
+          "p": "In practice:"
+        },
+        {
+          "bullets": [
+            "Cabello rubio (masculine noun, masculine adjective)",
+            "Cabello castaño (masculine noun, masculine adjective)",
+            "Cabello rojo (masculine noun, masculine adjective)"
+          ]
+        },
+        {
+          "p": "All color nouns are masculine, even when they end in -a. So you say \"el azul,\" not \"la azul.\" This trips people up because morado and rosa both end in -a but are grammatically masculine."
+        },
+        {
+          "p": "This doesn't apply to colors that end with 'e', consonants, or 'a' — those stay the same for gender. Verde, gris, and marrón don't change form for gender, only for number (verde vs verdes)."
+        },
+        {
+          "h": "What About Grey Hair?",
+          "p": "White or grey hairs are called las canas and a white or grey haired person is referred to as being canoso. If you're booking color to cover your canas, say \"tinte para cubrir las canas\" or \"color para canas.\""
+        },
+        {
+          "h": "What Regional Slang Should You Know?",
+          "p": "Güero is a Mexican slang word that, on top of referring to blond hair, can also be used as a nickname for blond or white people. In the Valley, you'll hear güero and its feminine form güera used casually all the time — it's not offensive, just everyday talk."
+        },
+        {
+          "h": "Where Do Spanish Color Words Come From?",
+          "p": "Spanish colors have interesting roots:"
+        },
+        {
+          "bullets": [
+            "Rojo (red) comes from \"Russus\"",
+            "Verde (green) comes from \"Viridus\" which links back to meanings of youth and life",
+            "Azul comes from the precious blue stone \"lazawardy\" — the word was originally taken from Persian but entered Spanish through contact with Arabic",
+            "Naranja (orange) comes from Persian originally, but was introduced to Spanish via Arabic"
+          ]
+        },
+        {
+          "p": "Knowing these origins helps you remember why colors work the way they do in Spanish."
+        },
+        {
+          "h": "How Do You Describe Hair Techniques in Both Languages?",
+          "p": "When booking appointments, these terms come up constantly:"
+        },
+        {
+          "bullets": [
+            "Highlights — mechas or reflejos",
+            "Balayage — usually just called balayage in both languages",
+            "Lowlights — reflejos oscuros or mechas oscuras",
+            "Root touch-up — retoque de raíz",
+            "Gloss — glos or baño de brillo"
+          ]
+        },
+        {
+          "p": "Your colorista will appreciate you using these terms correctly. It cuts down on the back-and-forth and gets you to the chair faster."
+        },
+        {
+          "h": "Common Color Idioms in Spanish",
+          "p": "Spanish uses color in expressions that don't translate literally:"
+        },
+        {
+          "bullets": [
+            "Estar verde is an informal expression used to describe that a person has no experience with something",
+            "Ponerse rojo como un tomate is used to describe that a person is blushing because he or she is embarrassed about something",
+            "Sacar canas verdes is a Latin American Spanish phrase used to describe that someone is upsetting or making another person worried because of their actions"
+          ]
+        },
+        {
+          "p": "These won't come up at the salon, but knowing them shows you're not just memorizing vocabulary — you're understanding how color works in real Spanish."
+        },
+        {
+          "h": "Frequently Asked Questions"
+        },
+        {
+          "q": "Can I use café to describe brown hair?",
+          "a": "No. Café does mean \"brown\", but is not used to describe hair color. Use castaño for brown hair or marrón for darker brown tones instead."
+        },
+        {
+          "q": "Do color adjectives change for masculine and feminine nouns?",
+          "a": "Yes. Color adjectives must agree in gender and number with the noun they modify. Rubio becomes rubia when describing a feminine noun like mujer. Colors ending in -e, consonants, or -a (like rosa, morado) stay the same for gender but change for number."
+        },
+        {
+          "q": "What do you call grey hairs in Spanish?",
+          "a": "White or grey hairs are called las canas. A grey-haired person is canoso or canosa depending on gender."
+        },
+        {
+          "q": "What does güero mean?",
+          "a": "Güero is a Mexican slang word that, on top of referring to blond hair, can also be used as a nickname for blond or white people. It's common throughout South Texas and northern Mexico."
+        },
+        {
+          "q": "How do I ask for highlights in Spanish?",
+          "a": "Say \"mechas\" for highlights or \"reflejos\" for a more natural, sun-kissed look. \"Balayage\" is used in both languages now. Describe the color with the base term — \"mechas rubias\" for blonde highlights, \"mechas castañas\" for brown."
+        }
+      ]
+    }
   }
 };
