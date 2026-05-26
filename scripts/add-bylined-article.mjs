@@ -313,6 +313,8 @@ async function main() {
     .filter(Boolean).length;
   const mins = Math.max(1, Math.round(words / 200));
 
+  const idx = GUIDES.length; // next editorial index (used for the /editorial/<idx> URL + body key)
+
   // Pick the next unused photo from the editorial pool so each guide gets
   // its own hero. Falls back to round-robin when the pool is exhausted.
   const usedMoods = new Set(GUIDES.map((g) => g.mood).filter((m) => Number.isInteger(m)));
@@ -321,7 +323,7 @@ async function main() {
   if (mood >= PHOTOS.length) {
     // Pool exhausted — round-robin within the editorial slots.
     const span = PHOTOS.length - EDITORIAL_POOL_START;
-    mood = EDITORIAL_POOL_START + (GUIDES.length % span);
+    mood = EDITORIAL_POOL_START + (idx % span);
   }
 
   const guideEntry = {
