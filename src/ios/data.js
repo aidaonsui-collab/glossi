@@ -106,6 +106,13 @@ export const GUIDES = [
     "t_en": "How Long Do Lash Extensions Last? The Real Timeline in 2026",
     "t_es": "How Long Do Lash Extensions Last? The Real Timeline in 2026",
     "mood": 16
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "Gel vs Acrylic Nails: How to Pick What's Right for You",
+    "t_es": "Gel vs Acrylic Nails: How to Pick What's Right for You",
+    "mood": 17
   }
 ];
 

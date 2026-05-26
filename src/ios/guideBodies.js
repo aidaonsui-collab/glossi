@@ -1366,5 +1366,171 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "9": {
+    "en": {
+      "dek": "Gel nails are painted on and cured under UV light for a glossy, natural finish. Acrylic mixes liquid and powder into a hard layer you can sculpt longer and bolder. Most standard sets fall in the $30 to $70 range either way. The real choice comes down to what your hands do all day: gel for a lighter, gentler set; acrylic for strength and dramatic length.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Gel lasts 2–3 weeks; acrylic stretches to 3 weeks or longer",
+            "Standard set runs $30–$70; designs and length push higher",
+            "Gel feels lighter and flexes with your nail; acrylic feels firmer and sculpts longer",
+            "Gel removal: 10–15 minutes; acrylic removal: 20–30 minutes",
+            "Acrylic is stronger for rough hands; gel is gentler on natural nails"
+          ]
+        },
+        {
+          "h": "How do gel and acrylic nails differ?",
+          "p": "The application process is where they diverge. For gel manicures, the product is painted onto the nail from a pot of gel then cured under a UV light to harden it. Acrylics combine liquid and powder into a sort of dough, which is then painted onto the nail and air-dried."
+        },
+        {
+          "p": "The finish reads differently too. Gel nails have that smooth, glossy finish that looks super natural — like your own nails, but better. Acrylics are firmer and can be sculpted into longer, bolder shapes, which is great if you want drama."
+        },
+        {
+          "h": "Which lasts longer?",
+          "p": "A typical gel manicure lasts two to three weeks, depending on your nail growth and how well you care for them. With good care, acrylic nails can last three weeks or sometimes longer."
+        },
+        {
+          "p": "Gel is more flexible than acrylic — that flexibility makes it more forgiving of small impacts and less likely to crack. Acrylic, on the other hand, is extremely strong and holds up to harder wear. If your nails break easily or you do manual work, acrylic is the more durable pick."
+        },
+        {
+          "h": "What does it cost?",
+          "p": "Most standard sets fall in the $30 to $70 range. Once you add design work, extreme length, or premium salon pricing, the ceiling rises — acrylic sets can climb to $120 and gel sets to $100, depending on color, art, and shape."
+        },
+        {
+          "p": "Fills usually cost around $20 to $40 and extend the life of your set. One catch worth knowing: acrylics allow for fills as your natural nails grow out, while Gel X typically requires a complete replacement when maintenance is needed. That changes the long-term math if you're choosing between them."
+        },
+        {
+          "h": "Which is gentler on your natural nails?",
+          "p": "Gel is the gentler of the two overall. It doesn't involve as much filing, so there's less wear on your natural nail surface. Acrylic uses stronger chemicals and needs more shaping, which can wear down your natural nails over time if you skip breaks or remove them aggressively."
+        },
+        {
+          "p": "Both are safe when applied and removed correctly — the difference is the margin for error. Acrylic punishes bad technique harder, which is why it's generally recommended to take breaks between acrylic nail sets to let your natural nails recover."
+        },
+        {
+          "h": "How does removal work?",
+          "p": "Gel is the simpler of the two. To safely remove gel nails, soak them in acetone for about 10 to 15 minutes — the product softens and lifts off."
+        },
+        {
+          "p": "Acrylic takes longer — around 20 to 30 minutes of acetone soak, often with gentle filing on the top layer to help the acetone penetrate. Removing acrylic nails at home can be challenging and may result in damage to the natural nails if not done correctly. For acrylic, the salon visit is the safer call."
+        },
+        {
+          "h": "Which should you pick?",
+          "p": "Quick decision rules:"
+        },
+        {
+          "bullets": [
+            "Pick gel if you want a lighter feel, more natural look, easier removal, and gentler maintenance on your actual nails.",
+            "Pick acrylic if you need serious strength, want dramatic length, or do hands-on work that would crack a flexible set.",
+            "Either way, plan for fills or a full replacement around the 2–3 week mark."
+          ]
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I switch from acrylic to gel (or vice versa)?",
+          "a": "Yes, but plan it around a removal session. Acrylic can't sit under gel comfortably — your tech will fully remove the acrylic, give your nails a short break if they're thin, then apply gel. Same the other direction. Don't try to fill across product types; it cracks and lifts."
+        },
+        {
+          "q": "Do gel UV lamps damage your hands?",
+          "a": "Most modern salons use LED lamps with very short cure times and exposure that's far below sunburn levels. If you're concerned, ask for SPF on the backs of your hands before the lamp, or look for lamp-free structured gels that air-cure."
+        },
+        {
+          "q": "How long should I wait between full acrylic sets?",
+          "a": "If you're getting regular fills you don't need to remove the full set every cycle. The break recommendation kicks in if your natural nails start looking thin or peeling — at that point, 2 to 4 weeks bare gives them time to recover before the next set."
+        },
+        {
+          "q": "Is dip powder a better middle ground?",
+          "a": "Different product entirely — dip uses adhesive and powder instead of UV-cured gel or liquid monomer. It's stronger than gel polish but doesn't sculpt like acrylic, and it doesn't take fills the way acrylic does. Good option if you want longevity without UV light and don't need dramatic length."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Gel nails are painted on and cured under UV light for a glossy, natural finish. Acrylic mixes liquid and powder into a hard layer you can sculpt longer and bolder. Most standard sets fall in the $30 to $70 range either way. The real choice comes down to what your hands do all day: gel for a lighter, gentler set; acrylic for strength and dramatic length.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Gel lasts 2–3 weeks; acrylic stretches to 3 weeks or longer",
+            "Standard set runs $30–$70; designs and length push higher",
+            "Gel feels lighter and flexes with your nail; acrylic feels firmer and sculpts longer",
+            "Gel removal: 10–15 minutes; acrylic removal: 20–30 minutes",
+            "Acrylic is stronger for rough hands; gel is gentler on natural nails"
+          ]
+        },
+        {
+          "h": "How do gel and acrylic nails differ?",
+          "p": "The application process is where they diverge. For gel manicures, the product is painted onto the nail from a pot of gel then cured under a UV light to harden it. Acrylics combine liquid and powder into a sort of dough, which is then painted onto the nail and air-dried."
+        },
+        {
+          "p": "The finish reads differently too. Gel nails have that smooth, glossy finish that looks super natural — like your own nails, but better. Acrylics are firmer and can be sculpted into longer, bolder shapes, which is great if you want drama."
+        },
+        {
+          "h": "Which lasts longer?",
+          "p": "A typical gel manicure lasts two to three weeks, depending on your nail growth and how well you care for them. With good care, acrylic nails can last three weeks or sometimes longer."
+        },
+        {
+          "p": "Gel is more flexible than acrylic — that flexibility makes it more forgiving of small impacts and less likely to crack. Acrylic, on the other hand, is extremely strong and holds up to harder wear. If your nails break easily or you do manual work, acrylic is the more durable pick."
+        },
+        {
+          "h": "What does it cost?",
+          "p": "Most standard sets fall in the $30 to $70 range. Once you add design work, extreme length, or premium salon pricing, the ceiling rises — acrylic sets can climb to $120 and gel sets to $100, depending on color, art, and shape."
+        },
+        {
+          "p": "Fills usually cost around $20 to $40 and extend the life of your set. One catch worth knowing: acrylics allow for fills as your natural nails grow out, while Gel X typically requires a complete replacement when maintenance is needed. That changes the long-term math if you're choosing between them."
+        },
+        {
+          "h": "Which is gentler on your natural nails?",
+          "p": "Gel is the gentler of the two overall. It doesn't involve as much filing, so there's less wear on your natural nail surface. Acrylic uses stronger chemicals and needs more shaping, which can wear down your natural nails over time if you skip breaks or remove them aggressively."
+        },
+        {
+          "p": "Both are safe when applied and removed correctly — the difference is the margin for error. Acrylic punishes bad technique harder, which is why it's generally recommended to take breaks between acrylic nail sets to let your natural nails recover."
+        },
+        {
+          "h": "How does removal work?",
+          "p": "Gel is the simpler of the two. To safely remove gel nails, soak them in acetone for about 10 to 15 minutes — the product softens and lifts off."
+        },
+        {
+          "p": "Acrylic takes longer — around 20 to 30 minutes of acetone soak, often with gentle filing on the top layer to help the acetone penetrate. Removing acrylic nails at home can be challenging and may result in damage to the natural nails if not done correctly. For acrylic, the salon visit is the safer call."
+        },
+        {
+          "h": "Which should you pick?",
+          "p": "Quick decision rules:"
+        },
+        {
+          "bullets": [
+            "Pick gel if you want a lighter feel, more natural look, easier removal, and gentler maintenance on your actual nails.",
+            "Pick acrylic if you need serious strength, want dramatic length, or do hands-on work that would crack a flexible set.",
+            "Either way, plan for fills or a full replacement around the 2–3 week mark."
+          ]
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I switch from acrylic to gel (or vice versa)?",
+          "a": "Yes, but plan it around a removal session. Acrylic can't sit under gel comfortably — your tech will fully remove the acrylic, give your nails a short break if they're thin, then apply gel. Same the other direction. Don't try to fill across product types; it cracks and lifts."
+        },
+        {
+          "q": "Do gel UV lamps damage your hands?",
+          "a": "Most modern salons use LED lamps with very short cure times and exposure that's far below sunburn levels. If you're concerned, ask for SPF on the backs of your hands before the lamp, or look for lamp-free structured gels that air-cure."
+        },
+        {
+          "q": "How long should I wait between full acrylic sets?",
+          "a": "If you're getting regular fills you don't need to remove the full set every cycle. The break recommendation kicks in if your natural nails start looking thin or peeling — at that point, 2 to 4 weeks bare gives them time to recover before the next set."
+        },
+        {
+          "q": "Is dip powder a better middle ground?",
+          "a": "Different product entirely — dip uses adhesive and powder instead of UV-cured gel or liquid monomer. It's stronger than gel polish but doesn't sculpt like acrylic, and it doesn't take fills the way acrylic does. Good option if you want longevity without UV light and don't need dramatic length."
+        }
+      ]
+    }
   }
 };
