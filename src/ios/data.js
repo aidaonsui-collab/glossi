@@ -99,6 +99,13 @@ export const GUIDES = [
     "t_en": "Brazilian Blowout vs Keratin Treatment: Which Smoothing Treatment Is Right for You?",
     "t_es": "Brazilian Blowout vs Keratin Treatment: Which Smoothing Treatment Is Right for You?",
     "mood": 15
+  },
+  {
+    "kicker_en": "GUIDE · 3 MIN",
+    "kicker_es": "GUÍA · 3 MIN",
+    "t_en": "How Long Do Lash Extensions Last? The Real Timeline in 2026",
+    "t_es": "How Long Do Lash Extensions Last? The Real Timeline in 2026",
+    "mood": 16
   }
 ];
 

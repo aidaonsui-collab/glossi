@@ -1156,5 +1156,215 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "8": {
+    "en": {
+      "dek": "Most lash extensions last 3 to 6 weeks before they're due for a fill. Some sets push 6–8 weeks under ideal conditions, but that's the exception. The catch: natural lashes shed 1 to 5 a day, so you'll lose 50% to 60% of your extensions within three weeks. Plan for fills every 2–3 weeks or expect gaps.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Most extensions hold 3–6 weeks with normal care",
+            "Fills every 2–3 weeks keep the line full",
+            "Classic extensions last longer than volume sets",
+            "Oil-based products are the biggest enemy of retention",
+            "A fill takes 45–60 minutes; a fresh full set takes longer"
+          ]
+        },
+        {
+          "h": "What decides how long your extensions last?",
+          "p": "A few factors set the ceiling — what your stylist applies and what you do at home."
+        },
+        {
+          "bullets": [
+            "Adhesive quality. The bond used matters most. Better glue means better retention from day one.",
+            "Material grade. Premium extensions last longer than budget options. Cheap ones break down faster.",
+            "Your lash health. Each extension bonds to one natural lash. Weak or damaged natural lashes won't hold.",
+            "Daily habits. Rubbing your eyes, sleeping face-down on a cotton pillowcase, or using oil-based skincare near your eye area all shorten lifespan. Switching to a silk pillowcase and oil-free products extends it."
+          ]
+        },
+        {
+          "p": "Some people get 6 weeks. Others see gaps by week two. The difference usually comes down to what they're doing at home."
+        },
+        {
+          "h": "Classic vs volume vs hybrid: which lasts longest?",
+          "p": "Not all extensions wear the same way."
+        },
+        {
+          "bullets": [
+            "Classic. One extension per natural lash. Less weight, less stress — the longest-lasting of the three types.",
+            "Volume. Multiple thinner extensions per lash. Dramatic, fuller look, but the added weight shortens lifespan.",
+            "Hybrid. Mixes classic and volume techniques. Falls in the middle for lifespan."
+          ]
+        },
+        {
+          "p": "If retention is your priority, classic wins. If fullness is, volume is worth the shorter window between fills."
+        },
+        {
+          "h": "What to expect as your lashes shed",
+          "p": "Here's the honest week-by-week:"
+        },
+        {
+          "bullets": [
+            "Weeks 1–2: Full set looks its best. Some shedding starts but gaps are minimal.",
+            "Week 3: Most of the visible shedding happens. Without a fill scheduled, gaps start to appear.",
+            "Week 4: Most clients notice visible thinning. A fill is overdue for most people at this point.",
+            "Weeks 5–6: Significant gaps without fills. If you're past the halfway mark, a fresh full set may make more sense than a fill."
+          ]
+        },
+        {
+          "p": "Gradual loss isn't a problem — extensions shed naturally with your lash cycle. That's the system working."
+        },
+        {
+          "h": "Fill or fresh set?",
+          "p": "A fill takes 45–60 minutes and costs less than starting over. That's the baseline maintenance and what keeps your line consistent between visits."
+        },
+        {
+          "p": "If most of your extensions have shed, a fresh full set is the better call. Trying to fill what's barely there often leaves you with a patchy, uneven result."
+        },
+        {
+          "p": "Regular fills also prevent overloading your natural lashes — stacking too many heavy extensions on recovering lashes causes damage over time."
+        },
+        {
+          "h": "Aftercare that actually extends retention",
+          "p": "After your appointment, keep lashes dry for at least 4 hours and possibly up to 48 hours while the adhesive cures."
+        },
+        {
+          "p": "Oil breaks down lash adhesive — that's the single biggest aftercare mistake. Oil-based removers, serums, and heavy creams near the eye area all work against you."
+        },
+        {
+          "p": "A simple at-home routine adds a week or two of wear between fills:"
+        },
+        {
+          "bullets": [
+            "Brush daily with a clean spoolie",
+            "Sleep on a silk pillowcase",
+            "Cleanse with oil-free products",
+            "Avoid rubbing your eyes"
+          ]
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Does the lash type change how often I need fills?",
+          "a": "Indirectly, yes. Classic extensions hold longer, so you can stretch fills toward the 3-week mark. Volume sets shed faster from the added weight — plan closer to 2 weeks if you want the look to stay consistent."
+        },
+        {
+          "q": "When should I get a full set instead of a fill?",
+          "a": "If more than half your extensions have shed, book a fresh full set. Filling sparse extensions usually looks patchy. A full set gives you a clean baseline to maintain from."
+        },
+        {
+          "q": "Can I keep using my regular skincare?",
+          "a": "Probably not — at least not around your eyes. Most face creams, eye creams, and oil-based cleansers contain ingredients that break down lash adhesive. Audit your routine for any oils within an inch of your lash line. That one change usually adds a full week to retention."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Most lash extensions last 3 to 6 weeks before they're due for a fill. Some sets push 6–8 weeks under ideal conditions, but that's the exception. The catch: natural lashes shed 1 to 5 a day, so you'll lose 50% to 60% of your extensions within three weeks. Plan for fills every 2–3 weeks or expect gaps.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Most extensions hold 3–6 weeks with normal care",
+            "Fills every 2–3 weeks keep the line full",
+            "Classic extensions last longer than volume sets",
+            "Oil-based products are the biggest enemy of retention",
+            "A fill takes 45–60 minutes; a fresh full set takes longer"
+          ]
+        },
+        {
+          "h": "What decides how long your extensions last?",
+          "p": "A few factors set the ceiling — what your stylist applies and what you do at home."
+        },
+        {
+          "bullets": [
+            "Adhesive quality. The bond used matters most. Better glue means better retention from day one.",
+            "Material grade. Premium extensions last longer than budget options. Cheap ones break down faster.",
+            "Your lash health. Each extension bonds to one natural lash. Weak or damaged natural lashes won't hold.",
+            "Daily habits. Rubbing your eyes, sleeping face-down on a cotton pillowcase, or using oil-based skincare near your eye area all shorten lifespan. Switching to a silk pillowcase and oil-free products extends it."
+          ]
+        },
+        {
+          "p": "Some people get 6 weeks. Others see gaps by week two. The difference usually comes down to what they're doing at home."
+        },
+        {
+          "h": "Classic vs volume vs hybrid: which lasts longest?",
+          "p": "Not all extensions wear the same way."
+        },
+        {
+          "bullets": [
+            "Classic. One extension per natural lash. Less weight, less stress — the longest-lasting of the three types.",
+            "Volume. Multiple thinner extensions per lash. Dramatic, fuller look, but the added weight shortens lifespan.",
+            "Hybrid. Mixes classic and volume techniques. Falls in the middle for lifespan."
+          ]
+        },
+        {
+          "p": "If retention is your priority, classic wins. If fullness is, volume is worth the shorter window between fills."
+        },
+        {
+          "h": "What to expect as your lashes shed",
+          "p": "Here's the honest week-by-week:"
+        },
+        {
+          "bullets": [
+            "Weeks 1–2: Full set looks its best. Some shedding starts but gaps are minimal.",
+            "Week 3: Most of the visible shedding happens. Without a fill scheduled, gaps start to appear.",
+            "Week 4: Most clients notice visible thinning. A fill is overdue for most people at this point.",
+            "Weeks 5–6: Significant gaps without fills. If you're past the halfway mark, a fresh full set may make more sense than a fill."
+          ]
+        },
+        {
+          "p": "Gradual loss isn't a problem — extensions shed naturally with your lash cycle. That's the system working."
+        },
+        {
+          "h": "Fill or fresh set?",
+          "p": "A fill takes 45–60 minutes and costs less than starting over. That's the baseline maintenance and what keeps your line consistent between visits."
+        },
+        {
+          "p": "If most of your extensions have shed, a fresh full set is the better call. Trying to fill what's barely there often leaves you with a patchy, uneven result."
+        },
+        {
+          "p": "Regular fills also prevent overloading your natural lashes — stacking too many heavy extensions on recovering lashes causes damage over time."
+        },
+        {
+          "h": "Aftercare that actually extends retention",
+          "p": "After your appointment, keep lashes dry for at least 4 hours and possibly up to 48 hours while the adhesive cures."
+        },
+        {
+          "p": "Oil breaks down lash adhesive — that's the single biggest aftercare mistake. Oil-based removers, serums, and heavy creams near the eye area all work against you."
+        },
+        {
+          "p": "A simple at-home routine adds a week or two of wear between fills:"
+        },
+        {
+          "bullets": [
+            "Brush daily with a clean spoolie",
+            "Sleep on a silk pillowcase",
+            "Cleanse with oil-free products",
+            "Avoid rubbing your eyes"
+          ]
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Does the lash type change how often I need fills?",
+          "a": "Indirectly, yes. Classic extensions hold longer, so you can stretch fills toward the 3-week mark. Volume sets shed faster from the added weight — plan closer to 2 weeks if you want the look to stay consistent."
+        },
+        {
+          "q": "When should I get a full set instead of a fill?",
+          "a": "If more than half your extensions have shed, book a fresh full set. Filling sparse extensions usually looks patchy. A full set gives you a clean baseline to maintain from."
+        },
+        {
+          "q": "Can I keep using my regular skincare?",
+          "a": "Probably not — at least not around your eyes. Most face creams, eye creams, and oil-based cleansers contain ingredients that break down lash adhesive. Audit your routine for any oils within an inch of your lash line. That one change usually adds a full week to retention."
+        }
+      ]
+    }
   }
 };
