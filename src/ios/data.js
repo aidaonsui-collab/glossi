@@ -62,36 +62,36 @@ export const BIDS = [
 ];
 
 export const GUIDES = [
-  { kicker_en: 'GUIDE · 6 MIN', kicker_es: 'GUÍA · 6 MIN', t_en: 'How to talk about color in Spanglish', t_es: 'Cómo hablar de color en spanglish', mood: 5 },
-  { kicker_en: 'RGV PICKS · 4 MIN', kicker_es: 'EL VALLE · 4 MIN', t_en: 'Six neighborhood salons we love this month', t_es: 'Seis salones del barrio que amamos', mood: 0 },
-  { kicker_en: 'PRICING · 3 MIN', kicker_es: 'PRECIOS · 3 MIN', t_en: 'What a fair price looks like in the Valley', t_es: 'Qué es un precio justo en el Valle', mood: 4 },
+  { kicker_en: 'GUIDE · 6 MIN', kicker_es: 'GUÍA · 6 MIN', t_en: 'How to talk about color in Spanglish', t_es: 'Cómo hablar de color en spanglish', mood: 8 },
+  { kicker_en: 'RGV PICKS · 4 MIN', kicker_es: 'EL VALLE · 4 MIN', t_en: 'Six neighborhood salons we love this month', t_es: 'Seis salones del barrio que amamos', mood: 9 },
+  { kicker_en: 'PRICING · 3 MIN', kicker_es: 'PRECIOS · 3 MIN', t_en: 'What a fair price looks like in the Valley', t_es: 'Qué es un precio justo en el Valle', mood: 10 },
   {
     "kicker_en": "GUIDE · 5 MIN",
     "kicker_es": "GUÍA · 5 MIN",
     "t_en": "Hair Color Vocabulary in Spanish and English: Your Complete Guide to Talking About Hair in Both Languages",
     "t_es": "Hair Color Vocabulary in Spanish and English: Your Complete Guide to Talking About Hair in Both Languages",
-    "mood": 3
+    "mood": 11
   },
   {
     "kicker_en": "GUIDE · 4 MIN",
     "kicker_es": "GUÍA · 4 MIN",
     "t_en": "How to Ask for Hair Color in Spanish at the Salon",
     "t_es": "How to Ask for Hair Color in Spanish at the Salon",
-    "mood": 4
+    "mood": 12
   },
   {
     "kicker_en": "GUIDE · 4 MIN",
     "kicker_es": "GUÍA · 4 MIN",
     "t_en": "Hair Color Vocabulary in Spanish and English: A Practical Guide",
     "t_es": "Hair Color Vocabulary in Spanish and English: A Practical Guide",
-    "mood": 5
+    "mood": 13
   },
   {
     "kicker_en": "GUIDE · 2 MIN",
     "kicker_es": "GUÍA · 2 MIN",
     "t_en": "How Much Should You Tip Your Hair Stylist? A Simple Guide",
     "t_es": "How Much Should You Tip Your Hair Stylist? A Simple Guide",
-    "mood": 0
+    "mood": 14
   }
 ];
 

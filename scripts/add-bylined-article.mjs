@@ -36,6 +36,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
 import { GUIDES } from '../src/ios/data.js';
+import { PHOTOS, EDITORIAL_POOL_START } from '../src/theme.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_FILE = join(__dirname, '..', 'src', 'ios', 'data.js');
@@ -312,8 +313,16 @@ async function main() {
     .filter(Boolean).length;
   const mins = Math.max(1, Math.round(words / 200));
 
-  const idx = GUIDES.length; // next editorial index
-  const mood = idx % 6; // SalonPhoto gradient — deterministic, 0-5
+  // Pick the next unused photo from the editorial pool so each guide gets
+  // its own hero. Falls back to round-robin when the pool is exhausted.
+  const usedMoods = new Set(GUIDES.map((g) => g.mood).filter((m) => Number.isInteger(m)));
+  let mood = EDITORIAL_POOL_START;
+  while (mood < PHOTOS.length && usedMoods.has(mood)) mood++;
+  if (mood >= PHOTOS.length) {
+    // Pool exhausted — round-robin within the editorial slots.
+    const span = PHOTOS.length - EDITORIAL_POOL_START;
+    mood = EDITORIAL_POOL_START + (GUIDES.length % span);
+  }
 
   const guideEntry = {
     kicker_en: `GUIDE · ${mins} MIN`,
