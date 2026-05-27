@@ -120,6 +120,13 @@ export const GUIDES = [
     "t_en": "How Often Should You Get a Facial? A Plain-English Scheduling Guide",
     "t_es": "How Often Should You Get a Facial? A Plain-English Scheduling Guide",
     "mood": 18
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "Microblading vs Powder Brows: Which Lasts Longer, Costs Less, and Suits Your Skin",
+    "t_es": "Microblading vs Powder Brows: Which Lasts Longer, Costs Less, and Suits Your Skin",
+    "mood": 19
   }
 ];
 

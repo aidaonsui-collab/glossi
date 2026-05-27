@@ -1698,5 +1698,201 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "11": {
+    "en": {
+      "dek": "Microblading and powder brows are the two main brow tattoo techniques Valley clients ask about. Microblading uses a manual blade to draw individual hair-like strokes. Powder brows use a machine to deposit soft, filled-in pigment like brow makeup. The right choice comes down to your skin type, lifestyle, and how much definition you want.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Microblading creates hair-stroke detail; powder brows create a soft, filled-in look",
+            "Powder brows last longer on oily skin; microblading works best on dry to normal skin",
+            "Microblading heals in 10–14 days with scabbing; powder brows heal in 7–10 days with less trauma",
+            "Both take 2–3 hours per session and need a touch-up at 6–8 weeks",
+            "Both last 1–3 years depending on skin type and aftercare"
+          ]
+        },
+        {
+          "h": "How each technique works",
+          "p": "Microblading uses a handheld microblade tool with ultra-fine needles to deposit pigment into the skin's upper layers, one stroke at a time. The result mimics individual eyebrow hairs."
+        },
+        {
+          "p": "Powder brows use a PMU machine to deliver pigment as tiny dots. The dots build up into a soft, airbrushed effect that reads like brow makeup — more uniform and less hair-textured than microblading."
+        },
+        {
+          "h": "Healing time and what to expect",
+          "p": "Both techniques deposit pigment into the upper skin layers, but the trauma profile is different."
+        },
+        {
+          "bullets": [
+            "Microblading heals in 10–14 days with scabbing along the individual strokes as the cuts close. You'll see darker, more intense brows during the first week, then they lighten as the scabs flake off.",
+            "Powder brows heal in 7–10 days with mild redness and flaking but no incisions to scab over — the application is gentler so recovery is faster."
+          ]
+        },
+        {
+          "p": "Either way, keep your brows dry for at least a week after the procedure. Moisture pulls the scabs prematurely and affects the final pigment."
+        },
+        {
+          "h": "How long do they last?",
+          "p": "Both microblading and powder brows last 1–3 years depending on your skin type, aftercare, and exposure to sun and exfoliants."
+        },
+        {
+          "p": "The first appointment is just the start — both techniques require a touch-up at the 6–8 week mark to set the pigment properly. After that, an annual or biannual color refresh keeps the look from fading patchy."
+        },
+        {
+          "p": "A full session runs 2–3 hours including consultation, mapping, and the procedure itself."
+        },
+        {
+          "h": "Which is best for your skin type?",
+          "p": "Skin type is the single biggest factor in which technique holds up for you."
+        },
+        {
+          "p": "Oily or acne-prone skin → powder brows. Powder brows are the preferred choice for oily or sensitive skin types — the technique seals the pigment more effectively against excess oil production and creates less trauma for sensitive skin."
+        },
+        {
+          "p": "Dry to normal skin → microblading. Microblading works best on normal to dry skin; the fine strokes can blur or fade more quickly on oily skin as the natural oils push the pigment out."
+        },
+        {
+          "p": "If you're not sure about your skin type, ask your artist at consultation. They'll assess your T-zone oil production and pore behavior and recommend the technique that'll hold longest on you."
+        },
+        {
+          "h": "Combo brows: a middle option",
+          "p": "Combo brows mix microblading at the front and tail with the soft shading of powder brows. You get a few fine, natural-looking hair strokes at the head of the brow, then ombre fill through the body and tail."
+        },
+        {
+          "p": "This is the call if you want natural texture in the front but more polish toward the tail — or if your skin sits somewhere between dry and oily."
+        },
+        {
+          "h": "Time saved on your daily routine",
+          "p": "If you fill in your brows every morning, powder brows can replace that step entirely. The shaded effect means you wake up with brows that already look made up."
+        },
+        {
+          "p": "Microblading also reduces daily routine time but reads more natural than \"done\" — better if you don't want anyone to know you got something done."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How do I know if I have oily, dry, or normal skin?",
+          "a": "Ask your artist at consultation — they'll assess your T-zone oil production, pore size, and how your skin reacts to products. Quick at-home tells: oily skin shows shine by midday; dry skin feels tight or flaky after washing."
+        },
+        {
+          "q": "Will my brows look too dark right after?",
+          "a": "Yes. During the first 1–2 weeks, brows appear darker and more defined than the final result. This lightens as the skin heals and the pigment settles into the deeper layer."
+        },
+        {
+          "q": "Can I switch techniques at my touch-up?",
+          "a": "Yes. If microblading faded unevenly because you have oilier skin than expected, your artist may switch you to powder brows at the 6–8 week touch-up. Same the other direction."
+        },
+        {
+          "q": "Does it hurt?",
+          "a": "Most artists apply a topical numbing cream before either procedure. Powder brows cause less trauma overall because there are no incisions, but microblading clients usually report it as mild discomfort, not pain."
+        },
+        {
+          "q": "How soon can I work out after?",
+          "a": "Skip the gym for at least a week. Sweat and salt both interfere with pigment settling and can pull scabs early, causing premature fading or patches."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Microblading and powder brows are the two main brow tattoo techniques Valley clients ask about. Microblading uses a manual blade to draw individual hair-like strokes. Powder brows use a machine to deposit soft, filled-in pigment like brow makeup. The right choice comes down to your skin type, lifestyle, and how much definition you want.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Microblading creates hair-stroke detail; powder brows create a soft, filled-in look",
+            "Powder brows last longer on oily skin; microblading works best on dry to normal skin",
+            "Microblading heals in 10–14 days with scabbing; powder brows heal in 7–10 days with less trauma",
+            "Both take 2–3 hours per session and need a touch-up at 6–8 weeks",
+            "Both last 1–3 years depending on skin type and aftercare"
+          ]
+        },
+        {
+          "h": "How each technique works",
+          "p": "Microblading uses a handheld microblade tool with ultra-fine needles to deposit pigment into the skin's upper layers, one stroke at a time. The result mimics individual eyebrow hairs."
+        },
+        {
+          "p": "Powder brows use a PMU machine to deliver pigment as tiny dots. The dots build up into a soft, airbrushed effect that reads like brow makeup — more uniform and less hair-textured than microblading."
+        },
+        {
+          "h": "Healing time and what to expect",
+          "p": "Both techniques deposit pigment into the upper skin layers, but the trauma profile is different."
+        },
+        {
+          "bullets": [
+            "Microblading heals in 10–14 days with scabbing along the individual strokes as the cuts close. You'll see darker, more intense brows during the first week, then they lighten as the scabs flake off.",
+            "Powder brows heal in 7–10 days with mild redness and flaking but no incisions to scab over — the application is gentler so recovery is faster."
+          ]
+        },
+        {
+          "p": "Either way, keep your brows dry for at least a week after the procedure. Moisture pulls the scabs prematurely and affects the final pigment."
+        },
+        {
+          "h": "How long do they last?",
+          "p": "Both microblading and powder brows last 1–3 years depending on your skin type, aftercare, and exposure to sun and exfoliants."
+        },
+        {
+          "p": "The first appointment is just the start — both techniques require a touch-up at the 6–8 week mark to set the pigment properly. After that, an annual or biannual color refresh keeps the look from fading patchy."
+        },
+        {
+          "p": "A full session runs 2–3 hours including consultation, mapping, and the procedure itself."
+        },
+        {
+          "h": "Which is best for your skin type?",
+          "p": "Skin type is the single biggest factor in which technique holds up for you."
+        },
+        {
+          "p": "Oily or acne-prone skin → powder brows. Powder brows are the preferred choice for oily or sensitive skin types — the technique seals the pigment more effectively against excess oil production and creates less trauma for sensitive skin."
+        },
+        {
+          "p": "Dry to normal skin → microblading. Microblading works best on normal to dry skin; the fine strokes can blur or fade more quickly on oily skin as the natural oils push the pigment out."
+        },
+        {
+          "p": "If you're not sure about your skin type, ask your artist at consultation. They'll assess your T-zone oil production and pore behavior and recommend the technique that'll hold longest on you."
+        },
+        {
+          "h": "Combo brows: a middle option",
+          "p": "Combo brows mix microblading at the front and tail with the soft shading of powder brows. You get a few fine, natural-looking hair strokes at the head of the brow, then ombre fill through the body and tail."
+        },
+        {
+          "p": "This is the call if you want natural texture in the front but more polish toward the tail — or if your skin sits somewhere between dry and oily."
+        },
+        {
+          "h": "Time saved on your daily routine",
+          "p": "If you fill in your brows every morning, powder brows can replace that step entirely. The shaded effect means you wake up with brows that already look made up."
+        },
+        {
+          "p": "Microblading also reduces daily routine time but reads more natural than \"done\" — better if you don't want anyone to know you got something done."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How do I know if I have oily, dry, or normal skin?",
+          "a": "Ask your artist at consultation — they'll assess your T-zone oil production, pore size, and how your skin reacts to products. Quick at-home tells: oily skin shows shine by midday; dry skin feels tight or flaky after washing."
+        },
+        {
+          "q": "Will my brows look too dark right after?",
+          "a": "Yes. During the first 1–2 weeks, brows appear darker and more defined than the final result. This lightens as the skin heals and the pigment settles into the deeper layer."
+        },
+        {
+          "q": "Can I switch techniques at my touch-up?",
+          "a": "Yes. If microblading faded unevenly because you have oilier skin than expected, your artist may switch you to powder brows at the 6–8 week touch-up. Same the other direction."
+        },
+        {
+          "q": "Does it hurt?",
+          "a": "Most artists apply a topical numbing cream before either procedure. Powder brows cause less trauma overall because there are no incisions, but microblading clients usually report it as mild discomfort, not pain."
+        },
+        {
+          "q": "How soon can I work out after?",
+          "a": "Skip the gym for at least a week. Sweat and salt both interfere with pigment settling and can pull scabs early, causing premature fading or patches."
+        }
+      ]
+    }
   }
 };
