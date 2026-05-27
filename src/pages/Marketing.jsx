@@ -96,7 +96,9 @@ const TICKER_ES = [
 ];
 
 // Hero / Pitch imagery — design-bundle Unsplash IDs.
-const HERO_PHOTO  = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1400&q=80&auto=format&fit=crop';
+// HERO_PHOTO is the `full` hero variant from data.js (1800w model + warm
+// rose backdrop). Full-bleed treatment behind the headline.
+const HERO_PHOTO  = 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1800&q=80&auto=format&fit=crop';
 const PITCH_PHOTO = 'https://images.unsplash.com/photo-1633681926022-84852f3f54dc?w=1400&q=80&auto=format&fit=crop';
 
 // ── Tiny helpers ─────────────────────────────────────────────────────────
@@ -223,67 +225,66 @@ export default function Marketing() {
     </nav>
   );
 
-  // ── Hero ──
-  // Split layout: editorial headline on left, vibrant lifestyle photo on
-  // right with a faux price-tag + "4 new bids in McAllen" badge floating
-  // on top. Trust row sits under the CTA buttons.
+  // ── Hero ── (Full-bleed layout)
+  // Single big image fills the hero, headline + sub + CTAs sit on top, anchored
+  // to the bottom-left. Two stacked overlays make the copy legible without
+  // muddying the photo: a vertical dark fade at the bottom (for the headline)
+  // and a horizontal cream-to-clear wash on the left (so the kicker / sub /
+  // trust row pop against the model's face/hair). 88vh min-height per design.
   const Hero = () => (
-    <section style={{ padding: isPhone ? '24px 18px 8px' : '64px 64px 32px' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1.1fr 0.9fr', gap: isPhone ? 32 : 56, alignItems: 'center' }}>
-        <div>
+    <section style={{ position: 'relative', minHeight: isPhone ? '70vh' : '88vh', display: 'flex', alignItems: 'flex-end', overflow: 'hidden', background: `linear-gradient(135deg, ${ACCENTS[0]}, ${ACCENTS[3]})` }}>
+      <img
+        src={HERO_PHOTO}
+        alt=""
+        loading="eager"
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+      />
+      {/* Legibility overlays — bottom darken + left cream-wash */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 1,
+        background:
+          'linear-gradient(180deg, rgba(26,23,20,0) 30%, rgba(26,23,20,0.55) 100%),' +
+          'linear-gradient(90deg, rgba(250,247,242,0.85) 0%, rgba(250,247,242,0.2) 45%, rgba(26,23,20,0) 70%)',
+      }} />
+      <div style={{ position: 'relative', zIndex: 2, padding: isPhone ? '0 18px 36px' : '0 64px 80px', width: '100%' }}>
+        <div style={{ maxWidth: 880 }}>
           <span style={{ fontFamily: type.mono, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.inkSoft, textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ width: 6, height: 6, borderRadius: 99, background: p.accent, boxShadow: '0 0 0 3px rgba(184,137,62,0.18)' }} />
+            <span style={{ width: 24, height: 1, background: p.inkSoft, opacity: 0.5 }} />
             {t('The Rio Grande Valley · Beauty Marketplace', 'El Valle del Río Grande · Mercado de belleza')}
           </span>
-          <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? '14vw' : 'clamp(64px, 7.2vw, 120px)', fontWeight: type.displayWeight, letterSpacing: '-0.035em', lineHeight: 0.92, margin: '20px 0 22px', textWrap: 'balance', color: p.ink }}>
+          <h1 style={{ fontFamily: type.display, fontSize: isPhone ? '15vw' : 'clamp(72px, 9vw, 140px)', fontWeight: type.displayWeight, letterSpacing: '-0.035em', lineHeight: 0.92, margin: '18px 0 0', textWrap: 'balance', color: p.ink }}>
             <span style={{ display: 'inline-block' }}>
               {t('They bid.', 'Ellas ofrecen.')}
-              <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 99, background: p.accent, marginLeft: 6, marginBottom: 4, verticalAlign: 'baseline' }} />
+              <span style={{ display: 'inline-block', width: 14, height: 14, borderRadius: 99, background: ACCENTS[0], marginLeft: 6, verticalAlign: 'middle', transform: 'translateY(-0.45em)' }} />
             </span>
-            <br />
-            <span style={{ color: p.accent }}>{t('You book.', 'Tú reservas.')}</span>
+            <span style={{ display: 'block', fontStyle: 'italic', color: p.inkSoft }}>
+              {t('You book.', 'Tú reservas.')}
+            </span>
           </h1>
-          <p style={{ fontSize: isPhone ? 15 : 18, color: p.inkSoft, lineHeight: 1.55, margin: '0 0 26px', textWrap: 'pretty', maxWidth: 520 }}>
+          <p style={{ fontSize: isPhone ? 15.5 : 19, color: p.inkSoft, lineHeight: 1.5, margin: '28px 0 36px', textWrap: 'pretty', maxWidth: '44ch', fontWeight: 500 }}>
             {t(
               'Post once. Get tailored offers from vetted salons within the hour — at the price you set.',
               'Publica una vez. Recibe ofertas a tu medida de salones verificados en menos de una hora — al precio que tú pones.'
             )}
           </p>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-            <button onClick={() => startRequest()} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '15px 26px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+            <button onClick={() => startRequest()} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '15px 24px' : '18px 26px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 1px 0 rgba(184,137,62,0.6), 0 12px 30px -10px rgba(26,23,20,0.4)' }}>
               {t('Post a request', 'Publicar solicitud')}
-              <span style={{ fontSize: 16, transform: 'translateY(-0.5px)' }}>→</span>
+              <span style={{ fontSize: 16 }}>→</span>
             </button>
-            <button onClick={() => navigate('/editorial')} style={{ background: 'transparent', color: p.ink, border: `1px solid ${p.line}`, padding: isPhone ? '13px 20px' : '14px 22px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 500, cursor: 'pointer' }}>
+            <button onClick={() => navigate('/editorial')} style={{ background: 'rgba(250,247,242,0.7)', color: p.ink, border: `1px solid ${p.line}`, padding: isPhone ? '14px 22px' : '17px 24px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 500, cursor: 'pointer', backdropFilter: 'blur(8px)' }}>
               {t('How it works', 'Cómo funciona')}
             </button>
           </div>
-          <div style={{ marginTop: 26, display: 'flex', alignItems: 'center', gap: isPhone ? 10 : 14, flexWrap: 'wrap', fontFamily: type.mono, fontSize: 12, color: p.inkSoft }}>
+          <div style={{ marginTop: 28, display: 'flex', alignItems: 'center', gap: isPhone ? 10 : 14, flexWrap: 'wrap', fontFamily: type.mono, fontSize: 12, color: p.inkSoft }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 6, height: 6, borderRadius: 99, background: p.accent, animation: 'glossiPulse 2s ease-in-out infinite' }} />
+              <span style={{ width: 6, height: 6, borderRadius: 99, background: '#7AB388', animation: 'glossiPulse 2s ease-in-out infinite' }} />
               <strong style={{ color: p.ink, fontWeight: 600 }}>1,400+ {t('salons', 'salones')}</strong>
             </span>
             <span style={{ width: 4, height: 4, borderRadius: 99, background: p.line }} />
             <strong style={{ color: p.ink, fontWeight: 600 }}>4 {t('cities', 'ciudades')}</strong>
             <span style={{ width: 4, height: 4, borderRadius: 99, background: p.line }} />
             <span>{t('avg response in 11 min', 'respuesta promedio en 11 min')}</span>
-          </div>
-        </div>
-
-        {/* Right-side imagery. The price chip + bid badge are the "you'd
-            never see this on a regular salon site" prop — vibrant, specific,
-            scannable in under a second. */}
-        <div style={{ position: 'relative', aspectRatio: '4/5', borderRadius: isPhone ? 20 : 24, overflow: 'hidden', background: `linear-gradient(135deg, ${ACCENTS[0]}, ${ACCENTS[3]})` }}>
-          <img src={HERO_PHOTO} alt="" loading="eager" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-          {/* Floating price chip */}
-          <div style={{ position: 'absolute', top: isPhone ? 16 : 22, left: isPhone ? 16 : 22, background: p.bg, color: p.ink, padding: '10px 14px', borderRadius: 12, fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 22 : 28, fontWeight: type.displayWeight, letterSpacing: '-0.02em', display: 'inline-flex', alignItems: 'baseline', gap: 8, boxShadow: '0 8px 24px rgba(26,23,20,0.18)' }}>
-            <span style={{ textDecoration: 'line-through', color: p.inkMuted, fontSize: '0.6em' }}>$240</span>
-            $168
-          </div>
-          {/* Live bid badge */}
-          <div style={{ position: 'absolute', bottom: isPhone ? 16 : 22, right: isPhone ? 16 : 22, background: 'rgba(26,23,20,0.85)', color: p.bg, padding: '8px 12px', borderRadius: 99, fontFamily: type.mono, fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', display: 'inline-flex', alignItems: 'center', gap: 8, backdropFilter: 'blur(8px)' }}>
-            <span style={{ width: 6, height: 6, borderRadius: 99, background: '#7AB388', animation: 'glossiPulse 1.6s ease-in-out infinite' }} />
-            {t('4 new bids in McAllen', '4 nuevas ofertas en McAllen')}
           </div>
         </div>
       </div>
