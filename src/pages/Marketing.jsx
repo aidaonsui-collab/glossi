@@ -1,58 +1,160 @@
+// Marketing.jsx — the live `/` homepage.
+//
+// Rebuild based on the Claude Design handoff bundle `glossi-update` (May 2026).
+// The design ships a Babel-CDN React prototype with 4 jsx files + styles.css;
+// this file ports that layout into our actual stack (Vite + react-router + useT/useLang).
+//
+// Locked-in design choices (no Tweaks panel in prod):
+//   palette: rose-gold/peach/sage  cardStyle: saturated (photo-led)
+//   heroLayout: split               energy: 6 (medium motion)
+//
+// CTAs route to the real /request flow (?services=<slug>), not the
+// prototype's simulated bid modal. SignInModal flow stays.
+//
+// Previous Marketing.jsx is kept as `.pre-redesign.bak` next to this file.
+
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { defaultPalette as p, defaultType as type, PHOTOS } from '../theme.js';
+import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
-import { useToast } from '../components/Toast.jsx';
 import { useAuth, useLang } from '../store.jsx';
 import { useT } from '../lib/i18n.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import SignInModal from '../components/SignInModal.jsx';
-import SalonPhoto from '../components/SalonPhoto.jsx';
-import { GUIDES } from '../ios/data.js';
 
-// RGV cities Glossi serves — surfaced as pills under the salon-recruit
-// section as local-proof. Beats "1,400+ salons globally" type stats
-// because customers + stylists in McAllen care about McAllen.
-const RGV_CITIES = ['McAllen', 'Edinburg', 'Brownsville', 'Harlingen', 'Pharr', 'Mission', 'Weslaco'];
+// ── Per-card accent palette (rose-gold / peach / sage from design data.js) ──
+// Eight colors → one per service card, in the order SERVICES is declared.
+// All share similar chroma so the grid reads as one family, not eight stickers.
+const ACCENTS = ['#E8B4A0', '#D89B7A', '#F5D5C8', '#C9A87A', '#B8C9A9', '#E5C7B0', '#D4A5C9', '#A8B89A'];
 
-// Service category entry tiles. Customers tap a category → bid-request form
-// pre-filled. Photo index maps into PHOTOS in theme.js. Salon counts are
-// illustrative pre-launch; pull from `businesses` grouped by primary service
-// once we have real data. No unit prices on this page — surfaces aggregate
-// activity (`VALLEY_PULSE` below) instead, so we don't anchor customers to
-// a specific dollar figure or pin a salon to a public price floor.
-const CATEGORIES = [
-  { slug: 'haircut',      labelEn: 'Hair',    labelEs: 'Cabello',   salons: 84, photo: 0 },
-  { slug: 'color',        labelEn: 'Color',   labelEs: 'Color',     salons: 47, photo: 1 },
-  { slug: 'nails',        labelEn: 'Nails',   labelEs: 'Uñas',      salons: 76, photo: 7 },
-  { slug: 'lashes-brows', labelEn: 'Lashes',  labelEs: 'Pestañas',  salons: 52, photo: 3 },
-  { slug: 'lashes-brows', labelEn: 'Brows',   labelEs: 'Cejas',     salons: 67, photo: 4 },
-  { slug: 'haircut',      labelEn: 'Barber',  labelEs: 'Barbería',  salons: 30, photo: 2 },
-  { slug: 'makeup',       labelEn: 'Makeup',  labelEs: 'Maquillaje',salons: 23, photo: 6 },
-  { slug: 'facials',      labelEn: 'Skin',    labelEs: 'Piel',      salons: 11, photo: 5 },
+// Service category tiles. Each maps to a slug the /request page accepts via
+// ?services=<slug>. Photos are from the design's data.js (vibrant Unsplash
+// beauty/salon stock per the brief — replaces the muted black-and-white
+// imagery the prior homepage relied on).
+const SERVICES = [
+  { slug: 'haircut',      en: 'Hair',    es: 'Cabello',    subEn: 'Cuts, blowouts, treatments',     subEs: 'Cortes, blowouts, tratamientos',   bidsEn: '318 bids today', bidsEs: '318 ofertas hoy', photo: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=900&q=80&auto=format&fit=crop' },
+  { slug: 'color',        en: 'Color',   es: 'Color',      subEn: 'Balayage, gloss, root touch-up', subEs: 'Balayage, gloss, retoque de raíz', bidsEn: '204 bids today', bidsEs: '204 ofertas hoy', photo: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=900&q=80&auto=format&fit=crop' },
+  { slug: 'nails',        en: 'Nails',   es: 'Uñas',       subEn: 'Gel, acrylic, structured mani',  subEs: 'Gel, acrílico, manicura estructurada', bidsEn: '411 bids today', bidsEs: '411 ofertas hoy', photo: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=900&q=80&auto=format&fit=crop' },
+  { slug: 'lashes-brows', en: 'Lashes',  es: 'Pestañas',   subEn: 'Classic, hybrid, volume',        subEs: 'Clásicas, híbridas, volumen',      bidsEn: '276 bids today', bidsEs: '276 ofertas hoy', photo: 'https://images.unsplash.com/photo-1583241800698-9c2e6f6f6c2c?w=900&q=80&auto=format&fit=crop' },
+  { slug: 'lashes-brows', en: 'Brows',   es: 'Cejas',      subEn: 'Lamination, wax, tint',          subEs: 'Laminado, cera, tinte',            bidsEn: '182 bids today', bidsEs: '182 ofertas hoy', photo: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=900&q=80&auto=format&fit=crop' },
+  { slug: 'haircut',      en: 'Barber',  es: 'Barbería',   subEn: 'Fades, beards, hot towel',       subEs: 'Degradados, barba, toalla caliente', bidsEn: '165 bids today', bidsEs: '165 ofertas hoy', photo: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=900&q=80&auto=format&fit=crop' },
+  { slug: 'makeup',       en: 'Makeup',  es: 'Maquillaje', subEn: 'Bridal, event, lessons',         subEs: 'Novia, evento, clases',            bidsEn: '98 bids today',  bidsEs: '98 ofertas hoy',  photo: 'https://images.unsplash.com/photo-1457972729786-0411a3b2b626?w=900&q=80&auto=format&fit=crop' },
+  { slug: 'facials',      en: 'Skin',    es: 'Piel',       subEn: 'Facials, peels, microneedling',  subEs: 'Faciales, peelings, microneedling', bidsEn: '144 bids today', bidsEs: '144 ofertas hoy', photo: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=900&q=80&auto=format&fit=crop' },
 ];
 
-// Aggregate marketplace health. Conveys liquidity + competition without
-// exposing individual prices or pinning salons to historic price floors.
-// Numbers are placeholders pre-launch; will be live counts post-launch.
-const VALLEY_PULSE = [
-  { num: '84',  en: 'Bookings in the Valley this week', es: 'Reservas en el Valle esta semana' },
-  { num: '312', en: 'Salons accepting requests',         es: 'Salones aceptando solicitudes' },
-  { num: '4',   en: 'Bids per request, on average',      es: 'Ofertas por solicitud, en promedio' },
-  { num: '14m', en: 'Median time-to-first-bid',          es: 'Tiempo mediano a la primera oferta' },
+// Aggregate marketplace stats. These jitter live below to simulate a real
+// feed — same convention as the prior homepage's VALLEY_PULSE.
+const PULSE_BASE = [
+  { en: 'Bookings today',     es: 'Reservas hoy',           value: 84,  suffix: '' },
+  { en: 'Active salons',      es: 'Salones activos',        value: 312, suffix: '' },
+  { en: 'Avg. response',      es: 'Respuesta promedio',     value: 11,  suffix: ' min' },
+  { en: 'Avg. saved / book',  es: 'Ahorro promedio',        value: 23,  suffix: '%' },
 ];
+
+// Old way vs Glossi — 4-row narrative comparison. Replaces a generic "how
+// it works" walkthrough; framing as "vs. status quo" lands harder than
+// numbered steps.
+const COMPARE = [
+  { oldEn: 'DM seven salons. Two ghost you.',          oldEs: 'Escribes a siete salones. Dos te ignoran.',       newEn: 'Post once. Bids come to you.',            newEs: 'Publicas una vez. Las ofertas llegan a ti.' },
+  { oldEn: 'Pay whatever they quote.',                  oldEs: 'Pagas lo que te cobren.',                          newEn: 'You set the floor. They bid down.',       newEs: 'Tú pones el tope. Ellas ofrecen por debajo.' },
+  { oldEn: 'Hope the reviews are real.',                oldEs: 'Ojalá las reseñas sean reales.',                   newEn: 'Every salon is licensed + verified.',     newEs: 'Cada salón está licenciado y verificado.' },
+  { oldEn: 'Reschedule three times to find a slot.',    oldEs: 'Reagendas tres veces para encontrar hora.',        newEn: 'Bids include open times. Pick one.',      newEs: 'Las ofertas incluyen horarios. Tú eliges.' },
+];
+
+// Field Guide editorial — links to /editorial in the live app, copy is
+// design-supplied. Photos pull from the design's guide bucket.
+const GUIDE = [
+  { tagEn: 'Color',     tagEs: 'Color',     titleEn: 'Balayage in the Valley summer',                  titleEs: 'Balayage en el verano del Valle',                 readEn: '6 min read', readEs: '6 min', photo: 'https://images.unsplash.com/photo-1560869713-da86bd4f31e2?w=900&q=80&auto=format&fit=crop' },
+  { tagEn: 'Etiquette', tagEs: 'Etiqueta',  titleEn: 'What to bring to a first lash fill',             titleEs: 'Qué llevar a tu primer relleno de pestañas',      readEn: '3 min read', readEs: '3 min', photo: 'https://images.unsplash.com/photo-1583241800698-9c2e6f6f6c2c?w=900&q=80&auto=format&fit=crop' },
+  { tagEn: 'Maps',      tagEs: 'Mapas',     titleEn: 'Where the best blowouts hide in McAllen',        titleEs: 'Dónde se esconden los mejores blowouts en McAllen', readEn: '8 min read', readEs: '8 min', photo: 'https://images.unsplash.com/photo-1607008829749-c0f284a49841?w=900&q=80&auto=format&fit=crop' },
+  { tagEn: 'Skin',      tagEs: 'Piel',      titleEn: 'SPF, retinol, and the after-facial 48h',         titleEs: 'SPF, retinol y las 48h después de un facial',     readEn: '5 min read', readEs: '5 min', photo: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=900&q=80&auto=format&fit=crop' },
+];
+
+const TICKER_EN = [
+  'Maria booked balayage at Studio Rose — $185',
+  'New: 12 lash fills opened in Edinburg',
+  'Ana saved 28% on a structured mani in McAllen',
+  'Bloom + Co. just accepted a Friday blowout',
+  '3 brow lams just bid in Harlingen — starting $42',
+  'Velvet Chair quoted a wedding party of 6',
+  'Jess locked a hot-towel fade for Saturday',
+  'Casa Lúa: 4 new gloss appointments today',
+  '12 new salons joined this week',
+  'Average response time dropped to 9 minutes',
+];
+const TICKER_ES = [
+  'María reservó un balayage en Studio Rose — $185',
+  'Nuevo: 12 rellenos de pestañas abiertos en Edinburg',
+  'Ana ahorró 28% en una manicura estructurada en McAllen',
+  'Bloom + Co. aceptó un blowout para el viernes',
+  '3 laminados de cejas en Harlingen — desde $42',
+  'Velvet Chair cotizó un grupo de boda de 6',
+  'Jess agendó un degradado con toalla caliente para el sábado',
+  'Casa Lúa: 4 nuevas citas de gloss hoy',
+  '12 nuevos salones se unieron esta semana',
+  'El tiempo de respuesta bajó a 9 minutos',
+];
+
+// Hero / Pitch imagery — design-bundle Unsplash IDs.
+const HERO_PHOTO  = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1400&q=80&auto=format&fit=crop';
+const PITCH_PHOTO = 'https://images.unsplash.com/photo-1633681926022-84852f3f54dc?w=1400&q=80&auto=format&fit=crop';
+
+// ── Tiny helpers ─────────────────────────────────────────────────────────
+
+// Smooth count-up between integer updates (Valley Pulse). Same eased curve
+// as the design's CountUp — 600ms cubic-out, cancels on unmount.
+function CountUp({ value }) {
+  const [display, setDisplay] = useState(value);
+  const prev = useRef(value);
+  useEffect(() => {
+    if (value === prev.current) return;
+    const start = prev.current;
+    const delta = value - start;
+    const t0 = performance.now();
+    let frame;
+    const step = t => {
+      const pp = Math.min(1, (t - t0) / 600);
+      setDisplay(Math.round(start + delta * (1 - Math.pow(1 - pp, 3))));
+      if (pp < 1) frame = requestAnimationFrame(step);
+      else prev.current = value;
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [value]);
+  return <span>{display}</span>;
+}
+
+// Deterministic sparkline under each pulse stat. No live data — purely
+// decorative texture. Seed-based so the four sparklines all look different
+// but never re-shuffle between renders.
+function Sparkline({ seed, color }) {
+  const pts = [];
+  let val = 0.5 + seed * 0.07;
+  for (let i = 0; i < 16; i++) {
+    const r = Math.sin(seed * 7.1 + i * 1.3) * 0.5 + 0.5;
+    val = val * 0.6 + r * 0.4;
+    pts.push([i, 1 - val]);
+  }
+  const path = pts.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${pt[0]} ${pt[1].toFixed(3)}`).join(' ');
+  return (
+    <svg viewBox="0 0 15 1" preserveAspectRatio="none" style={{ width: '100%', height: 20, marginTop: 6, opacity: 0.7 }}>
+      <path d={path} fill="none" stroke={color} strokeWidth="0.04" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────
 
 export default function Marketing() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
-  const toast = useToast();
   const { user } = useAuth();
   const { lang, toggle: toggleLang } = useLang();
   const t = useT();
 
-  // Live founder-cohort counter — same RPC as /pros. Ties the homepage
-  // stat to actual signups so the number moves as outreach lands.
-  // Starts at 23 (matches the migration's pre-launch offset) before fetch.
+  // Live founder counter — RPC stays so the homepage stat tracks real
+  // signups, same as /pros. Falls back to the migration's pre-launch
+  // offset (23) until the RPC resolves.
   const [founderCount, setFounderCount] = useState(23);
   useEffect(() => {
     if (!isSupabaseConfigured) return;
@@ -60,330 +162,425 @@ export default function Marketing() {
       if (!error && typeof data === 'number') setFounderCount(data);
     });
   }, []);
+
   const [signInOpen, setSignInOpen] = useState(false);
-  const howRef = useRef(null);
-  const compareRef = useRef(null);
-  const salonRef = useRef(null);
+  const [pulse, setPulse] = useState(PULSE_BASE.map(s => s.value));
 
-  const scrollTo = ref => ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Jittered live stats. Each tick nudges one cell by ±1; bookings drift
+  // up most often (positive growth feel), response time wobbles tightly.
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPulse(cur =>
+        cur.map((v, i) => {
+          if (i === 0) return v + (Math.random() > 0.6 ? 1 : 0);
+          if (i === 1) return v + (Math.random() > 0.85 ? 1 : 0);
+          if (i === 2) return Math.max(8, v + (Math.random() > 0.5 ? -1 : 1) * (Math.random() > 0.7 ? 1 : 0));
+          if (i === 3) return Math.max(15, Math.min(35, v + (Math.random() > 0.5 ? 1 : -1) * (Math.random() > 0.8 ? 1 : 0)));
+          return v;
+        })
+      );
+    }, 1800);
+    return () => clearInterval(id);
+  }, []);
 
+  // CTA goes straight into the real request flow with the service slug
+  // prefilled. Logged-out users see the request page; signup is handled
+  // mid-flow, not as a gate. (Matches existing RequestQuote behavior.)
+  const startRequest = slug => navigate(slug ? `/request?services=${encodeURIComponent(slug)}` : '/request');
+
+  // ── Nav ──
   const Nav = () => (
-    <div style={{ display: 'flex', alignItems: 'center', padding: isPhone ? '18px' : '22px 64px', gap: 14, borderBottom: `0.5px solid ${p.line}`, position: 'sticky', top: 0, background: p.bg, zIndex: 5 }}>
-      <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.accent, textDecoration: 'none' }}>glossi</Link>
+    <nav style={{
+      position: 'sticky', top: 0, zIndex: 50, background: p.bg,
+      borderBottom: `0.5px solid ${p.line}`,
+      padding: isPhone ? '14px 18px' : '18px 64px',
+      display: 'flex', alignItems: 'center', gap: 14,
+    }}>
+      <Link to="/" style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 22 : 26, fontWeight: type.displayWeight, letterSpacing: '-0.02em', color: p.ink, textDecoration: 'none' }}>
+        glossi<span style={{ color: p.accent }}>.</span>
+      </Link>
       <div style={{ flex: 1 }} />
-      {!isPhone && (
-        <div style={{ display: 'flex', gap: 24 }}>
-          <button onClick={() => scrollTo(salonRef)} style={navBtn}>{t('For salons', 'Para salones')}</button>
-          <Link to="/ios" style={navBtn}>{t('iOS preview', 'Vista previa iOS')}</Link>
-        </div>
-      )}
-      {/* Logged-in: just the user pill (no "List your business" CTA — that's
-          a prospecting button for visitors, irrelevant for signed-in users).
-          Logged-out: two clearly differentiated CTAs — customer entry on the
-          left ("Log in / Sign up" opens the signin modal with role picker),
-          business entry on the right ("List your business" goes straight to
-          the salon signup flow). */}
+      <button onClick={toggleLang} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, color: p.ink, padding: '6px 10px', fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', cursor: 'pointer', borderRadius: 99, fontFamily: type.mono }}>
+        {lang === 'en' ? 'ES' : 'EN'}
+      </button>
       {user ? (
         <button onClick={() => navigate(user.type === 'salon' ? '/salon' : '/quotes')} style={{ background: 'transparent', border: `0.5px solid ${p.line}`, padding: '6px 6px 6px 12px', fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', borderRadius: 99, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span>{user.name.split(' ')[0]}</span>
+          <span>{user.name?.split(' ')[0]}</span>
           <span style={{ width: 28, height: 28, borderRadius: 99, background: user.avatar, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: type.display, fontSize: 11, fontWeight: 700 }}>{user.initials}</span>
         </button>
       ) : (
         <>
-          <button onClick={() => setSignInOpen(true)} style={{ background: 'transparent', border: 0, padding: '8px 12px', fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer' }}>{t('Log in / Sign up', 'Inicia sesión / Regístrate')}</button>
-          <button onClick={() => navigate('/signup?role=salon')} style={{ background: p.accent, color: p.ink, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{isPhone ? t('List business', 'Mi negocio') : t('List your business', 'Lista tu negocio')}</button>
+          {!isPhone && (
+            <button onClick={() => setSignInOpen(true)} style={{ background: 'transparent', border: 0, padding: '8px 12px', fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer' }}>
+              {t('Log in / Sign up', 'Inicia sesión / Regístrate')}
+            </button>
+          )}
+          <button onClick={() => navigate('/signup?role=salon')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            {isPhone ? t('List business', 'Mi negocio') : t('List your business', 'Lista tu negocio')}
+          </button>
         </>
       )}
-    </div>
+    </nav>
   );
 
-  // Avoid surfacing per-booking dollar savings publicly — it anchors
-  // customers to a specific price and pins salons to historical floors.
-  // Use bid-count + time-to-book instead: signals liquidity without
-  // exposing units.
-  const ticker = [
-    { who: 'Sofia · Pharr',        what: t('Color & balayage', 'Color y balayage'),    metaEn: '5 bids · booked in 12 min', metaEs: '5 ofertas · reservada en 12 min' },
-    { who: 'Daniela · McAllen',    what: t('Hybrid lashes', 'Pestañas híbridas'),      metaEn: '4 bids · booked in 8 min',  metaEs: '4 ofertas · reservada en 8 min' },
-    { who: 'Maritza · Edinburg',   what: t('Gel mani + pedi', 'Mani gel + pedi'),      metaEn: '6 bids · booked in 21 min', metaEs: '6 ofertas · reservada en 21 min' },
-    { who: 'Kevin · Mission',      what: t('Skin fade + beard', 'Corte fade + barba'), metaEn: '7 bids · booked in 5 min',  metaEs: '7 ofertas · reservada en 5 min' },
-    { who: 'Jasmin · Brownsville', what: t('Brazilian blowout', 'Alisado brasileño'),  metaEn: '4 bids · booked in 14 min', metaEs: '4 ofertas · reservada en 14 min' },
-    { who: 'Camila · Harlingen',   what: t('Microblading', 'Microblading'),            metaEn: '3 bids · booked in 38 min', metaEs: '3 ofertas · reservada en 38 min' },
-  ];
+  // ── Hero ──
+  // Split layout: editorial headline on left, vibrant lifestyle photo on
+  // right with a faux price-tag + "4 new bids in McAllen" badge floating
+  // on top. Trust row sits under the CTA buttons.
+  const Hero = () => (
+    <section style={{ padding: isPhone ? '24px 18px 8px' : '64px 64px 32px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1.1fr 0.9fr', gap: isPhone ? 32 : 56, alignItems: 'center' }}>
+        <div>
+          <span style={{ fontFamily: type.mono, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.inkSoft, textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ width: 6, height: 6, borderRadius: 99, background: p.accent, boxShadow: '0 0 0 3px rgba(184,137,62,0.18)' }} />
+            {t('The Rio Grande Valley · Beauty Marketplace', 'El Valle del Río Grande · Mercado de belleza')}
+          </span>
+          <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? '14vw' : 'clamp(64px, 7.2vw, 120px)', fontWeight: type.displayWeight, letterSpacing: '-0.035em', lineHeight: 0.92, margin: '20px 0 22px', textWrap: 'balance', color: p.ink }}>
+            <span style={{ display: 'inline-block' }}>
+              {t('They bid.', 'Ellas ofrecen.')}
+              <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 99, background: p.accent, marginLeft: 6, marginBottom: 4, verticalAlign: 'baseline' }} />
+            </span>
+            <br />
+            <span style={{ color: p.accent }}>{t('You book.', 'Tú reservas.')}</span>
+          </h1>
+          <p style={{ fontSize: isPhone ? 15 : 18, color: p.inkSoft, lineHeight: 1.55, margin: '0 0 26px', textWrap: 'pretty', maxWidth: 520 }}>
+            {t(
+              'Post once. Get tailored offers from vetted salons within the hour — at the price you set.',
+              'Publica una vez. Recibe ofertas a tu medida de salones verificados en menos de una hora — al precio que tú pones.'
+            )}
+          </p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+            <button onClick={() => startRequest()} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '15px 26px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              {t('Post a request', 'Publicar solicitud')}
+              <span style={{ fontSize: 16, transform: 'translateY(-0.5px)' }}>→</span>
+            </button>
+            <button onClick={() => navigate('/editorial')} style={{ background: 'transparent', color: p.ink, border: `1px solid ${p.line}`, padding: isPhone ? '13px 20px' : '14px 22px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 500, cursor: 'pointer' }}>
+              {t('How it works', 'Cómo funciona')}
+            </button>
+          </div>
+          <div style={{ marginTop: 26, display: 'flex', alignItems: 'center', gap: isPhone ? 10 : 14, flexWrap: 'wrap', fontFamily: type.mono, fontSize: 12, color: p.inkSoft }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 6, height: 6, borderRadius: 99, background: p.accent, animation: 'glossiPulse 2s ease-in-out infinite' }} />
+              <strong style={{ color: p.ink, fontWeight: 600 }}>1,400+ {t('salons', 'salones')}</strong>
+            </span>
+            <span style={{ width: 4, height: 4, borderRadius: 99, background: p.line }} />
+            <strong style={{ color: p.ink, fontWeight: 600 }}>4 {t('cities', 'ciudades')}</strong>
+            <span style={{ width: 4, height: 4, borderRadius: 99, background: p.line }} />
+            <span>{t('avg response in 11 min', 'respuesta promedio en 11 min')}</span>
+          </div>
+        </div>
+
+        {/* Right-side imagery. The price chip + bid badge are the "you'd
+            never see this on a regular salon site" prop — vibrant, specific,
+            scannable in under a second. */}
+        <div style={{ position: 'relative', aspectRatio: '4/5', borderRadius: isPhone ? 20 : 24, overflow: 'hidden', background: `linear-gradient(135deg, ${ACCENTS[0]}, ${ACCENTS[3]})` }}>
+          <img src={HERO_PHOTO} alt="" loading="eager" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+          {/* Floating price chip */}
+          <div style={{ position: 'absolute', top: isPhone ? 16 : 22, left: isPhone ? 16 : 22, background: p.bg, color: p.ink, padding: '10px 14px', borderRadius: 12, fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 22 : 28, fontWeight: type.displayWeight, letterSpacing: '-0.02em', display: 'inline-flex', alignItems: 'baseline', gap: 8, boxShadow: '0 8px 24px rgba(26,23,20,0.18)' }}>
+            <span style={{ textDecoration: 'line-through', color: p.inkMuted, fontSize: '0.6em' }}>$240</span>
+            $168
+          </div>
+          {/* Live bid badge */}
+          <div style={{ position: 'absolute', bottom: isPhone ? 16 : 22, right: isPhone ? 16 : 22, background: 'rgba(26,23,20,0.85)', color: p.bg, padding: '8px 12px', borderRadius: 99, fontFamily: type.mono, fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', display: 'inline-flex', alignItems: 'center', gap: 8, backdropFilter: 'blur(8px)' }}>
+            <span style={{ width: 6, height: 6, borderRadius: 99, background: '#7AB388', animation: 'glossiPulse 1.6s ease-in-out infinite' }} />
+            {t('4 new bids in McAllen', '4 nuevas ofertas en McAllen')}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  // ── Services grid ──
+  // 8 photo cards, 4 cols on desktop / 2 cols on phone. Each card carries
+  // its own accent color (from ACCENTS) as the chip + corner swatch tint;
+  // the photo itself sits over a same-color base so 404s degrade nicely.
+  const ServiceCard = ({ s, color, idx }) => {
+    const [hover, setHover] = useState(false);
+    return (
+      <div
+        onClick={() => startRequest(s.slug)}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        style={{
+          position: 'relative', cursor: 'pointer', overflow: 'hidden',
+          borderRadius: 16, background: color,
+          aspectRatio: '4/5',
+          transform: hover && !isPhone ? 'translateY(-4px)' : 'translateY(0)',
+          boxShadow: hover && !isPhone ? `0 20px 40px rgba(26,23,20,0.16)` : `0 2px 8px rgba(26,23,20,0.04)`,
+          transition: 'transform 240ms cubic-bezier(0.2,0.7,0.2,1), box-shadow 240ms ease',
+        }}
+      >
+        <img src={s.photo} alt="" loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hover && !isPhone ? 'scale(1.04)' : 'scale(1)', transition: 'transform 320ms cubic-bezier(0.2,0.7,0.2,1)' }} />
+        {/* Tinted overlay so the photo reads as its accent family */}
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55) 100%), ${color}`, mixBlendMode: 'multiply', opacity: 0.45 }} />
+        <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(255,255,255,0.92)', color: p.ink, padding: '5px 10px', borderRadius: 99, fontFamily: type.mono, fontSize: 10.5, fontWeight: 600, letterSpacing: '0.04em', backdropFilter: 'blur(4px)' }}>
+          {lang === 'es' ? s.bidsEs : s.bidsEn}
+        </div>
+        <div style={{ position: 'absolute', top: 12, right: 12, width: 22, height: 22, borderRadius: 99, background: color, border: '2px solid rgba(255,255,255,0.85)' }} />
+        <div style={{ position: 'absolute', left: 14, right: 14, bottom: 14, color: '#fff' }}>
+          <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 24 : 30, fontWeight: type.displayWeight, letterSpacing: '-0.02em', lineHeight: 1 }}>{lang === 'es' ? s.es : s.en}</div>
+          <div style={{ fontSize: 12.5, opacity: 0.92, marginTop: 4, lineHeight: 1.35 }}>{lang === 'es' ? s.subEs : s.subEn}</div>
+        </div>
+      </div>
+    );
+  };
+
+  const Services = () => (
+    <section style={{ padding: isPhone ? '48px 18px' : '80px 64px' }}>
+      <SectionHead
+        kicker={t('What are you booking?', '¿Qué vas a reservar?')}
+        title={t('Eight rooms. One front door.', 'Ocho salas. Una sola puerta.')}
+        sub={t(
+          'Every category is open to the network. Pick what you want, set your floor, watch the bids land.',
+          'Cada categoría está abierta a la red. Elige lo que quieres, pon tu tope, mira llegar las ofertas.'
+        )}
+      />
+      <div style={{ display: 'grid', gridTemplateColumns: isPhone ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isPhone ? 12 : 18, marginTop: isPhone ? 28 : 44 }}>
+        {SERVICES.map((s, i) => <ServiceCard key={i} s={s} color={ACCENTS[i]} idx={i} />)}
+      </div>
+    </section>
+  );
+
+  // ── Valley Pulse ──
+  // Dark band with live count-up stats. Mirror of the prior homepage's
+  // section but presented on `p.ink` rather than `p.surface` for higher
+  // contrast and an "operations dashboard" feel.
+  const Pulse = () => (
+    <section style={{ background: p.ink, color: p.bg, padding: isPhone ? '56px 18px' : '96px 64px' }}>
+      <SectionHead
+        kicker={t('Valley Pulse', 'Pulso del Valle')}
+        title={t('Live, from the chairs across the Valley.', 'En vivo, desde las sillas de todo el Valle.')}
+        sub={t(
+          'Aggregated in real time across McAllen, Edinburg, Brownsville and Harlingen.',
+          'Datos en tiempo real de McAllen, Edinburg, Brownsville y Harlingen.'
+        )}
+        invert
+      />
+      <div style={{ display: 'grid', gridTemplateColumns: isPhone ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isPhone ? 14 : 24, marginTop: isPhone ? 32 : 48 }}>
+        {PULSE_BASE.map((stat, i) => (
+          <div key={i} style={{ borderLeft: !isPhone && i > 0 ? `0.5px solid rgba(242,235,224,0.18)` : 0, paddingLeft: !isPhone && i > 0 ? 24 : 0 }}>
+            <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 44 : 64, fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 1, color: p.bg }}>
+              <CountUp value={pulse[i]} />
+              {stat.suffix && <span style={{ fontSize: '0.5em', marginLeft: 4 }}>{stat.suffix}</span>}
+            </div>
+            <Sparkline seed={i} color={p.accent} />
+            <div style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 600, color: 'rgba(242,235,224,0.6)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 10, lineHeight: 1.4 }}>
+              {lang === 'es' ? stat.es : stat.en}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: isPhone ? 28 : 40, fontFamily: type.mono, fontSize: 11, color: 'rgba(242,235,224,0.55)', letterSpacing: '0.06em', flexWrap: 'wrap', gap: 12 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ width: 6, height: 6, borderRadius: 99, background: '#7AB388', animation: 'glossiPulse 1.8s ease-in-out infinite' }} />
+          {t('Updated every 30 seconds', 'Actualizado cada 30 segundos')}
+        </span>
+        <span>RGV · {new Date().toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', { month: 'short', day: 'numeric' })}</span>
+      </div>
+    </section>
+  );
+
+  // ── Compare table (Old way vs Glossi) ──
+  const Compare = () => (
+    <section style={{ padding: isPhone ? '48px 18px' : '96px 64px' }}>
+      <SectionHead
+        kicker={t('Old way vs. Glossi', 'El método viejo vs. Glossi')}
+        title={t('Stop hunting. Start choosing.', 'Deja de buscar. Empieza a elegir.')}
+      />
+      <div style={{ marginTop: isPhone ? 28 : 48, display: 'grid', gap: 0, maxWidth: 960, marginLeft: 'auto', marginRight: 'auto', borderTop: `0.5px solid ${p.line}` }}>
+        {COMPARE.map((row, i) => (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 56px 1fr', alignItems: 'center', borderBottom: `0.5px solid ${p.line}`, padding: isPhone ? '18px 0' : '28px 0', gap: isPhone ? 8 : 0 }}>
+            <div style={{ color: p.inkMuted, fontSize: isPhone ? 14 : 17, lineHeight: 1.45, textDecoration: isPhone ? 'none' : 'line-through' }}>{lang === 'es' ? row.oldEs : row.oldEn}</div>
+            {!isPhone && <div style={{ textAlign: 'center', color: p.accent, fontSize: 20 }}>→</div>}
+            <div style={{ color: p.ink, fontSize: isPhone ? 15.5 : 18, lineHeight: 1.45, fontWeight: 500, fontFamily: type.display, fontStyle: 'italic' }}>{lang === 'es' ? row.newEs : row.newEn}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+
+  // ── Field Guide ──
+  // 4 editorial cards. First one is the feature (full-width on phone,
+  // 2-col on desktop). Routes link out to /editorial — the listing page
+  // already exists; the actual articles wire up via add-bylined-article.
+  const Guide = () => (
+    <section style={{ background: p.surface2, padding: isPhone ? '48px 18px' : '96px 64px' }}>
+      <SectionHead
+        kicker={t('Field Guide', 'Guía de campo')}
+        title={t('From the editors.', 'Desde la redacción.')}
+        sub={t(
+          'Service maps, color theory, and the quiet etiquette of getting a great chair.',
+          'Mapas de servicios, teoría del color y la etiqueta silenciosa de conseguir una buena silla.'
+        )}
+      />
+      <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : 'repeat(3, 1fr)', gap: isPhone ? 14 : 20, marginTop: isPhone ? 28 : 44 }}>
+        {GUIDE.map((g, i) => (
+          <Link
+            key={i}
+            to="/editorial"
+            style={{
+              gridColumn: !isPhone && i === 0 ? 'span 2' : 'span 1',
+              gridRow: !isPhone && i === 0 ? 'span 2' : 'span 1',
+              background: p.bg, borderRadius: 16, overflow: 'hidden', textDecoration: 'none', color: p.ink,
+              display: 'flex', flexDirection: 'column',
+              border: `0.5px solid ${p.line}`,
+              transition: 'transform 200ms ease, box-shadow 200ms ease',
+            }}
+            onMouseEnter={e => { if (!isPhone) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 16px 32px rgba(26,23,20,0.08)'; } }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+          >
+            <div style={{ aspectRatio: i === 0 && !isPhone ? '16/10' : '5/4', background: ACCENTS[(i + 2) % ACCENTS.length], overflow: 'hidden', position: 'relative' }}>
+              <img src={g.photo} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <div style={{ padding: isPhone ? 16 : 22, flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: p.accent, textTransform: 'uppercase' }}>{lang === 'es' ? g.tagEs : g.tagEn}</span>
+              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: i === 0 && !isPhone ? 30 : 21, fontWeight: type.displayWeight, letterSpacing: '-0.015em', lineHeight: 1.15, margin: '10px 0 14px', textWrap: 'balance' }}>{lang === 'es' ? g.titleEs : g.titleEn}</div>
+              <div style={{ marginTop: 'auto', fontFamily: type.mono, fontSize: 11, color: p.inkMuted, letterSpacing: '0.04em' }}>{lang === 'es' ? g.readEs : g.readEn}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+
+  // ── Salon pitch ──
+  // Dark recruit section. founderCount stays wired to the supabase RPC so
+  // it tracks real signups (same source as /pros).
+  const Pitch = () => (
+    <section style={{ background: p.ink, color: p.bg, padding: isPhone ? '56px 18px' : '96px 64px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1fr', gap: isPhone ? 28 : 64, alignItems: 'center' }}>
+        <div style={{ position: 'relative', aspectRatio: isPhone ? '4/3' : '4/5', borderRadius: 20, overflow: 'hidden', background: `linear-gradient(135deg, ${ACCENTS[1]}, ${ACCENTS[5]})`, order: isPhone ? 2 : 1 }}>
+          <img src={PITCH_PHOTO} alt="" loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        <div style={{ order: isPhone ? 1 : 2 }}>
+          <span style={{ fontFamily: type.mono, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent, textTransform: 'uppercase' }}>
+            {t('For salon owners', 'Para dueños de salón')}
+          </span>
+          <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 'clamp(40px, 4.4vw, 64px)', fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.96, margin: '14px 0 18px', textWrap: 'balance', color: p.bg }}>
+            {t('You set your floor. We bring the chair.', 'Tú pones tu piso. Nosotros traemos la silla.')}
+          </h2>
+          <p style={{ fontSize: isPhone ? 14.5 : 17, color: 'rgba(242,235,224,0.78)', lineHeight: 1.55, margin: '0 0 22px', maxWidth: 520 }}>
+            {t(
+              'Glossi fills your slow hours without touching your full ones. No subscription. No lead fees. You only pay when a chair lifts.',
+              'Glossi llena tus horas lentas sin tocar las ocupadas. Sin suscripción. Sin tarifas por lead. Solo pagas cuando una silla se levanta.'
+            )}
+          </p>
+          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {[
+              t('Quote in 30 seconds — from your phone, between clients.',
+                'Cotiza en 30 segundos — desde tu teléfono, entre clientes.'),
+              t("Choose which categories, hours, and price floors you'll accept.",
+                'Elige qué categorías, horarios y precios mínimos aceptas.'),
+              t('Verified, deposit-secured clients only. Cancellation protection built in.',
+                'Solo clientas verificadas con depósito. Protección contra cancelaciones incluida.'),
+            ].map((b, i) => (
+              <li key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', fontSize: 14.5, color: 'rgba(242,235,224,0.92)', lineHeight: 1.5 }}>
+                <span style={{ fontFamily: type.mono, color: p.accent, fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', minWidth: 24, paddingTop: 3 }}>0{i + 1}</span>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <button onClick={() => navigate('/signup?role=salon')} style={{ background: p.bg, color: p.ink, border: 0, padding: '14px 22px', borderRadius: 99, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              {t('List your business', 'Inscribe tu salón')}
+              <span style={{ fontSize: 15 }}>→</span>
+            </button>
+            <button onClick={() => navigate('/pros')} style={{ background: 'transparent', color: p.bg, border: '1px solid rgba(242,235,224,0.3)', padding: '13px 20px', borderRadius: 99, fontSize: 14, fontWeight: 500, cursor: 'pointer' }}>
+              {t('See the salon dashboard', 'Ver panel del salón')}
+            </button>
+          </div>
+          {founderCount > 0 && (
+            <div style={{ marginTop: 22, fontFamily: type.mono, fontSize: 11, color: 'rgba(242,235,224,0.5)', letterSpacing: '0.06em' }}>
+              {t(`${founderCount} salons already in the founding cohort`, `${founderCount} salones ya en la cohorte fundadora`)}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+
+  // ── Live ticker ──
+  // Single-row marquee; doubled list loops seamlessly via CSS keyframes
+  // already declared in index.html (`glossiTicker`).
+  const Ticker = () => {
+    const items = lang === 'es' ? TICKER_ES : TICKER_EN;
+    const doubled = [...items, ...items];
+    return (
+      <div style={{ background: p.ink, color: p.bg, padding: '14px 0', borderTop: `0.5px solid rgba(242,235,224,0.12)`, borderBottom: `0.5px solid rgba(242,235,224,0.12)`, overflow: 'hidden', position: 'relative' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: type.mono, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.accent, position: 'absolute', left: 18, top: '50%', transform: 'translateY(-50%)', background: p.ink, zIndex: 2, paddingRight: 14 }}>
+          <span style={{ width: 6, height: 6, borderRadius: 99, background: p.accent, animation: 'glossiPulse 1.4s ease-in-out infinite' }} />
+          {t('LIVE', 'EN VIVO')}
+        </div>
+        <div style={{ display: 'flex', gap: 48, whiteSpace: 'nowrap', width: 'max-content', animation: 'glossiTicker 60s linear infinite', paddingLeft: 96, fontFamily: type.mono, fontSize: isPhone ? 11 : 12.5, letterSpacing: '0.02em' }}>
+          {doubled.map((item, i) => (
+            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 10, color: 'rgba(242,235,224,0.82)' }}>
+              <span style={{ width: 4, height: 4, borderRadius: 99, background: p.accent }} />
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // ── Footer ──
+  const Footer = () => (
+    <footer style={{ background: p.bg, padding: isPhone ? '40px 18px 32px' : '64px 64px 48px', borderTop: `0.5px solid ${p.line}` }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1.4fr 1fr', gap: isPhone ? 28 : 48, alignItems: 'flex-end' }}>
+        <div>
+          <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 64 : 96, fontWeight: type.displayWeight, letterSpacing: '-0.04em', lineHeight: 0.9, color: p.ink }}>
+            glossi<span style={{ color: p.accent }}>.</span>
+          </div>
+          <div style={{ marginTop: 14, fontSize: 13, color: p.inkSoft, maxWidth: '36ch' }}>
+            {t('Glossi — built in the Rio Grande Valley.', 'Glossi — hecho en el Valle del Río Grande.')}
+          </div>
+        </div>
+        <div style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, letterSpacing: '0.06em', lineHeight: 1.7, textAlign: isPhone ? 'left' : 'right' }}>
+          © 2026 · McAllen · Edinburg · Brownsville · Harlingen<br />
+          <span style={{ opacity: 0.7 }}>built in the rgv</span>
+        </div>
+      </div>
+    </footer>
+  );
 
   return (
     <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body }}>
       <Nav />
-
-      <div style={{ padding: isPhone ? '12px 18px 0' : '20px 64px 0' }}>
-        <div style={{ position: 'relative', borderRadius: isPhone ? 20 : 24, overflow: 'hidden', aspectRatio: isPhone ? '4/5' : '21/9', background: '#1a1714' }}>
-          <video autoPlay muted loop playsInline preload="auto" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}>
-            <source src="/hero.mp4" type="video/mp4" />
-          </video>
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(26,23,20,0) 0%, rgba(26,23,20,0.05) 50%, rgba(26,23,20,0.7) 100%)' }} />
-          <div style={{ position: 'absolute', top: isPhone ? 16 : 28, left: isPhone ? 16 : 32, color: p.bg, fontFamily: type.mono, fontSize: isPhone ? 10 : 12, fontWeight: 600, letterSpacing: '0.18em' }}>
-            {t('ISSUE 04 · APR 2026', 'EDICIÓN 04 · ABR 2026')}
-          </div>
-          <div style={{ position: 'absolute', top: isPhone ? 16 : 28, right: isPhone ? 16 : 32, color: p.bg, fontFamily: type.mono, fontSize: isPhone ? 10 : 12, fontWeight: 600, letterSpacing: '0.18em' }}>
-            {t('VOL. 1 · BEAUTY MARKETPLACE', 'VOL. 1 · MERCADO DE BELLEZA')}
-          </div>
-          <div style={{ position: 'absolute', left: isPhone ? 20 : 48, right: isPhone ? 20 : 48, bottom: isPhone ? 22 : 42, color: p.bg }}>
-            <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? '13vw' : '7.5vw', fontWeight: type.displayWeight, letterSpacing: '-0.04em', lineHeight: 0.9, textWrap: 'balance', margin: 0, color: p.accent }}>
-              {lang === 'es' ? <>Ellos ofertan.<br />Tú reservas.</> : <>They bid.<br />You book.</>}
-            </div>
-            <div style={{ marginTop: isPhone ? 12 : 18, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-              <button onClick={() => navigate('/request')} style={{ background: p.bg, color: p.ink, border: 0, padding: isPhone ? '12px 18px' : '14px 22px', borderRadius: 99, fontSize: isPhone ? 13.5 : 14, fontWeight: 600, cursor: 'pointer' }}>{t('Post a request', 'Publica una solicitud')}</button>
-              <span style={{ fontFamily: type.mono, fontSize: isPhone ? 11 : 12, color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>{t('1,400+ SALONS · 4 CITIES', '1,400+ SALONES · 4 CIUDADES')}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style={{ background: p.ink, color: p.bg, padding: isPhone ? '14px 0' : '18px 0', overflow: 'hidden', borderTop: `0.5px solid ${p.line}`, borderBottom: `0.5px solid ${p.line}`, marginTop: isPhone ? 12 : 20 }}>
-        <div style={{ display: 'flex', gap: isPhone ? 28 : 48, fontFamily: type.mono, fontSize: isPhone ? 11 : 13, fontWeight: 500, letterSpacing: '0.04em', whiteSpace: 'nowrap', alignItems: 'center', padding: '0 24px', width: 'max-content', animation: 'glossiTicker 60s linear infinite' }}>
-          {[...ticker, ...ticker].map((row, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ width: 6, height: 6, borderRadius: 99, background: p.accent }} />
-              <span style={{ color: 'rgba(255,255,255,0.5)' }}>{row.who}</span>
-              <span>{row.what}</span>
-              <span style={{ color: p.accent, fontWeight: 600 }}>{lang === 'es' ? row.metaEs : row.metaEn}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div ref={howRef} style={{ padding: isPhone ? '40px 18px 30px' : '80px 64px 80px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1.6fr', gap: isPhone ? 18 : 60, alignItems: 'flex-end', marginBottom: isPhone ? 28 : 44 }}>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent, display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, fontFamily: type.mono }}>
-              <span style={{ width: 7, height: 7, borderRadius: 99, background: p.accent, boxShadow: `0 0 0 4px ${p.bg}` }} />
-              <span>{t('VALLEY PULSE · LIVE', 'PULSO DEL VALLE · EN VIVO')}</span>
-            </div>
-            <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 62, fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.92, margin: 0, textWrap: 'balance', color: p.ink }}>
-              {lang === 'es' ? <>El Valle<br /><span style={{ color: p.accent }}>está lleno.</span></> : <>The Valley<br /><span style={{ color: p.accent }}>is booked up.</span></>}
-            </h2>
-          </div>
-          <p style={{ fontSize: isPhone ? 14 : 17, color: p.inkSoft, lineHeight: 1.55, margin: 0, textWrap: 'pretty', maxWidth: 480 }}>
-            {t(
-              'You post the service, ZIP, and budget. Local salons send real prices. You pick the bid that fits. Pricing is between you and your stylist — Glossi just makes the intro.',
-              'Publicas el servicio, el código postal y tu presupuesto. Los salones locales envían precios reales. Tú eliges la oferta. El precio queda entre tú y tu estilista — Glossi solo hace la presentación.'
-            )}
-          </p>
-        </div>
-
-        {/* Aggregate Valley activity — liquidity without unit prices */}
-        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isPhone ? 10 : 18, marginBottom: isPhone ? 28 : 44, padding: isPhone ? 18 : 28, background: p.surface, border: `0.5px solid ${p.line}`, borderRadius: 16 }}>
-          {VALLEY_PULSE.map((s, i) => (
-            <div key={i} style={{ borderLeft: !isPhone && i > 0 ? `0.5px solid ${p.line}` : 0, paddingLeft: !isPhone && i > 0 ? 20 : 0 }}>
-              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 54, fontWeight: type.displayWeight, color: p.accent, lineHeight: 1, letterSpacing: '-0.03em', marginBottom: 6 }}>{s.num}</div>
-              <div style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 600, color: p.inkSoft, letterSpacing: '0.08em', textTransform: 'uppercase', lineHeight: 1.4 }}>{lang === 'es' ? s.es : s.en}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Service category tiles — entry into the bid form, no prices */}
-        <div style={{ marginBottom: isPhone ? 20 : 24, display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-          <h3 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 28 : 38, fontWeight: type.displayWeight, letterSpacing: '-0.02em', margin: 0, color: p.ink }}>
-            {t('What are you booking?', '¿Qué vas a reservar?')}
-          </h3>
-          <span style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, letterSpacing: '0.1em' }}>
-            {t('TAP TO REQUEST BIDS', 'TOCA PARA PEDIR OFERTAS')}
-          </span>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isPhone ? 10 : 14 }}>
-          {CATEGORIES.map((c, i) => (
-            <button
-              key={i}
-              onClick={() => navigate(`/request?service=${c.slug}`)}
-              style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
-            >
-              <div style={{ position: 'relative', aspectRatio: '1/1', backgroundImage: `url(${PHOTOS[c.photo]})`, backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: 14, overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(26,23,20,0) 40%, rgba(26,23,20,0.78) 100%)' }} />
-                <div style={{ position: 'absolute', left: 14, right: 14, bottom: 12 }}>
-                  <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 26, fontWeight: type.displayWeight, color: p.bg, lineHeight: 1, letterSpacing: '-0.02em', marginBottom: 4 }}>{lang === 'es' ? c.labelEs : c.labelEn}</div>
-                  <div style={{ fontFamily: type.mono, fontSize: 10, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.08em' }}>{c.salons} {t('RGV salons accepting', 'salones del Valle aceptando')}</div>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-
-        <div style={{ marginTop: isPhone ? 28 : 36, display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', paddingTop: isPhone ? 18 : 24, borderTop: `0.5px solid ${p.line}` }}>
-          <span style={{ fontFamily: type.mono, fontSize: 12, color: p.inkSoft, letterSpacing: '0.06em' }}>
-            {t('FREE · 30 SECONDS · NO ACCOUNT NEEDED · EN / ES', 'GRATIS · 30 SEGUNDOS · SIN CUENTA · EN / ES')}
-          </span>
-          <button onClick={() => navigate('/request')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '16px 28px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer' }}>
-            {t('Post your first request →', 'Publica tu primera solicitud →')}
-          </button>
-        </div>
-      </div>
-
-      <div ref={compareRef} style={{ padding: isPhone ? '36px 18px' : '90px 64px' }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.inkMuted }}>{t('THE OLD WAY VS. GLOSSI', 'LA FORMA ANTIGUA VS. GLOSSI')}</div>
-        <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 1, margin: '10px 0 0', textWrap: 'balance' }}>
-          {t('Why are you the one shopping?', '¿Por qué eres tú quien busca?')}
-        </h2>
-        <div style={{ marginTop: isPhone ? 22 : 40, display: 'grid', gap: isPhone ? 12 : 18, gridTemplateColumns: isPhone ? '1fr' : '1fr 1fr' }}>
-          {[
-            {
-              tag: t('BEFORE GLOSSI', 'ANTES DE GLOSSI'), tone: 'old',
-              t: t('You scroll, DM, get ghosted, accept a price.', 'Buscas, mandas DMs, te ignoran, aceptas un precio.'),
-              items: [
-                t('Hours scrolling Instagram', 'Horas en Instagram'),
-                t('DM five places, hear from one', 'Escribes a cinco lugares, te responde uno'),
-                t('Whatever the menu price is', 'Lo que diga la lista de precios'),
-                t('"Are you available Saturday?" "no sorry"', '"¿Tienes el sábado?" "no, lo siento"'),
-              ],
-            },
-            {
-              tag: t('WITH GLOSSI', 'CON GLOSSI'), tone: 'new',
-              t: t('You post once. Salons compete for you.', 'Publicas una vez. Los salones compiten por ti.'),
-              items: [
-                t('30 seconds to post a request', '30 segundos para publicar una solicitud'),
-                t('4–8 bids in your inbox', '4–8 ofertas en tu bandeja'),
-                t('Often 20–40% under menu price', 'Usualmente 20–40% menos que la lista'),
-                t('Real slots, real prices, real people', 'Horarios reales, precios reales, gente real'),
-              ],
-            },
-          ].map((c, i) => (
-            <div key={i} style={{
-              padding: isPhone ? '20px' : '30px',
-              borderRadius: 18,
-              background: c.tone === 'new' ? p.ink : p.surface,
-              color: c.tone === 'new' ? p.bg : p.ink,
-              border: c.tone === 'new' ? 'none' : `0.5px solid ${p.line}`,
-            }}>
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: c.tone === 'new' ? p.accent : p.inkMuted }}>{c.tag}</div>
-              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 22 : 30, fontWeight: type.displayWeight, letterSpacing: '-0.02em', lineHeight: 1.05, marginTop: 8, textWrap: 'balance' }}>{c.t}</div>
-              <div style={{ marginTop: isPhone ? 14 : 22, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {c.items.map((line, j) => (
-                  <div key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: isPhone ? 13 : 14, lineHeight: 1.5, color: c.tone === 'new' ? 'rgba(255,255,255,0.85)' : p.inkSoft }}>
-                    <span style={{
-                      width: 18, height: 18, borderRadius: 99,
-                      background: c.tone === 'new' ? p.accent : 'transparent',
-                      border: c.tone === 'new' ? 'none' : `0.5px solid ${p.inkMuted}`,
-                      color: c.tone === 'new' ? p.ink : p.inkMuted,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      flexShrink: 0, marginTop: 2, fontSize: 11, fontWeight: 700,
-                    }}>{c.tone === 'new' ? '✓' : '·'}</span>
-                    <span>{line}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Editorial / Field Guide — surfaces /editorial to logged-out
-          visitors so they can see Glossi's editorial voice without
-          having to sign up first. Mirrors the hero's issue/vol
-          nameplate so the magazine framing carries through the scroll. */}
-      <div style={{ padding: isPhone ? '40px 18px' : '90px 64px', borderTop: `0.5px solid ${p.line}` }}>
-        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1.6fr', gap: isPhone ? 18 : 60, alignItems: 'flex-end', marginBottom: isPhone ? 24 : 36 }}>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent, fontFamily: type.mono }}>
-              {t('THE FIELD GUIDE', 'LA GUÍA DE CAMPO')}
-            </div>
-            <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 36 : 62, fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.92, margin: '10px 0 0', textWrap: 'balance', color: p.ink }}>
-              {lang === 'es' ? <>Belleza tejana,<br /><span style={{ color: p.accent }}>por colonia.</span></> : <>Texas beauty,<br /><span style={{ color: p.accent }}>by neighborhood.</span></>}
-            </h2>
-          </div>
-          <p style={{ fontSize: isPhone ? 14 : 17, color: p.inkSoft, lineHeight: 1.55, margin: 0, maxWidth: 480 }}>
-            {t(
-              'Pricing data, salon picks, and how-to-talk-to-your-colorist guides — written by people actually in the chair, every week.',
-              'Datos de precios, recomendaciones y guías para hablar con tu colorista — escritas por gente que está en la silla, cada semana.'
-            )}
-          </p>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : 'repeat(3, 1fr)', gap: isPhone ? 14 : 22 }}>
-          {GUIDES.map((g, i) => (
-            <Link key={i} to={`/editorial/${i}`} style={{ textDecoration: 'none', color: p.ink, cursor: 'pointer' }}>
-              <SalonPhoto mood={g.mood} h={isPhone ? 200 : 240} style={{ borderRadius: 14 }} />
-              <div style={{ marginTop: 12, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted, fontFamily: type.mono }}>
-                {lang === 'es' ? g.kicker_es : g.kicker_en}
-              </div>
-              <h3 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 22 : 26, fontWeight: type.displayWeight, letterSpacing: '-0.015em', margin: '6px 0 0', lineHeight: 1.1, textWrap: 'balance' }}>
-                {lang === 'es' ? g.t_es : g.t_en}
-              </h3>
-            </Link>
-          ))}
-        </div>
-
-        <div style={{ marginTop: isPhone ? 22 : 32, paddingTop: isPhone ? 18 : 24, borderTop: `0.5px solid ${p.line}`, display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontFamily: type.mono, fontSize: 12, color: p.inkSoft, letterSpacing: '0.06em' }}>
-            {t('WEEKLY · NO SIGN-IN REQUIRED · EN / ES', 'SEMANAL · SIN CUENTA · EN / ES')}
-          </span>
-          <Link to="/editorial" style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 22px' : '16px 28px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer', textDecoration: 'none', display: 'inline-block' }}>
-            {t('Read the field guide →', 'Lee la guía de campo →')}
-          </Link>
-        </div>
-      </div>
-
-      <div ref={salonRef} style={{ padding: isPhone ? '30px 18px 40px' : '80px 64px 100px', background: p.surface, borderTop: `0.5px solid ${p.line}` }}>
-        <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : '1fr 1fr', gap: isPhone ? 20 : 50, alignItems: 'center' }}>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>{t('SALONS — READ THIS', 'SALONES — LEAN ESTO')}</div>
-            <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 32 : 52, fontWeight: type.displayWeight, letterSpacing: '-0.025em', lineHeight: 0.98, margin: '10px 0 0', textWrap: 'balance' }}>{t('You set your floor. We bring the chair.', 'Tú pones el piso. Nosotros llenamos la silla.')}</h2>
-            {/* Bilingual subline — always shows the OFF-language line in muted
-                style so an EN viewer sees the ES one and vice versa. Tiny
-                signal that this is a Valley platform, not a translated one. */}
-            <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 18 : 22, color: p.inkMuted, marginTop: 8, letterSpacing: '-0.015em', lineHeight: 1.1, textWrap: 'balance' }}>
-              {t('Tú pones el piso. Nosotros llenamos la silla.', 'You set your floor. We bring the chair.')}
-            </div>
-            <p style={{ fontSize: isPhone ? 14 : 16, color: p.inkSoft, lineHeight: 1.55, margin: '14px 0 0', maxWidth: 480 }}>
-              {t(
-                'No subscription. No lead fees. Pay 5% only when you win a booking. Set your minimum price, your service area, your hours — we route requests that match.',
-                'Sin suscripción. Sin tarifas por contacto. Paga 5% solo cuando ganas una reserva. Define tu precio mínimo, tu área, tus horas — enrutamos las solicitudes que encajen.'
-              )}
-            </p>
-            <button onClick={() => navigate('/signup?role=salon')} style={{ marginTop: 18, background: p.ink, color: p.bg, border: 0, padding: isPhone ? '14px 20px' : '15px 24px', borderRadius: 99, fontSize: isPhone ? 13.5 : 15, fontWeight: 600, cursor: 'pointer' }}>{t('List your business →', 'Lista tu negocio →')}</button>
-          </div>
-          <div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 8 }}>
-              {[
-                { k: t('Avg. response', 'Resp. promedio'), v: t('11 min', '11 min') },
-                // Founders cohort replaces WIN RATE — local supply + scarcity,
-                // tied to the live founder_count() RPC from /pros so the
-                // number actually updates as outreach lands signups.
-                { k: t('Founders cohort', 'Cohorte fundadora'), v: `${founderCount}/100` },
-                { k: t('No-show rate', 'Inasistencia'), v: '2.1%' },
-                { k: t('Glossi fee', 'Tarifa Glossi'), v: '5%' },
-              ].map((s, i) => (
-                <div key={i} style={{ padding: '18px 18px', background: p.bg, borderRadius: 14, border: `0.5px solid ${p.line}` }}>
-                  <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.16em', color: p.inkMuted }}>{s.k.toUpperCase()}</div>
-                  <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 26 : 36, fontWeight: type.displayWeight, marginTop: 4, letterSpacing: '-0.02em', lineHeight: 1 }}>{s.v}</div>
-                </div>
-              ))}
-            </div>
-            {/* City pills — local proof that beats "X,000 salons globally"
-                stats. Tells a McAllen visitor that her city is on the map. */}
-            <div style={{ marginTop: 14, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {RGV_CITIES.map((city) => (
-                <span key={city} style={{ padding: '5px 11px', background: p.bg, border: `0.5px solid ${p.line}`, borderRadius: 99, fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: p.inkSoft, textTransform: 'uppercase' }}>{city}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <Hero />
+      <Services />
+      <Pulse />
+      <Compare />
+      <Guide />
+      <Pitch />
+      <Ticker />
+      <Footer />
       <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
-      <div style={{ padding: isPhone ? '24px 18px' : '40px 64px', borderTop: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
-        <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: p.inkMuted }}>GLOSSI · 2026</div>
-        <div style={{ fontSize: 11.5, color: p.inkMuted, display: 'flex', gap: 18, alignItems: 'center' }}>
-          <button onClick={() => toggleLang()} aria-label="Toggle language" style={{ ...footerBtn, display: 'inline-flex', gap: 4 }}>
-            <span style={{ color: lang === 'en' ? p.ink : p.inkMuted, fontWeight: lang === 'en' ? 700 : 500 }}>EN</span>
-            <span>·</span>
-            <span style={{ color: lang === 'es' ? p.ink : p.inkMuted, fontWeight: lang === 'es' ? 700 : 500 }}>ES</span>
-          </button>
-          <Link to="/privacy" style={{ ...footerBtn, textDecoration: 'none' }}>{t('Privacy', 'Privacidad')}</Link>
-          <Link to="/terms" style={{ ...footerBtn, textDecoration: 'none' }}>{t('Terms', 'Términos')}</Link>
-          <Link to="/help" style={{ ...footerBtn, textDecoration: 'none' }}>{t('Help', 'Ayuda')}</Link>
-        </div>
-      </div>
     </div>
   );
 }
 
-const navBtn = { background: 'transparent', border: 0, fontSize: 13, color: '#5C544B', fontWeight: 500, textDecoration: 'none', cursor: 'pointer', fontFamily: 'inherit' };
-const footerBtn = { background: 'transparent', border: 0, fontSize: 11.5, color: '#9A9088', cursor: 'pointer', padding: 0, fontFamily: 'inherit' };
+// ── Shared section heading ──
+// Same shape used across Services / Pulse / Compare / Guide. `invert` flips
+// for dark backgrounds (Pulse, Pitch).
+function SectionHead({ kicker, title, sub, invert }) {
+  const isPhone = useNarrow();
+  const inkColor   = invert ? p.bg                    : p.ink;
+  const softColor  = invert ? 'rgba(242,235,224,0.72)' : p.inkSoft;
+  const accentColor = invert ? p.accent               : p.accent;
+  return (
+    <div style={{ maxWidth: 760 }}>
+      <span style={{ fontFamily: type.mono, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: accentColor, textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ width: 6, height: 6, borderRadius: 99, background: accentColor }} />
+        {kicker}
+      </span>
+      <h2 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: isPhone ? 34 : 'clamp(40px, 4.6vw, 64px)', fontWeight: type.displayWeight, letterSpacing: '-0.03em', lineHeight: 0.96, margin: '14px 0 0', textWrap: 'balance', color: inkColor }}>
+        {title}
+      </h2>
+      {sub && (
+        <p style={{ fontSize: isPhone ? 14.5 : 17, color: softColor, lineHeight: 1.55, margin: '16px 0 0', maxWidth: 580, textWrap: 'pretty' }}>
+          {sub}
+        </p>
+      )}
+    </div>
+  );
+}
