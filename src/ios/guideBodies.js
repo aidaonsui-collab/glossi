@@ -1532,5 +1532,171 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "10": {
+    "en": {
+      "dek": "Most people should book a professional facial every 4 to 6 weeks. That range aligns with your skin's natural renewal cycle of about 28 days. Your specific schedule shifts based on your skin type, your age, and any active concerns you're working on — here's how to dial it in.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Baseline for healthy skin: every 4–6 weeks",
+            "Oily or acne-prone: every 3–4 weeks (closer during active breakouts)",
+            "Dry or sensitive: every 6 weeks",
+            "Mature skin: every 3–4 weeks as cell turnover slows",
+            "Minimum if budget is tight: 4 facials a year, one per season"
+          ]
+        },
+        {
+          "h": "Why every 4 to 6 weeks?",
+          "p": "Your skin renews itself in about a 28-day cycle. Booking a professional facial in that window keeps the momentum going — your esthetician works on your skin health as old cells turn over and new ones emerge. Wait much longer and each session resets a depleted canvas instead of building on the last one."
+        },
+        {
+          "h": "How skin type changes the schedule",
+          "p": "Different skin needs different timing."
+        },
+        {
+          "p": "Oily or acne-prone — every 3 to 4 weeks. Acne-prone or oily skin requires more upkeep to clear congestion. Around every 3 to 4 weeks usually keeps breakouts and clogged pores in check. In an active flare, your esthetician may bump you to every two weeks for a short clearing phase, then drop you back to monthly maintenance once the problem skin calms down."
+        },
+        {
+          "p": "Dry or sensitive — every 6 weeks. A facial every 6 weeks is often sufficient to maintain hydration, comfort, and healthy-looking skin without overstressing it. Push further than that and you lose the cumulative benefit; do it more often and sensitive skin can react."
+        },
+        {
+          "p": "Mature skin — every 3 to 4 weeks. Cell turnover naturally slows with age, so mature skin often benefits from more frequent visits to keep things moving and the barrier supported."
+        },
+        {
+          "h": "How your age changes the schedule",
+          "p": "Your skin's needs shift over time:"
+        },
+        {
+          "bullets": [
+            "Teens. The epidermis sheds and renews itself about every 16 days. If you're dealing with breakouts, you may need more frequent attention.",
+            "20s. Collagen production is at its peak and cell turnover is efficient. A facial every 5–6 weeks focused on maintenance, deep cleansing, and prevention is usually sufficient.",
+            "30s. Cell turnover begins to slow and early signs of aging appear. Moving to a 4-week schedule and adding treatments like light chemical peels or LED therapy helps maintain the momentum your skin is starting to lose on its own.",
+            "40s and beyond. Every 4–6 weeks works well for most people, with deeper treatments folded in to support the slowing renewal cycle."
+          ]
+        },
+        {
+          "h": "Special cases",
+          "p": "Brides. Estheticians typically recommend monthly facials for six months before the big day to work on concerns like acne or hyperpigmentation, or one to two months out if you just want a radiance boost."
+        },
+        {
+          "p": "Active breakouts. Weekly or bi-weekly facials are recommended for people in active breakout phases. Reduce the frequency as your skin clears up."
+        },
+        {
+          "p": "Pigmentation concerns. Facials every 3 to 4 weeks help treat discoloration, promote cell turnover, and brighten the complexion."
+        },
+        {
+          "p": "Tight budget. Aim for at least four facials a year — one at each seasonal change."
+        },
+        {
+          "h": "Can you overdo it?",
+          "p": "Yes. Too many abrasive treatments can disrupt your skin barrier and cause more harm down the line. The right schedule is the one your skin responds well to — and the only way to find that is to talk to your esthetician so they can build a treatment plan around your specific concerns and how your skin is reacting."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How long after a facial can I work out or wear makeup?",
+          "a": "Most estheticians recommend skipping the gym and makeup for the rest of the day — sweat and heavy products can clog freshly extracted pores. By the next morning you're back to normal routine."
+        },
+        {
+          "q": "Can I do at-home treatments between professional facials?",
+          "a": "Yes, but gently. Keep your home routine focused on cleansing, hydration, and SPF. Heavy exfoliation or strong actives between professional treatments often pushes your barrier past what it can recover from before the next session."
+        },
+        {
+          "q": "What's the difference between a facial and a HydraFacial?",
+          "a": "A standard facial relies on manual extraction, masks, and steam. A HydraFacial uses a machine that simultaneously cleanses, exfoliates, and infuses serums. HydraFacials tend to be gentler with less downtime, but a skilled esthetician can match or exceed them on results in a regular facial."
+        },
+        {
+          "q": "Will my schedule change with the seasons?",
+          "a": "It can. Cold weather often dries skin out, so winter calls for hydration-focused sessions. Summer humidity tends to bring more congestion, so you may want to shift to a clearing focus for a few months. Talk to your esthetician at the season change — most adjust the treatment plan more than the frequency."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Most people should book a professional facial every 4 to 6 weeks. That range aligns with your skin's natural renewal cycle of about 28 days. Your specific schedule shifts based on your skin type, your age, and any active concerns you're working on — here's how to dial it in.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Baseline for healthy skin: every 4–6 weeks",
+            "Oily or acne-prone: every 3–4 weeks (closer during active breakouts)",
+            "Dry or sensitive: every 6 weeks",
+            "Mature skin: every 3–4 weeks as cell turnover slows",
+            "Minimum if budget is tight: 4 facials a year, one per season"
+          ]
+        },
+        {
+          "h": "Why every 4 to 6 weeks?",
+          "p": "Your skin renews itself in about a 28-day cycle. Booking a professional facial in that window keeps the momentum going — your esthetician works on your skin health as old cells turn over and new ones emerge. Wait much longer and each session resets a depleted canvas instead of building on the last one."
+        },
+        {
+          "h": "How skin type changes the schedule",
+          "p": "Different skin needs different timing."
+        },
+        {
+          "p": "Oily or acne-prone — every 3 to 4 weeks. Acne-prone or oily skin requires more upkeep to clear congestion. Around every 3 to 4 weeks usually keeps breakouts and clogged pores in check. In an active flare, your esthetician may bump you to every two weeks for a short clearing phase, then drop you back to monthly maintenance once the problem skin calms down."
+        },
+        {
+          "p": "Dry or sensitive — every 6 weeks. A facial every 6 weeks is often sufficient to maintain hydration, comfort, and healthy-looking skin without overstressing it. Push further than that and you lose the cumulative benefit; do it more often and sensitive skin can react."
+        },
+        {
+          "p": "Mature skin — every 3 to 4 weeks. Cell turnover naturally slows with age, so mature skin often benefits from more frequent visits to keep things moving and the barrier supported."
+        },
+        {
+          "h": "How your age changes the schedule",
+          "p": "Your skin's needs shift over time:"
+        },
+        {
+          "bullets": [
+            "Teens. The epidermis sheds and renews itself about every 16 days. If you're dealing with breakouts, you may need more frequent attention.",
+            "20s. Collagen production is at its peak and cell turnover is efficient. A facial every 5–6 weeks focused on maintenance, deep cleansing, and prevention is usually sufficient.",
+            "30s. Cell turnover begins to slow and early signs of aging appear. Moving to a 4-week schedule and adding treatments like light chemical peels or LED therapy helps maintain the momentum your skin is starting to lose on its own.",
+            "40s and beyond. Every 4–6 weeks works well for most people, with deeper treatments folded in to support the slowing renewal cycle."
+          ]
+        },
+        {
+          "h": "Special cases",
+          "p": "Brides. Estheticians typically recommend monthly facials for six months before the big day to work on concerns like acne or hyperpigmentation, or one to two months out if you just want a radiance boost."
+        },
+        {
+          "p": "Active breakouts. Weekly or bi-weekly facials are recommended for people in active breakout phases. Reduce the frequency as your skin clears up."
+        },
+        {
+          "p": "Pigmentation concerns. Facials every 3 to 4 weeks help treat discoloration, promote cell turnover, and brighten the complexion."
+        },
+        {
+          "p": "Tight budget. Aim for at least four facials a year — one at each seasonal change."
+        },
+        {
+          "h": "Can you overdo it?",
+          "p": "Yes. Too many abrasive treatments can disrupt your skin barrier and cause more harm down the line. The right schedule is the one your skin responds well to — and the only way to find that is to talk to your esthetician so they can build a treatment plan around your specific concerns and how your skin is reacting."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How long after a facial can I work out or wear makeup?",
+          "a": "Most estheticians recommend skipping the gym and makeup for the rest of the day — sweat and heavy products can clog freshly extracted pores. By the next morning you're back to normal routine."
+        },
+        {
+          "q": "Can I do at-home treatments between professional facials?",
+          "a": "Yes, but gently. Keep your home routine focused on cleansing, hydration, and SPF. Heavy exfoliation or strong actives between professional treatments often pushes your barrier past what it can recover from before the next session."
+        },
+        {
+          "q": "What's the difference between a facial and a HydraFacial?",
+          "a": "A standard facial relies on manual extraction, masks, and steam. A HydraFacial uses a machine that simultaneously cleanses, exfoliates, and infuses serums. HydraFacials tend to be gentler with less downtime, but a skilled esthetician can match or exceed them on results in a regular facial."
+        },
+        {
+          "q": "Will my schedule change with the seasons?",
+          "a": "It can. Cold weather often dries skin out, so winter calls for hydration-focused sessions. Summer humidity tends to bring more congestion, so you may want to shift to a clearing focus for a few months. Talk to your esthetician at the season change — most adjust the treatment plan more than the frequency."
+        }
+      ]
+    }
   }
 };

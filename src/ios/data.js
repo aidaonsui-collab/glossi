@@ -113,6 +113,13 @@ export const GUIDES = [
     "t_en": "Gel vs Acrylic Nails: How to Pick What's Right for You",
     "t_es": "Gel vs Acrylic Nails: How to Pick What's Right for You",
     "mood": 17
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How Often Should You Get a Facial? A Plain-English Scheduling Guide",
+    "t_es": "How Often Should You Get a Facial? A Plain-English Scheduling Guide",
+    "mood": 18
   }
 ];
 
