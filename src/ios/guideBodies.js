@@ -1894,5 +1894,1157 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "12": {
+    "en": {
+      "dek": "A lash lift curls your own lashes. Extensions add synthetic fibers to each lash. Lifts last 6–8 weeks. Extensions need fills every 2–3 weeks. Lifts take 45–60 minutes. Extensions take 1.5–2 hours. Here's how to pick.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Lifts last 6–8 weeks; extensions need touch-ups every 2–3 weeks",
+            "Lifts take under an hour; full extensions take up to 2 hours",
+            "Lift costs around $100 per visit; extensions add ongoing refill costs",
+            "Lifts work only with your natural lashes; extensions add length and volume",
+            "Extensions limit your makeup products; lifts let you use anything after 24 hours"
+          ]
+        },
+        {
+          "h": "How does a lash lift work?",
+          "p": "A lash lift is a semi-permanent process. Your natural lashes are safely lifted and permed using a silicone lifting rod and gentle adhesive to reach the desired curl. A perm solution breaks down the disulphide bonds in the hairs, allowing the lashes to be reshaped. The result is a lifted, longer-looking effect without extensions or daily mascara."
+        },
+        {
+          "p": "The outcome depends heavily on what your natural lashes are like to start with. If your lashes are long and reasonably full, a lift gives strong results. If they're shorter, finer, or sparse, the results can feel underwhelming. Lifts curl your lashes upward and darken them with a tint — you can't add length, you're working only with what you have."
+        },
+        {
+          "h": "How do lash extensions work?",
+          "p": "Lash extensions are individual synthetic, silk, or mink fibers applied to each natural lash by a trained technician using special adhesive. The goal is to enhance the length, thickness, and curl of your natural lashes for a fuller, more defined look without daily mascara."
+        },
+        {
+          "p": "Special effects open up with extensions — staggered, doll eye, cat eye, and bold volume styles are all on the table. You can't combine lifts and extensions in the same appointment — they use conflicting techniques."
+        },
+        {
+          "h": "How long does each take?",
+          "bullets": [
+            "Lash lift: 45–60 minutes. Add a tint and you're still under an hour.",
+            "Lash extensions: 1.5–2 hours for a full set."
+          ]
+        },
+        {
+          "p": "That gap matters if you're squeezing it in around work or pickup time."
+        },
+        {
+          "h": "How long do the results last?",
+          "bullets": [
+            "Lift results last 6–8 weeks. Your lashes grow out naturally and the curl fades as new hair comes in.",
+            "Extensions can last up to 6 weeks with proper care — but because natural lashes shed continuously, you need touch-up fills every 2–3 weeks to keep your lash line looking full."
+          ]
+        },
+        {
+          "h": "Maintenance and product restrictions",
+          "p": "Lifts and extensions wear very differently day-to-day."
+        },
+        {
+          "p": "After a lift sets for 24 hours, you can use almost anything on your eyes — oily makeup remover, gel eyeliner, mascara, all fine."
+        },
+        {
+          "p": "Extensions need more care. Avoid oily products, sticky gel pot eyeliner, and mascara on volume sets — they break down the adhesive and shorten the life of your extensions."
+        },
+        {
+          "h": "Who is each option best for?",
+          "p": "Choose a lash lift if:"
+        },
+        {
+          "bullets": [
+            "Your natural lashes are healthy and short to medium-length",
+            "You want a natural, low-maintenance look",
+            "You want to keep using all your usual makeup products",
+            "You'd rather skip daily curling and mascara"
+          ]
+        },
+        {
+          "p": "Choose lash extensions if:"
+        },
+        {
+          "bullets": [
+            "You want a more dramatic transformation",
+            "Your lashes are long but straight or grow downward",
+            "You want length and volume beyond what your lashes can provide",
+            "You don't mind the product restrictions and refill schedule"
+          ]
+        },
+        {
+          "h": "Allergies, sensitivities, and medications",
+          "p": "Lash lifts are a good option for people with allergies or sensitivities to extension adhesives — the glue can cause irritation or reactions in some clients."
+        },
+        {
+          "p": "A separate note: medications like Accutane compromise hair and skin integrity, and a lift on lashes affected by such medications can cause frizzing. Tell your technician about any medications before booking."
+        },
+        {
+          "h": "Cost",
+          "p": "Lash lifts average around $100 per treatment. No ongoing fills required."
+        },
+        {
+          "p": "Extensions cost more upfront for the full set, plus refill appointments every 2–3 weeks. Over a year, extensions typically run higher because of the ongoing maintenance."
+        },
+        {
+          "h": "Will extensions damage my natural lashes?",
+          "p": "When applied correctly by a trained technician, extensions don't damage your natural lashes. Even after years of wear, most clients show no noticeable difference in their natural lashes once extensions are removed."
+        },
+        {
+          "p": "Lifts work for nearly everyone, but about 1% of clients see no results even after a repeat attempt."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How do I know which one I'll like better?",
+          "a": "Pull up reference photos. Lifts give you a \"your lashes but better\" look — natural shape, just curled up. Extensions give you a \"wearing eye makeup\" look — more length, more drama. If your reference shots all look like you're wearing mascara, you want extensions."
+        },
+        {
+          "q": "Do they hurt?",
+          "a": "Neither should. Lifts use a perm solution near (not on) your eye — you keep your eyes closed and feel pressure but no pain. Extensions involve attaching fibers one by one to closed eyes — most clients fall asleep during the appointment."
+        },
+        {
+          "q": "What if I have an event in two weeks?",
+          "a": "Either works. For a lift, book 2–3 weeks out so the curl has settled. For extensions, book 1 week out so any redness has cleared and your tech has time for a quick touch-up the day before if needed."
+        },
+        {
+          "q": "Will my insurance cover anything?",
+          "a": "No. Both are cosmetic services. If you have an allergic reaction to extensions, urgent care may be covered but the service itself never is."
+        }
+      ]
+    },
+    "es": {
+      "dek": "A lash lift curls your own lashes. Extensions add synthetic fibers to each lash. Lifts last 6–8 weeks. Extensions need fills every 2–3 weeks. Lifts take 45–60 minutes. Extensions take 1.5–2 hours. Here's how to pick.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Lifts last 6–8 weeks; extensions need touch-ups every 2–3 weeks",
+            "Lifts take under an hour; full extensions take up to 2 hours",
+            "Lift costs around $100 per visit; extensions add ongoing refill costs",
+            "Lifts work only with your natural lashes; extensions add length and volume",
+            "Extensions limit your makeup products; lifts let you use anything after 24 hours"
+          ]
+        },
+        {
+          "h": "How does a lash lift work?",
+          "p": "A lash lift is a semi-permanent process. Your natural lashes are safely lifted and permed using a silicone lifting rod and gentle adhesive to reach the desired curl. A perm solution breaks down the disulphide bonds in the hairs, allowing the lashes to be reshaped. The result is a lifted, longer-looking effect without extensions or daily mascara."
+        },
+        {
+          "p": "The outcome depends heavily on what your natural lashes are like to start with. If your lashes are long and reasonably full, a lift gives strong results. If they're shorter, finer, or sparse, the results can feel underwhelming. Lifts curl your lashes upward and darken them with a tint — you can't add length, you're working only with what you have."
+        },
+        {
+          "h": "How do lash extensions work?",
+          "p": "Lash extensions are individual synthetic, silk, or mink fibers applied to each natural lash by a trained technician using special adhesive. The goal is to enhance the length, thickness, and curl of your natural lashes for a fuller, more defined look without daily mascara."
+        },
+        {
+          "p": "Special effects open up with extensions — staggered, doll eye, cat eye, and bold volume styles are all on the table. You can't combine lifts and extensions in the same appointment — they use conflicting techniques."
+        },
+        {
+          "h": "How long does each take?",
+          "bullets": [
+            "Lash lift: 45–60 minutes. Add a tint and you're still under an hour.",
+            "Lash extensions: 1.5–2 hours for a full set."
+          ]
+        },
+        {
+          "p": "That gap matters if you're squeezing it in around work or pickup time."
+        },
+        {
+          "h": "How long do the results last?",
+          "bullets": [
+            "Lift results last 6–8 weeks. Your lashes grow out naturally and the curl fades as new hair comes in.",
+            "Extensions can last up to 6 weeks with proper care — but because natural lashes shed continuously, you need touch-up fills every 2–3 weeks to keep your lash line looking full."
+          ]
+        },
+        {
+          "h": "Maintenance and product restrictions",
+          "p": "Lifts and extensions wear very differently day-to-day."
+        },
+        {
+          "p": "After a lift sets for 24 hours, you can use almost anything on your eyes — oily makeup remover, gel eyeliner, mascara, all fine."
+        },
+        {
+          "p": "Extensions need more care. Avoid oily products, sticky gel pot eyeliner, and mascara on volume sets — they break down the adhesive and shorten the life of your extensions."
+        },
+        {
+          "h": "Who is each option best for?",
+          "p": "Choose a lash lift if:"
+        },
+        {
+          "bullets": [
+            "Your natural lashes are healthy and short to medium-length",
+            "You want a natural, low-maintenance look",
+            "You want to keep using all your usual makeup products",
+            "You'd rather skip daily curling and mascara"
+          ]
+        },
+        {
+          "p": "Choose lash extensions if:"
+        },
+        {
+          "bullets": [
+            "You want a more dramatic transformation",
+            "Your lashes are long but straight or grow downward",
+            "You want length and volume beyond what your lashes can provide",
+            "You don't mind the product restrictions and refill schedule"
+          ]
+        },
+        {
+          "h": "Allergies, sensitivities, and medications",
+          "p": "Lash lifts are a good option for people with allergies or sensitivities to extension adhesives — the glue can cause irritation or reactions in some clients."
+        },
+        {
+          "p": "A separate note: medications like Accutane compromise hair and skin integrity, and a lift on lashes affected by such medications can cause frizzing. Tell your technician about any medications before booking."
+        },
+        {
+          "h": "Cost",
+          "p": "Lash lifts average around $100 per treatment. No ongoing fills required."
+        },
+        {
+          "p": "Extensions cost more upfront for the full set, plus refill appointments every 2–3 weeks. Over a year, extensions typically run higher because of the ongoing maintenance."
+        },
+        {
+          "h": "Will extensions damage my natural lashes?",
+          "p": "When applied correctly by a trained technician, extensions don't damage your natural lashes. Even after years of wear, most clients show no noticeable difference in their natural lashes once extensions are removed."
+        },
+        {
+          "p": "Lifts work for nearly everyone, but about 1% of clients see no results even after a repeat attempt."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How do I know which one I'll like better?",
+          "a": "Pull up reference photos. Lifts give you a \"your lashes but better\" look — natural shape, just curled up. Extensions give you a \"wearing eye makeup\" look — more length, more drama. If your reference shots all look like you're wearing mascara, you want extensions."
+        },
+        {
+          "q": "Do they hurt?",
+          "a": "Neither should. Lifts use a perm solution near (not on) your eye — you keep your eyes closed and feel pressure but no pain. Extensions involve attaching fibers one by one to closed eyes — most clients fall asleep during the appointment."
+        },
+        {
+          "q": "What if I have an event in two weeks?",
+          "a": "Either works. For a lift, book 2–3 weeks out so the curl has settled. For extensions, book 1 week out so any redness has cleared and your tech has time for a quick touch-up the day before if needed."
+        },
+        {
+          "q": "Will my insurance cover anything?",
+          "a": "No. Both are cosmetic services. If you have an allergic reaction to extensions, urgent care may be covered but the service itself never is."
+        }
+      ]
+    }
+  },
+  "13": {
+    "en": {
+      "dek": "Botox typically lasts 3–4 months for most people. Results show as early as 3–4 days after treatment, with full effects visible within 10–14 days. Some patients see effects fade around 2 months; others hold results for 5–6 months. Your provider can help you figure out your personal timeline after your first visit.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Botox usually lasts 3–4 months before muscle movement returns",
+            "First treatment often fades faster than later sessions",
+            "Faster metabolism and expressive muscles can shorten results",
+            "Most patients book maintenance every 3–4 months",
+            "Full results show around 10–14 days"
+          ]
+        },
+        {
+          "h": "How long does Botox actually last?",
+          "p": "The baseline is 3 to 4 months. There's a range: some patients see facial movement returning in about 2 months, while others hold results closer to 5 to 6 months. The longevity depends on the dosage used, the area treated, and your individual muscle strength and metabolism."
+        },
+        {
+          "p": "The forehead tends to run a bit shorter than other areas — Botox in the forehead typically has a duration of approximately 4 months. Most patients schedule maintenance appointments every 3 to 4 months to keep results consistent."
+        },
+        {
+          "h": "When does Botox kick in?",
+          "p": "You won't walk out of your appointment looking frozen. Neurotoxins generally take effect in 3–5 days, but it's common to not see your full and final results for 7–10 days. Most people notice the desired effects around the third or fourth day."
+        },
+        {
+          "p": "Typically it takes about 10–14 days to see the maximum results. A practical rule of thumb: if you're unhappy at day 10, wait a few more days. If it's still not right by day 14, call your provider."
+        },
+        {
+          "h": "What shortens or lengthens Botox duration?",
+          "p": "A few factors set your personal timeline:"
+        },
+        {
+          "bullets": [
+            "Metabolism. Each person's body metabolizes Botox at a different rate — those with a faster metabolism may notice effects wearing off sooner, while individuals with a slower metabolism enjoy longer-lasting results.",
+            "Muscle activity. People with more expressive facial muscles may metabolize Botox faster.",
+            "Treatment area. Some areas maintain results longer than others based on muscle strength and movement patterns.",
+            "Dosage. The amount used plays a direct role in how long effects hold.",
+            "Consistency. With consistent treatments, your muscles may eventually train themselves to contract less. As a result, treatments can be spaced out over longer periods of time."
+          ]
+        },
+        {
+          "h": "First-timers: what to expect",
+          "p": "If this is your first Botox treatment, don't be alarmed if results feel brief. Patients often note that their first treatment doesn't last as long as expected — but later treatments tend to have longer-lasting effects."
+        },
+        {
+          "p": "Set a calendar reminder for 90 days after your first treatment — that's roughly the 3-month mark when most people notice movement coming back."
+        },
+        {
+          "h": "When to book your next appointment",
+          "p": "Plan ahead rather than waiting until your lines fully return. Over time, the treated muscles gradually regain their activity, leading to the return of wrinkles and lines. Botox wears off gradually, not overnight."
+        },
+        {
+          "p": "To maintain results, treatments should be repeated every three to six months for most people. Some patients may experience longer results, as much as 6 months — though that's less common."
+        },
+        {
+          "p": "A short checklist for your next visit:"
+        },
+        {
+          "bullets": [
+            "Set a calendar reminder at 90 days post-treatment",
+            "Note which areas started fading first",
+            "Tell your provider if you want a stronger or lighter result next time",
+            "Ask about touch-up timing if you're unhappy at the 2-week mark"
+          ]
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Does Botox last longer with consistent treatments?",
+          "a": "Yes. Your muscles eventually train themselves to contract less, which means longer windows between appointments after the first year or two of consistent treatment."
+        },
+        {
+          "q": "Can exercise make Botox wear off faster?",
+          "a": "Possibly. A faster metabolism — which avid exercisers often have — can shorten how long Botox holds. The difference is usually small and varies by individual."
+        },
+        {
+          "q": "What if my first treatment didn't last very long?",
+          "a": "That's normal for first-timers. Book your second treatment around the 3-month mark and your results should hold longer the second time."
+        },
+        {
+          "q": "Can I work out the same day as my Botox appointment?",
+          "a": "Most providers recommend skipping vigorous exercise for the first 24 hours so the Botox stays where it was injected. Light activity is generally fine."
+        },
+        {
+          "q": "Is there a maximum how long Botox can last?",
+          "a": "Around 6 months is the practical ceiling for most people. If you're consistently lasting beyond that, your provider may be using more product than you need — worth asking about lower-dose touch-ups instead."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Botox typically lasts 3–4 months for most people. Results show as early as 3–4 days after treatment, with full effects visible within 10–14 days. Some patients see effects fade around 2 months; others hold results for 5–6 months. Your provider can help you figure out your personal timeline after your first visit.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Botox usually lasts 3–4 months before muscle movement returns",
+            "First treatment often fades faster than later sessions",
+            "Faster metabolism and expressive muscles can shorten results",
+            "Most patients book maintenance every 3–4 months",
+            "Full results show around 10–14 days"
+          ]
+        },
+        {
+          "h": "How long does Botox actually last?",
+          "p": "The baseline is 3 to 4 months. There's a range: some patients see facial movement returning in about 2 months, while others hold results closer to 5 to 6 months. The longevity depends on the dosage used, the area treated, and your individual muscle strength and metabolism."
+        },
+        {
+          "p": "The forehead tends to run a bit shorter than other areas — Botox in the forehead typically has a duration of approximately 4 months. Most patients schedule maintenance appointments every 3 to 4 months to keep results consistent."
+        },
+        {
+          "h": "When does Botox kick in?",
+          "p": "You won't walk out of your appointment looking frozen. Neurotoxins generally take effect in 3–5 days, but it's common to not see your full and final results for 7–10 days. Most people notice the desired effects around the third or fourth day."
+        },
+        {
+          "p": "Typically it takes about 10–14 days to see the maximum results. A practical rule of thumb: if you're unhappy at day 10, wait a few more days. If it's still not right by day 14, call your provider."
+        },
+        {
+          "h": "What shortens or lengthens Botox duration?",
+          "p": "A few factors set your personal timeline:"
+        },
+        {
+          "bullets": [
+            "Metabolism. Each person's body metabolizes Botox at a different rate — those with a faster metabolism may notice effects wearing off sooner, while individuals with a slower metabolism enjoy longer-lasting results.",
+            "Muscle activity. People with more expressive facial muscles may metabolize Botox faster.",
+            "Treatment area. Some areas maintain results longer than others based on muscle strength and movement patterns.",
+            "Dosage. The amount used plays a direct role in how long effects hold.",
+            "Consistency. With consistent treatments, your muscles may eventually train themselves to contract less. As a result, treatments can be spaced out over longer periods of time."
+          ]
+        },
+        {
+          "h": "First-timers: what to expect",
+          "p": "If this is your first Botox treatment, don't be alarmed if results feel brief. Patients often note that their first treatment doesn't last as long as expected — but later treatments tend to have longer-lasting effects."
+        },
+        {
+          "p": "Set a calendar reminder for 90 days after your first treatment — that's roughly the 3-month mark when most people notice movement coming back."
+        },
+        {
+          "h": "When to book your next appointment",
+          "p": "Plan ahead rather than waiting until your lines fully return. Over time, the treated muscles gradually regain their activity, leading to the return of wrinkles and lines. Botox wears off gradually, not overnight."
+        },
+        {
+          "p": "To maintain results, treatments should be repeated every three to six months for most people. Some patients may experience longer results, as much as 6 months — though that's less common."
+        },
+        {
+          "p": "A short checklist for your next visit:"
+        },
+        {
+          "bullets": [
+            "Set a calendar reminder at 90 days post-treatment",
+            "Note which areas started fading first",
+            "Tell your provider if you want a stronger or lighter result next time",
+            "Ask about touch-up timing if you're unhappy at the 2-week mark"
+          ]
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Does Botox last longer with consistent treatments?",
+          "a": "Yes. Your muscles eventually train themselves to contract less, which means longer windows between appointments after the first year or two of consistent treatment."
+        },
+        {
+          "q": "Can exercise make Botox wear off faster?",
+          "a": "Possibly. A faster metabolism — which avid exercisers often have — can shorten how long Botox holds. The difference is usually small and varies by individual."
+        },
+        {
+          "q": "What if my first treatment didn't last very long?",
+          "a": "That's normal for first-timers. Book your second treatment around the 3-month mark and your results should hold longer the second time."
+        },
+        {
+          "q": "Can I work out the same day as my Botox appointment?",
+          "a": "Most providers recommend skipping vigorous exercise for the first 24 hours so the Botox stays where it was injected. Light activity is generally fine."
+        },
+        {
+          "q": "Is there a maximum how long Botox can last?",
+          "a": "Around 6 months is the practical ceiling for most people. If you're consistently lasting beyond that, your provider may be using more product than you need — worth asking about lower-dose touch-ups instead."
+        }
+      ]
+    }
+  },
+  "14": {
+    "en": {
+      "dek": "A spray tan gives you color without UV exposure. A tanning bed gives you color while emitting concentrated UV rays the World Health Organization classifies as carcinogenic. That's the core split — quick glow versus long-term skin damage.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Spray tans last 5–10 days with zero UV exposure",
+            "Tanning beds emit concentrated UVA and UVB rays linked to skin cancer",
+            "More people are diagnosed with skin cancer each year in the U.S. than all other cancers combined",
+            "Spray tans work for all skin types; fair skin that burns easily should steer clear of sunbeds",
+            "Tanning bed results can last up to 12 days but require ongoing maintenance sessions"
+          ]
+        },
+        {
+          "h": "How they work",
+          "p": "Tanning beds emit concentrated UVA and UVB rays that penetrate your skin's outer layer and stimulate melanin production. Each session runs up to 10 minutes depending on your skin tone. UVA oxidizes existing melanin to darken your pigment; UVB triggers your skin to produce more melanin for a deeper effect."
+        },
+        {
+          "p": "Spray tans work differently. A technician sprays a solution containing Dihydroxyacetone (DHA) onto your skin — DHA reacts with your skin's chemistry to turn it tan or bronze without UV. The result sits on the outer layer of skin, which is why it fades as that layer naturally sheds."
+        },
+        {
+          "h": "Health risks: what the research shows",
+          "p": "The WHO classifies tanning beds as carcinogenic. One of the most well-documented consequences of indoor tanning is its link to skin cancer, particularly melanoma and basal cell carcinoma. Some data equate the danger of tanning beds to tobacco when it comes to cancer development."
+        },
+        {
+          "p": "UV exposure is cumulative — while you might not see the effects of sun damage now, exposure increases your skin cancer risk over time. High-risk exposure happens more commonly in teens, which is why nineteen states have banned the use of tanning beds for minors."
+        },
+        {
+          "p": "Spray tans skip the UV entirely. The benefits are eliminating burn risk and avoiding the premature wrinkling that comes with UV damage."
+        },
+        {
+          "h": "How long does each last?",
+          "p": "A spray tan typically lasts 5 to 10 days depending on your skin type, daily activity, and post-tan care. You can rinse off the guide color after 2–4 hours, with full results appearing at the 24-hour mark. Rapid-rinse formulas let you shower within 1–3 hours if you're short on time."
+        },
+        {
+          "p": "Tanning bed results can last up to 12 days, but only with ongoing sessions. It typically takes about 2–3 sessions to build up a noticeable tan. Most programs recommend 2–3 sessions per week to build color, then weekly maintenance to hold it."
+        },
+        {
+          "h": "Cost and maintenance",
+          "p": "Spray tans are a single appointment with a clear unit cost. The main upkeep is moisturizing daily to extend the life of your tan as your skin exfoliates."
+        },
+        {
+          "p": "Tanning beds compound. Most people need 2–3 sessions just to see a noticeable result, then weekly sessions to maintain. Add the cost of indoor tanning lotion and protective eyewear, and the per-month total adds up faster than most people expect."
+        },
+        {
+          "h": "Which should you choose?",
+          "p": "If your skin burns easily, steer clear of sunbeds. UV damage compounds with every session and the consequences (skin cancer risk, accelerated wrinkling) don't show up until years later."
+        },
+        {
+          "p": "Spray tans work for all skin types because they don't involve UV. If you want color without the cancer risk and skip the long-term tradeoffs, spray tans win on health every time."
+        },
+        {
+          "p": "If you're still weighing a tanning bed, the question is whether up to 12 days of color is worth the documented links to melanoma and premature wrinkling. You can rebook a spray tan. You can't undo cumulative UV damage."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can spray tans look natural?",
+          "a": "Yes. Modern DHA formulas produce an even, bronze tone that mimics a natural sun tan. The key is proper prep — exfoliate beforehand and avoid pooling in dry areas like elbows, knees, and the backs of your hands."
+        },
+        {
+          "q": "Are tanning beds ever safe?",
+          "a": "No. The WHO classifies them as carcinogenic. Even short sessions and \"controlled\" use add to cumulative UV exposure, which is the actual mechanism behind the cancer risk."
+        },
+        {
+          "q": "Do spray tans damage your skin?",
+          "a": "Spray tans are radiation-free. The FDA-approved DHA reacts with the outer skin layer only, so no UV exposure, no cumulative damage, and no increased skin cancer risk. The main caveat is to avoid inhaling the spray during application — most salons provide nose plugs."
+        },
+        {
+          "q": "How do I make my spray tan last longer?",
+          "a": "Moisturize daily with an oil-free lotion. Avoid long hot showers, chlorinated pools, and exfoliating products. All three speed up skin cell turnover and fade your tan faster."
+        },
+        {
+          "q": "What about self-tanner from a bottle?",
+          "a": "DIY drugstore self-tanner uses the same DHA but is harder to apply evenly. If you've never done one before, start with a tinted gradual tanner (so mistakes show subtly) before stepping up to a full-strength foam or mousse."
+        }
+      ]
+    },
+    "es": {
+      "dek": "A spray tan gives you color without UV exposure. A tanning bed gives you color while emitting concentrated UV rays the World Health Organization classifies as carcinogenic. That's the core split — quick glow versus long-term skin damage.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Spray tans last 5–10 days with zero UV exposure",
+            "Tanning beds emit concentrated UVA and UVB rays linked to skin cancer",
+            "More people are diagnosed with skin cancer each year in the U.S. than all other cancers combined",
+            "Spray tans work for all skin types; fair skin that burns easily should steer clear of sunbeds",
+            "Tanning bed results can last up to 12 days but require ongoing maintenance sessions"
+          ]
+        },
+        {
+          "h": "How they work",
+          "p": "Tanning beds emit concentrated UVA and UVB rays that penetrate your skin's outer layer and stimulate melanin production. Each session runs up to 10 minutes depending on your skin tone. UVA oxidizes existing melanin to darken your pigment; UVB triggers your skin to produce more melanin for a deeper effect."
+        },
+        {
+          "p": "Spray tans work differently. A technician sprays a solution containing Dihydroxyacetone (DHA) onto your skin — DHA reacts with your skin's chemistry to turn it tan or bronze without UV. The result sits on the outer layer of skin, which is why it fades as that layer naturally sheds."
+        },
+        {
+          "h": "Health risks: what the research shows",
+          "p": "The WHO classifies tanning beds as carcinogenic. One of the most well-documented consequences of indoor tanning is its link to skin cancer, particularly melanoma and basal cell carcinoma. Some data equate the danger of tanning beds to tobacco when it comes to cancer development."
+        },
+        {
+          "p": "UV exposure is cumulative — while you might not see the effects of sun damage now, exposure increases your skin cancer risk over time. High-risk exposure happens more commonly in teens, which is why nineteen states have banned the use of tanning beds for minors."
+        },
+        {
+          "p": "Spray tans skip the UV entirely. The benefits are eliminating burn risk and avoiding the premature wrinkling that comes with UV damage."
+        },
+        {
+          "h": "How long does each last?",
+          "p": "A spray tan typically lasts 5 to 10 days depending on your skin type, daily activity, and post-tan care. You can rinse off the guide color after 2–4 hours, with full results appearing at the 24-hour mark. Rapid-rinse formulas let you shower within 1–3 hours if you're short on time."
+        },
+        {
+          "p": "Tanning bed results can last up to 12 days, but only with ongoing sessions. It typically takes about 2–3 sessions to build up a noticeable tan. Most programs recommend 2–3 sessions per week to build color, then weekly maintenance to hold it."
+        },
+        {
+          "h": "Cost and maintenance",
+          "p": "Spray tans are a single appointment with a clear unit cost. The main upkeep is moisturizing daily to extend the life of your tan as your skin exfoliates."
+        },
+        {
+          "p": "Tanning beds compound. Most people need 2–3 sessions just to see a noticeable result, then weekly sessions to maintain. Add the cost of indoor tanning lotion and protective eyewear, and the per-month total adds up faster than most people expect."
+        },
+        {
+          "h": "Which should you choose?",
+          "p": "If your skin burns easily, steer clear of sunbeds. UV damage compounds with every session and the consequences (skin cancer risk, accelerated wrinkling) don't show up until years later."
+        },
+        {
+          "p": "Spray tans work for all skin types because they don't involve UV. If you want color without the cancer risk and skip the long-term tradeoffs, spray tans win on health every time."
+        },
+        {
+          "p": "If you're still weighing a tanning bed, the question is whether up to 12 days of color is worth the documented links to melanoma and premature wrinkling. You can rebook a spray tan. You can't undo cumulative UV damage."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can spray tans look natural?",
+          "a": "Yes. Modern DHA formulas produce an even, bronze tone that mimics a natural sun tan. The key is proper prep — exfoliate beforehand and avoid pooling in dry areas like elbows, knees, and the backs of your hands."
+        },
+        {
+          "q": "Are tanning beds ever safe?",
+          "a": "No. The WHO classifies them as carcinogenic. Even short sessions and \"controlled\" use add to cumulative UV exposure, which is the actual mechanism behind the cancer risk."
+        },
+        {
+          "q": "Do spray tans damage your skin?",
+          "a": "Spray tans are radiation-free. The FDA-approved DHA reacts with the outer skin layer only, so no UV exposure, no cumulative damage, and no increased skin cancer risk. The main caveat is to avoid inhaling the spray during application — most salons provide nose plugs."
+        },
+        {
+          "q": "How do I make my spray tan last longer?",
+          "a": "Moisturize daily with an oil-free lotion. Avoid long hot showers, chlorinated pools, and exfoliating products. All three speed up skin cell turnover and fade your tan faster."
+        },
+        {
+          "q": "What about self-tanner from a bottle?",
+          "a": "DIY drugstore self-tanner uses the same DHA but is harder to apply evenly. If you've never done one before, start with a tinted gradual tanner (so mistakes show subtly) before stepping up to a full-strength foam or mousse."
+        }
+      ]
+    }
+  },
+  "15": {
+    "en": {
+      "dek": "Most people find visiting every 4–6 weeks works well for root touch-ups on permanent color. Balayage stretches longer — typically 3 months between visits. The exact timing depends on the type of color you have, how fast your hair grows, and how much contrast you want between your roots and the rest.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Permanent root touch-ups: every 4–6 weeks",
+            "Balayage / ombre: every 3–6 months",
+            "Gray coverage: every 4–6 weeks",
+            "Bleach / double process: every 6–8 weeks minimum",
+            "Semi-permanent fades in 6–12 washes; reapply whenever it fades"
+          ]
+        },
+        {
+          "h": "How long does permanent color last?",
+          "p": "Permanent color lasts 6–12 weeks before noticeable fading. Most people are back in the chair at the 4–6 week mark for root touch-ups — hair grows about half an inch per month, which is enough new growth to show your natural color at the line."
+        },
+        {
+          "p": "All-over color processes (full-head, no separation) should be done every 3–5 weeks for best results. Double process color — bleaching plus toning — needs monthly maintenance because the lighter your base, the faster it fades."
+        },
+        {
+          "p": "The opposite extreme: dyeing your hair no more than once every three months — four times a year — is what some colorists recommend for minimizing long-term damage."
+        },
+        {
+          "h": "What about highlights, foils, and balayage?",
+          "p": "These techniques don't move at the same pace because the color isn't sitting at your roots."
+        },
+        {
+          "bullets": [
+            "Foil highlights: Every 6–8 weeks depending on the contrast between your highlights and your natural color. The bigger the gap between base and highlights, the sooner regrowth shows.",
+            "Balayage: Strategically places color away from the roots, creating a low-maintenance look that needs less frequent touch-ups. Most clients stretch to 3 months between visits.",
+            "Ombre: Even longer — 3 to 6 months because the color is concentrated at the ends, not the roots."
+          ]
+        },
+        {
+          "p": "For bright reds and pastels specifically, plan on 4–6 weeks because vivid fashion colors fade fast regardless of placement."
+        },
+        {
+          "h": "Gray coverage",
+          "p": "If you're coloring to cover gray, you'll notice regrowth sooner. Gray coverage needs touch-ups every 4–6 weeks — gray hair shows through at the line faster than darker pigments."
+        },
+        {
+          "p": "For full transformation sessions (changing color level dramatically), space at least 8 weeks apart to prevent excessive damage. The middle ground: book your next root touch-up at checkout so you don't let it slide past six weeks."
+        },
+        {
+          "h": "Semi-permanent and demi-permanent: how often is safe?",
+          "p": "These are the gentler tiers and they wear differently."
+        },
+        {
+          "bullets": [
+            "Semi-permanent color coats the hair shaft rather than penetrating it, lasting about 6–12 washes. Because there's no ammonia or alcohol involved, semi-permanent color can be safely used as often as your whims change.",
+            "Demi-permanent color lasts up to 24 washes — longer than semi but gentler than permanent. Demi isn't harsh on brunettes and reds, so you can come in often without concern."
+          ]
+        },
+        {
+          "p": "These are the products to use between permanent appointments if you want to refresh color without the damage tradeoff."
+        },
+        {
+          "h": "Bleach and lightening",
+          "p": "Bleach demands the most recovery time between sessions. Space retouches 6–8 weeks apart and avoid overlapping onto previously lightened hair. Double processing breaks hair down faster than any other technique, and constant bleaching is the main route to long-term blonde damage."
+        },
+        {
+          "p": "If your natural color is much darker than your target, you may need more frequent attention to keep roots from showing — but balance that against giving your hair time to recover."
+        },
+        {
+          "h": "When premium pays",
+          "p": "Permanent dyes and bleaches require more topping up to maintain even color and carry a higher risk of hair damage. The cheaper the product, the harsher the chemicals — and damage accumulates over time."
+        },
+        {
+          "p": "Pay for the years in the chair, not the chandeliers in the lobby. A good colorist tracks your history, avoids overlapping bleach, and uses bond-building treatments that let you come back sooner without compounding damage."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I color my hair every 2 weeks?",
+          "a": "Not safely with permanent color. The minimum cadence for permanent treatments is around 4 weeks. Semi-permanent can be reapplied more often because it doesn't penetrate the hair shaft."
+        },
+        {
+          "q": "Does hair grow faster in summer?",
+          "a": "Slightly, but not enough to change your color schedule. The average growth rate stays around half an inch per month."
+        },
+        {
+          "q": "How do I make my hair color last longer?",
+          "a": "Sulfate-free shampoo, cool water washes, and a gloss treatment between appointments. Color-safe products slow fading so you can stretch the time between visits."
+        },
+        {
+          "q": "What's the safest way to color hair frequently?",
+          "a": "Use demi-permanent or semi-permanent products between permanent appointments. Glosses and demi colors can be done whenever you feel you need it — they're designed to be gentler alternatives to permanent dye."
+        },
+        {
+          "q": "Should I book my next appointment before leaving the salon?",
+          "a": "Yes. It keeps you on schedule, and most colorists prefer the predictability — they can plan bond-building treatments and tone refreshes around your booking cadence."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Most people find visiting every 4–6 weeks works well for root touch-ups on permanent color. Balayage stretches longer — typically 3 months between visits. The exact timing depends on the type of color you have, how fast your hair grows, and how much contrast you want between your roots and the rest.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Permanent root touch-ups: every 4–6 weeks",
+            "Balayage / ombre: every 3–6 months",
+            "Gray coverage: every 4–6 weeks",
+            "Bleach / double process: every 6–8 weeks minimum",
+            "Semi-permanent fades in 6–12 washes; reapply whenever it fades"
+          ]
+        },
+        {
+          "h": "How long does permanent color last?",
+          "p": "Permanent color lasts 6–12 weeks before noticeable fading. Most people are back in the chair at the 4–6 week mark for root touch-ups — hair grows about half an inch per month, which is enough new growth to show your natural color at the line."
+        },
+        {
+          "p": "All-over color processes (full-head, no separation) should be done every 3–5 weeks for best results. Double process color — bleaching plus toning — needs monthly maintenance because the lighter your base, the faster it fades."
+        },
+        {
+          "p": "The opposite extreme: dyeing your hair no more than once every three months — four times a year — is what some colorists recommend for minimizing long-term damage."
+        },
+        {
+          "h": "What about highlights, foils, and balayage?",
+          "p": "These techniques don't move at the same pace because the color isn't sitting at your roots."
+        },
+        {
+          "bullets": [
+            "Foil highlights: Every 6–8 weeks depending on the contrast between your highlights and your natural color. The bigger the gap between base and highlights, the sooner regrowth shows.",
+            "Balayage: Strategically places color away from the roots, creating a low-maintenance look that needs less frequent touch-ups. Most clients stretch to 3 months between visits.",
+            "Ombre: Even longer — 3 to 6 months because the color is concentrated at the ends, not the roots."
+          ]
+        },
+        {
+          "p": "For bright reds and pastels specifically, plan on 4–6 weeks because vivid fashion colors fade fast regardless of placement."
+        },
+        {
+          "h": "Gray coverage",
+          "p": "If you're coloring to cover gray, you'll notice regrowth sooner. Gray coverage needs touch-ups every 4–6 weeks — gray hair shows through at the line faster than darker pigments."
+        },
+        {
+          "p": "For full transformation sessions (changing color level dramatically), space at least 8 weeks apart to prevent excessive damage. The middle ground: book your next root touch-up at checkout so you don't let it slide past six weeks."
+        },
+        {
+          "h": "Semi-permanent and demi-permanent: how often is safe?",
+          "p": "These are the gentler tiers and they wear differently."
+        },
+        {
+          "bullets": [
+            "Semi-permanent color coats the hair shaft rather than penetrating it, lasting about 6–12 washes. Because there's no ammonia or alcohol involved, semi-permanent color can be safely used as often as your whims change.",
+            "Demi-permanent color lasts up to 24 washes — longer than semi but gentler than permanent. Demi isn't harsh on brunettes and reds, so you can come in often without concern."
+          ]
+        },
+        {
+          "p": "These are the products to use between permanent appointments if you want to refresh color without the damage tradeoff."
+        },
+        {
+          "h": "Bleach and lightening",
+          "p": "Bleach demands the most recovery time between sessions. Space retouches 6–8 weeks apart and avoid overlapping onto previously lightened hair. Double processing breaks hair down faster than any other technique, and constant bleaching is the main route to long-term blonde damage."
+        },
+        {
+          "p": "If your natural color is much darker than your target, you may need more frequent attention to keep roots from showing — but balance that against giving your hair time to recover."
+        },
+        {
+          "h": "When premium pays",
+          "p": "Permanent dyes and bleaches require more topping up to maintain even color and carry a higher risk of hair damage. The cheaper the product, the harsher the chemicals — and damage accumulates over time."
+        },
+        {
+          "p": "Pay for the years in the chair, not the chandeliers in the lobby. A good colorist tracks your history, avoids overlapping bleach, and uses bond-building treatments that let you come back sooner without compounding damage."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I color my hair every 2 weeks?",
+          "a": "Not safely with permanent color. The minimum cadence for permanent treatments is around 4 weeks. Semi-permanent can be reapplied more often because it doesn't penetrate the hair shaft."
+        },
+        {
+          "q": "Does hair grow faster in summer?",
+          "a": "Slightly, but not enough to change your color schedule. The average growth rate stays around half an inch per month."
+        },
+        {
+          "q": "How do I make my hair color last longer?",
+          "a": "Sulfate-free shampoo, cool water washes, and a gloss treatment between appointments. Color-safe products slow fading so you can stretch the time between visits."
+        },
+        {
+          "q": "What's the safest way to color hair frequently?",
+          "a": "Use demi-permanent or semi-permanent products between permanent appointments. Glosses and demi colors can be done whenever you feel you need it — they're designed to be gentler alternatives to permanent dye."
+        },
+        {
+          "q": "Should I book my next appointment before leaving the salon?",
+          "a": "Yes. It keeps you on schedule, and most colorists prefer the predictability — they can plan bond-building treatments and tone refreshes around your booking cadence."
+        }
+      ]
+    }
+  },
+  "16": {
+    "en": {
+      "dek": "Acrylic nails mix liquid monomer with powder polymer into a hard sculpted layer. Dip powder coats your nail in pigmented powder activated by a bonder. Both give you length and color but differ in durability, cost, and impact on your natural nail. For everyday wear, most nail techs lean toward dip powder as the gentler option. For maximum durability and sculpted extensions, acrylic wins.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Acrylics use liquid monomer + powder polymer; dip powder uses pigmented powder + bonder",
+            "Acrylics last 6–8 weeks with fills every 3–4 weeks; dip powder lasts 3–4 weeks",
+            "Acrylics run $35–$80; dip powder runs $30–$60",
+            "Dip powder is generally gentler because it skips primer and heavy filing",
+            "Always check that salons use single-use cups or pour-over methods for dip powder"
+          ]
+        },
+        {
+          "h": "How do acrylic and dip powder differ?",
+          "p": "They aren't the same thing, but both contain acrylates that react differently with their application methods. Acrylics use a liquid monomer mixed with powder and require heavy filing. Dip powder uses a pigmented powder activated by a bonder — less filing, no primer. That difference is why most nail techs lean toward dip powder for everyday wear."
+        },
+        {
+          "h": "Which lasts longer?",
+          "p": "Acrylics are the more durable of the two. They typically hold for 6–8 weeks before needing a full reset, with fills every 3–4 weeks to keep growth from showing. Dip powder generally lasts 3–4 weeks before refreshing — and unlike acrylics, dip doesn't take fills, so each refresh is a full reapplication."
+        },
+        {
+          "p": "If you want maximum wear time, acrylics win. If you want simpler maintenance and a less aggressive removal, dip powder is the call."
+        },
+        {
+          "h": "What does each cost?",
+          "p": "Acrylic prices vary by length and design. A standard acrylic set typically runs $35 to $45, climbing to $50 to $80 once you add length extensions or complex art. An infill touch-up — needed every 3 to 4 weeks — typically runs $30 to $50."
+        },
+        {
+          "p": "Dip powder runs $30 to $50 at most salons, with higher-end shops reaching $50 to $60. Because dip powder doesn't support fills, you pay the full set price each cycle instead of the cheaper fill rate."
+        },
+        {
+          "p": "Over a year, the cost comparison depends on your cadence. Acrylic with regular fills can come out cheaper if you can stretch to 6 weeks; dip powder costs more frequently but in smaller amounts each time."
+        },
+        {
+          "h": "Which is healthier for your natural nails?",
+          "p": "Dip powder is the gentler option for most clients. Acrylic is harsher because more chemicals are involved in the process, and dip powders typically contain fewer harsh chemicals — they avoid formaldehyde, toluene, and DBP."
+        },
+        {
+          "p": "Weight matters too. Acrylic nails can put pressure and stress on the natural nail, and removal takes a toll because they need to be soaked in acetone and then buffed away."
+        },
+        {
+          "p": "The bigger concern with acrylics is MMA — a harsh chemical sometimes found in cheaper liquid monomers, linked to nail damage and allergic reactions. Dip powder avoids this category entirely. If your nails are already weak or damaged, dip powder is the better starting point."
+        },
+        {
+          "h": "What about hygiene at the salon?",
+          "p": "This one matters. Dermatologists warn that reusing materials — especially double-dipping into shared dip powder jars — can lead to infections. Never accept a double-dip. The correct practice is single-use cups or pour-over methods so each client gets fresh powder."
+        },
+        {
+          "p": "A clean salon won't hesitate to explain their protocol. If your tech can't, that's the warning sign."
+        },
+        {
+          "h": "Which should you choose?",
+          "bullets": [
+            "Pick acrylic if you want maximum durability, long length, or complex sculpted art.",
+            "Pick dip powder if you want something gentler on your natural nails, easier removal, and simpler maintenance."
+          ]
+        },
+        {
+          "p": "For most everyday clients, dip powder covers the need. Acrylic makes more sense when you're prepping for a wedding, growing out a specific shape, or doing manual work that would crack a softer set."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can you mix acrylic monomer with dip powder?",
+          "a": "No. The powders are chemically different. If you've attempted to use a monomer with dip powder, you might have noticed the powder marbled and the white separated from the color. They don't combine."
+        },
+        {
+          "q": "How often do you need fills for acrylics?",
+          "a": "Every 3 to 4 weeks. Fills cost $30 to $50 each — skipping them lets growth show and weakens the structural integrity of the set."
+        },
+        {
+          "q": "Is dip powder safer for weak natural nails?",
+          "a": "Generally yes. Less filing, no primer, less weight on the natural nail. Most techs recommend it as the starting point for clients with thin or peeling nails."
+        },
+        {
+          "q": "Does dip powder offer fills?",
+          "a": "No — full reapplication only. Plan on paying the full set price (typically $30–$60) at each visit instead of the cheaper fill rate you'd pay for acrylics."
+        },
+        {
+          "q": "What should I watch for at the salon?",
+          "a": "Hygiene first. Never accept double-dipping into shared dip jars. Ask for single-use cups or pour-over application. If the tech can't explain their hygiene protocol, find a different salon."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Acrylic nails mix liquid monomer with powder polymer into a hard sculpted layer. Dip powder coats your nail in pigmented powder activated by a bonder. Both give you length and color but differ in durability, cost, and impact on your natural nail. For everyday wear, most nail techs lean toward dip powder as the gentler option. For maximum durability and sculpted extensions, acrylic wins.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Acrylics use liquid monomer + powder polymer; dip powder uses pigmented powder + bonder",
+            "Acrylics last 6–8 weeks with fills every 3–4 weeks; dip powder lasts 3–4 weeks",
+            "Acrylics run $35–$80; dip powder runs $30–$60",
+            "Dip powder is generally gentler because it skips primer and heavy filing",
+            "Always check that salons use single-use cups or pour-over methods for dip powder"
+          ]
+        },
+        {
+          "h": "How do acrylic and dip powder differ?",
+          "p": "They aren't the same thing, but both contain acrylates that react differently with their application methods. Acrylics use a liquid monomer mixed with powder and require heavy filing. Dip powder uses a pigmented powder activated by a bonder — less filing, no primer. That difference is why most nail techs lean toward dip powder for everyday wear."
+        },
+        {
+          "h": "Which lasts longer?",
+          "p": "Acrylics are the more durable of the two. They typically hold for 6–8 weeks before needing a full reset, with fills every 3–4 weeks to keep growth from showing. Dip powder generally lasts 3–4 weeks before refreshing — and unlike acrylics, dip doesn't take fills, so each refresh is a full reapplication."
+        },
+        {
+          "p": "If you want maximum wear time, acrylics win. If you want simpler maintenance and a less aggressive removal, dip powder is the call."
+        },
+        {
+          "h": "What does each cost?",
+          "p": "Acrylic prices vary by length and design. A standard acrylic set typically runs $35 to $45, climbing to $50 to $80 once you add length extensions or complex art. An infill touch-up — needed every 3 to 4 weeks — typically runs $30 to $50."
+        },
+        {
+          "p": "Dip powder runs $30 to $50 at most salons, with higher-end shops reaching $50 to $60. Because dip powder doesn't support fills, you pay the full set price each cycle instead of the cheaper fill rate."
+        },
+        {
+          "p": "Over a year, the cost comparison depends on your cadence. Acrylic with regular fills can come out cheaper if you can stretch to 6 weeks; dip powder costs more frequently but in smaller amounts each time."
+        },
+        {
+          "h": "Which is healthier for your natural nails?",
+          "p": "Dip powder is the gentler option for most clients. Acrylic is harsher because more chemicals are involved in the process, and dip powders typically contain fewer harsh chemicals — they avoid formaldehyde, toluene, and DBP."
+        },
+        {
+          "p": "Weight matters too. Acrylic nails can put pressure and stress on the natural nail, and removal takes a toll because they need to be soaked in acetone and then buffed away."
+        },
+        {
+          "p": "The bigger concern with acrylics is MMA — a harsh chemical sometimes found in cheaper liquid monomers, linked to nail damage and allergic reactions. Dip powder avoids this category entirely. If your nails are already weak or damaged, dip powder is the better starting point."
+        },
+        {
+          "h": "What about hygiene at the salon?",
+          "p": "This one matters. Dermatologists warn that reusing materials — especially double-dipping into shared dip powder jars — can lead to infections. Never accept a double-dip. The correct practice is single-use cups or pour-over methods so each client gets fresh powder."
+        },
+        {
+          "p": "A clean salon won't hesitate to explain their protocol. If your tech can't, that's the warning sign."
+        },
+        {
+          "h": "Which should you choose?",
+          "bullets": [
+            "Pick acrylic if you want maximum durability, long length, or complex sculpted art.",
+            "Pick dip powder if you want something gentler on your natural nails, easier removal, and simpler maintenance."
+          ]
+        },
+        {
+          "p": "For most everyday clients, dip powder covers the need. Acrylic makes more sense when you're prepping for a wedding, growing out a specific shape, or doing manual work that would crack a softer set."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can you mix acrylic monomer with dip powder?",
+          "a": "No. The powders are chemically different. If you've attempted to use a monomer with dip powder, you might have noticed the powder marbled and the white separated from the color. They don't combine."
+        },
+        {
+          "q": "How often do you need fills for acrylics?",
+          "a": "Every 3 to 4 weeks. Fills cost $30 to $50 each — skipping them lets growth show and weakens the structural integrity of the set."
+        },
+        {
+          "q": "Is dip powder safer for weak natural nails?",
+          "a": "Generally yes. Less filing, no primer, less weight on the natural nail. Most techs recommend it as the starting point for clients with thin or peeling nails."
+        },
+        {
+          "q": "Does dip powder offer fills?",
+          "a": "No — full reapplication only. Plan on paying the full set price (typically $30–$60) at each visit instead of the cheaper fill rate you'd pay for acrylics."
+        },
+        {
+          "q": "What should I watch for at the salon?",
+          "a": "Hygiene first. Never accept double-dipping into shared dip jars. Ask for single-use cups or pour-over application. If the tech can't explain their hygiene protocol, find a different salon."
+        }
+      ]
+    }
+  },
+  "17": {
+    "en": {
+      "dek": "A chemical peel's results last anywhere from one month to many years, depending on how deep the treatment goes. Light peels fade within a couple months as your skin cells regenerate. Medium peels hold for a few months. Deep peels can last a decade or longer.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Light peels last 1–2 months; plan maintenance every 2–5 weeks",
+            "Medium peels hold for 2–6 months; follow-up every 6–12 months",
+            "Deep peels can last 10 years or longer — and you only get one",
+            "Healing ranges from 1 week (light) to 3 weeks (deep)",
+            "Aftercare and sun protection directly extend how long results last"
+          ]
+        },
+        {
+          "h": "How long does each peel depth last?"
+        },
+        {
+          "h": "Light (superficial) peels: 1–2 months",
+          "p": "Light peels use gentler acids like glycolic or salicylic to target the outermost skin layer. The results fade as your skin's natural turnover cycle replaces those cells. You can repeat the application every 2–5 weeks depending on your skin condition and how fast your cells renew."
+        },
+        {
+          "h": "Medium peels: 2–6 months",
+          "p": "Medium peels reach into the middle layer and last a few months. You can typically repeat the application with medium peels after a few months to maintain or build results — most maintenance schedules land at a follow-up peel every 6–12 months. You may need repeat applications to maintain your desired result."
+        },
+        {
+          "h": "Deep peels: 10 years or longer",
+          "p": "Deep peels penetrate further into the dermis and can last up to 10 years or longer. These are designed as a one-time treatment for results that hold years to come — and a person can only have one deep peel in their lifetime."
+        },
+        {
+          "h": "How long does recovery take?",
+          "p": "Healing time scales with peel depth:"
+        },
+        {
+          "bullets": [
+            "Light peels: 1 to 7 days",
+            "Medium peels: 7 to 14 days",
+            "Deep peels: 14 to 21 days"
+          ]
+        },
+        {
+          "p": "Most patients can see smooth, glowing skin in about 2 to 5 days after treatment, though redness can linger for several months after deeper peels. Most patients get the results they want with just 1 to 2 treatments."
+        },
+        {
+          "h": "What affects how long results last?",
+          "p": "The depth of the peel determines how many skin cell layers are removed, and because skin cells continuously renew, results will only last as long as your next skin cell renewal cycle. The variance for superficial and medium peels depends on your skin type, aftercare routine, and the type of acid used."
+        },
+        {
+          "p": "Aftercare matters more than people expect. People who maintain results well with at-home skincare and consistent sun protection may not need treatments as frequently."
+        },
+        {
+          "p": "Important caveat: most results are not permanent because your skin continues to age. If you have sun-damaged skin or precancerous growths called AKs, you'll likely continue to see new spots and growths over time."
+        },
+        {
+          "h": "How often do you need maintenance?",
+          "bullets": [
+            "Light peels: Every 2–5 weeks. Some people with frequent acne breakouts or chronically dry skin may need treatment as often as biweekly.",
+            "Medium peels: Every 6–12 months.",
+            "Deep peels: Once. A second deep peel is not recommended."
+          ]
+        },
+        {
+          "p": "For light peel programs specifically, you may need a series of 3 to 5 peels to get the result you're after."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How long do chemical peel results last overall?",
+          "a": "Anywhere from one month for the lightest peels to a decade or more for the deepest. Peel depth is the single biggest factor."
+        },
+        {
+          "q": "Can chemical peel results be permanent?",
+          "a": "Not exactly — your skin continues aging regardless. Deep peels come close (10+ years), but you can only have one in your lifetime, so plan that decision carefully."
+        },
+        {
+          "q": "What factors affect how long results last?",
+          "a": "Peel depth is the biggest factor. After that: your skin type, the specific acid used, and how consistently you protect your skin from sun after treatment."
+        },
+        {
+          "q": "How often should I schedule light peel maintenance?",
+          "a": "Light peels can be repeated every 2 to 5 weeks. The exact cadence depends on your skin condition and how fast your skin naturally regenerates — your provider will adjust based on how you respond."
+        },
+        {
+          "q": "Can I get a chemical peel if I already use retinol?",
+          "a": "Most providers ask you to pause retinol and other strong actives 5–7 days before a peel so your skin barrier isn't already compromised. Resume them after your skin has fully healed — your provider will tell you when based on the depth of peel."
+        }
+      ]
+    },
+    "es": {
+      "dek": "A chemical peel's results last anywhere from one month to many years, depending on how deep the treatment goes. Light peels fade within a couple months as your skin cells regenerate. Medium peels hold for a few months. Deep peels can last a decade or longer.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Light peels last 1–2 months; plan maintenance every 2–5 weeks",
+            "Medium peels hold for 2–6 months; follow-up every 6–12 months",
+            "Deep peels can last 10 years or longer — and you only get one",
+            "Healing ranges from 1 week (light) to 3 weeks (deep)",
+            "Aftercare and sun protection directly extend how long results last"
+          ]
+        },
+        {
+          "h": "How long does each peel depth last?"
+        },
+        {
+          "h": "Light (superficial) peels: 1–2 months",
+          "p": "Light peels use gentler acids like glycolic or salicylic to target the outermost skin layer. The results fade as your skin's natural turnover cycle replaces those cells. You can repeat the application every 2–5 weeks depending on your skin condition and how fast your cells renew."
+        },
+        {
+          "h": "Medium peels: 2–6 months",
+          "p": "Medium peels reach into the middle layer and last a few months. You can typically repeat the application with medium peels after a few months to maintain or build results — most maintenance schedules land at a follow-up peel every 6–12 months. You may need repeat applications to maintain your desired result."
+        },
+        {
+          "h": "Deep peels: 10 years or longer",
+          "p": "Deep peels penetrate further into the dermis and can last up to 10 years or longer. These are designed as a one-time treatment for results that hold years to come — and a person can only have one deep peel in their lifetime."
+        },
+        {
+          "h": "How long does recovery take?",
+          "p": "Healing time scales with peel depth:"
+        },
+        {
+          "bullets": [
+            "Light peels: 1 to 7 days",
+            "Medium peels: 7 to 14 days",
+            "Deep peels: 14 to 21 days"
+          ]
+        },
+        {
+          "p": "Most patients can see smooth, glowing skin in about 2 to 5 days after treatment, though redness can linger for several months after deeper peels. Most patients get the results they want with just 1 to 2 treatments."
+        },
+        {
+          "h": "What affects how long results last?",
+          "p": "The depth of the peel determines how many skin cell layers are removed, and because skin cells continuously renew, results will only last as long as your next skin cell renewal cycle. The variance for superficial and medium peels depends on your skin type, aftercare routine, and the type of acid used."
+        },
+        {
+          "p": "Aftercare matters more than people expect. People who maintain results well with at-home skincare and consistent sun protection may not need treatments as frequently."
+        },
+        {
+          "p": "Important caveat: most results are not permanent because your skin continues to age. If you have sun-damaged skin or precancerous growths called AKs, you'll likely continue to see new spots and growths over time."
+        },
+        {
+          "h": "How often do you need maintenance?",
+          "bullets": [
+            "Light peels: Every 2–5 weeks. Some people with frequent acne breakouts or chronically dry skin may need treatment as often as biweekly.",
+            "Medium peels: Every 6–12 months.",
+            "Deep peels: Once. A second deep peel is not recommended."
+          ]
+        },
+        {
+          "p": "For light peel programs specifically, you may need a series of 3 to 5 peels to get the result you're after."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How long do chemical peel results last overall?",
+          "a": "Anywhere from one month for the lightest peels to a decade or more for the deepest. Peel depth is the single biggest factor."
+        },
+        {
+          "q": "Can chemical peel results be permanent?",
+          "a": "Not exactly — your skin continues aging regardless. Deep peels come close (10+ years), but you can only have one in your lifetime, so plan that decision carefully."
+        },
+        {
+          "q": "What factors affect how long results last?",
+          "a": "Peel depth is the biggest factor. After that: your skin type, the specific acid used, and how consistently you protect your skin from sun after treatment."
+        },
+        {
+          "q": "How often should I schedule light peel maintenance?",
+          "a": "Light peels can be repeated every 2 to 5 weeks. The exact cadence depends on your skin condition and how fast your skin naturally regenerates — your provider will adjust based on how you respond."
+        },
+        {
+          "q": "Can I get a chemical peel if I already use retinol?",
+          "a": "Most providers ask you to pause retinol and other strong actives 5–7 days before a peel so your skin barrier isn't already compromised. Resume them after your skin has fully healed — your provider will tell you when based on the depth of peel."
+        }
+      ]
+    }
   }
 };

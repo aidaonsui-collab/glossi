@@ -127,6 +127,48 @@ export const GUIDES = [
     "t_en": "Microblading vs Powder Brows: Which Lasts Longer, Costs Less, and Suits Your Skin",
     "t_es": "Microblading vs Powder Brows: Which Lasts Longer, Costs Less, and Suits Your Skin",
     "mood": 19
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "Lash Lift vs Lash Extensions: Which Lasts Longer and Costs Less?",
+    "t_es": "Lash Lift vs Lash Extensions: Which Lasts Longer and Costs Less?",
+    "mood": 20
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How Long Does Botox Last? A Plainspoken Guide to Duration, Results, and Timing",
+    "t_es": "How Long Does Botox Last? A Plainspoken Guide to Duration, Results, and Timing",
+    "mood": 21
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "Spray Tan vs. Tanning Bed: What the Science Actually Says",
+    "t_es": "Spray Tan vs. Tanning Bed: What the Science Actually Says",
+    "mood": 22
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How Often Should You Get Your Hair Colored? A Practical Guide by Color Type",
+    "t_es": "How Often Should You Get Your Hair Colored? A Practical Guide by Color Type",
+    "mood": 23
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "Acrylic vs Dip Powder Nails: The Real Difference, Straight Up",
+    "t_es": "Acrylic vs Dip Powder Nails: The Real Difference, Straight Up",
+    "mood": 24
+  },
+  {
+    "kicker_en": "GUIDE · 3 MIN",
+    "kicker_es": "GUÍA · 3 MIN",
+    "t_en": "How Long Does a Chemical Peel Last? A Complete Timeline Guide",
+    "t_es": "How Long Does a Chemical Peel Last? A Complete Timeline Guide",
+    "mood": 25
   }
 ];
 
