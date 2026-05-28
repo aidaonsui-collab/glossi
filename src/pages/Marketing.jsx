@@ -70,6 +70,16 @@ const GUIDE = [
   { tagEn: 'Skin',      tagEs: 'Piel',      titleEn: 'SPF, retinol, and the after-facial 48h',         titleEs: 'SPF, retinol y las 48h después de un facial',     readEn: '5 min read', readEs: '5 min', photo: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=900&q=80&auto=format&fit=crop' },
 ];
 
+// Demo modal — mock salon bidders. Names match the live ticker so the
+// two feel like the same ecosystem even though this is simulated.
+const DEMO_SALONS = [
+  { name: 'Studio Rose',  area: 'McAllen',     stars: 4.9, reviews: 142, badge: 'Top pick'  },
+  { name: 'Bloom + Co.', area: 'Edinburg',    stars: 4.8, reviews: 97,  badge: 'Fast reply' },
+  { name: 'Velvet Chair', area: 'McAllen',     stars: 4.7, reviews: 203, badge: 'Verified'   },
+  { name: 'Casa Lúa',     area: 'Harlingen',   stars: 4.9, reviews: 88,  badge: 'Top pick'  },
+  { name: 'The Loft RGV', area: 'Brownsville', stars: 4.8, reviews: 156, badge: 'New'        },
+];
+
 const TICKER_EN = [
   'Maria booked balayage at Studio Rose — $185',
   'New: 12 lash fills opened in Edinburg',
@@ -167,6 +177,8 @@ export default function Marketing() {
 
   const [signInOpen, setSignInOpen] = useState(false);
   const [pulse, setPulse] = useState(PULSE_BASE.map(s => s.value));
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalService, setModalService] = useState(null);
 
   // Jittered live stats. Each tick nudges one cell by ±1; bookings drift
   // up most often (positive growth feel), response time wobbles tightly.
@@ -185,10 +197,16 @@ export default function Marketing() {
     return () => clearInterval(id);
   }, []);
 
-  // CTA goes straight into the real request flow with the service slug
-  // prefilled. Logged-out users see the request page; signup is handled
-  // mid-flow, not as a gate. (Matches existing RequestQuote behavior.)
-  const startRequest = slug => navigate(slug ? `/request?services=${encodeURIComponent(slug)}` : '/request');
+  // Lock scroll when the demo bid modal is open.
+  useEffect(() => {
+    document.body.style.overflow = modalOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [modalOpen]);
+
+  // Hero + service-card CTAs open the demo bid modal so visitors can
+  // experience the flow without signing up. The modal's success screen
+  // links to the real /request flow.
+  const openModal = (service = null) => { setModalService(service); setModalOpen(true); };
 
   // ── Nav ──
   const Nav = () => (
@@ -268,7 +286,7 @@ export default function Marketing() {
             )}
           </p>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
-            <button onClick={() => startRequest()} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '15px 24px' : '18px 26px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 1px 0 rgba(184,137,62,0.6), 0 12px 30px -10px rgba(26,23,20,0.4)' }}>
+            <button onClick={() => openModal()} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '15px 24px' : '18px 26px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 1px 0 rgba(184,137,62,0.6), 0 12px 30px -10px rgba(26,23,20,0.4)' }}>
               {t('Post a request', 'Publicar solicitud')}
               <span style={{ fontSize: 16 }}>→</span>
             </button>
@@ -299,7 +317,7 @@ export default function Marketing() {
     const [hover, setHover] = useState(false);
     return (
       <div
-        onClick={() => startRequest(s.slug)}
+        onClick={() => openModal(lang === 'es' ? s.es : s.en)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={{
@@ -556,6 +574,266 @@ export default function Marketing() {
       <Ticker />
       <Footer />
       <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
+      {modalOpen && (
+        <BidModal
+          lang={lang}
+          initialService={modalService}
+          onClose={() => setModalOpen(false)}
+          onRealRequest={() => { setModalOpen(false); navigate('/request'); }}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── Demo Bid Modal ────────────────────────────────────────────────────────
+// Simulated request-to-bid flow used as the homepage CTA. Visitors can
+// post a fake request, watch five bids arrive in real time, and "accept"
+// one — all without an account. Success screen routes to the real /request.
+function BidModal({ lang, initialService, onClose, onRealRequest }) {
+  const isPhone = useNarrow();
+  const tl = (en, es) => lang === 'en' ? en : es;
+
+  const serviceList = [
+    tl('Hair','Cabello'), tl('Color','Color'), tl('Nails','Uñas'),
+    tl('Lashes','Pestañas'), tl('Brows','Cejas'), tl('Barber','Barbería'),
+    tl('Makeup','Maquillaje'), tl('Skin','Piel'),
+  ];
+  const whenList = [tl('This week','Esta semana'), tl('Next week','La próxima semana'), tl('Flexible','Flexible')];
+  const cities   = ['McAllen', 'Edinburg', 'Brownsville', 'Harlingen'];
+
+  const defaultService = initialService || tl('Color', 'Color');
+  const [service, setService] = useState(serviceList.includes(defaultService) ? defaultService : serviceList[1]);
+  const [ceiling, setCeiling] = useState(200);
+  const [when, setWhen]   = useState(whenList[0]);
+  const [city, setCity]   = useState('McAllen');
+  const [stage, setStage] = useState('form'); // form | bidding | success
+  const [bids, setBids]   = useState([]);
+  const [accepted, setAccepted] = useState(null);
+
+  // Esc to close
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  const postRequest = () => {
+    setStage('bidding');
+    setBids([]);
+    const times = [
+      tl('Today 4:30p','Hoy 4:30p'), tl('Today 6:15p','Hoy 6:15p'),
+      tl('Tomorrow 11a','Mañana 11a'), tl('Tomorrow 2p','Mañana 2p'),
+      tl('Fri 10a','Vie 10a'),
+    ];
+    [600, 1500, 2800, 4400, 6500].forEach((delay, i) => {
+      setTimeout(() => {
+        const salon = DEMO_SALONS[(i * 3 + 1) % DEMO_SALONS.length];
+        const price = Math.round(ceiling * (0.55 + i * 0.07 + Math.random() * 0.06));
+        setBids(cur => [...cur, { ...salon, price, time: times[i] }]);
+      }, delay);
+    });
+  };
+
+  const acceptBid = bid => { setAccepted(bid); setStage('success'); };
+
+  const chip = active => ({
+    background: active ? p.ink : 'transparent',
+    color: active ? p.bg : p.inkSoft,
+    border: `0.5px solid ${active ? p.ink : p.line}`,
+    padding: '7px 13px', borderRadius: 99,
+    fontSize: 12.5, fontWeight: active ? 600 : 400,
+    cursor: 'pointer', fontFamily: type.body,
+    transition: 'all 140ms ease',
+  });
+
+  return (
+    <div
+      onClick={e => e.target === e.currentTarget && onClose()}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 200,
+        background: 'rgba(26,23,20,0.6)', backdropFilter: 'blur(5px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: isPhone ? 12 : 20,
+        animation: 'glossiBackdropIn 180ms ease both',
+      }}
+    >
+      <div style={{
+        background: p.surface, borderRadius: 24, width: '100%', maxWidth: 520,
+        boxShadow: '0 40px 90px rgba(26,23,20,0.32)',
+        display: 'flex', flexDirection: 'column',
+        maxHeight: isPhone ? '92vh' : '86vh',
+        animation: 'glossiModalIn 220ms cubic-bezier(0.2,0.8,0.2,1) both',
+      }}>
+        {/* Header */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '22px 24px 18px', borderBottom: `0.5px solid ${p.line}`,
+          flexShrink: 0,
+        }}>
+          <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 21, letterSpacing: '-0.02em', color: p.ink }}>
+            {stage === 'success'
+              ? tl('Booking confirmed', '¡Reserva confirmada!')
+              : tl('Post a request', 'Publica una solicitud')}
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 0, cursor: 'pointer', color: p.inkMuted, fontSize: 22, lineHeight: 1, padding: '2px 8px' }}>×</button>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: '22px 24px 28px', overflowY: 'auto', flex: 1 }}>
+
+          {/* ── FORM ── */}
+          {stage === 'form' && (
+            <>
+              <div style={{ marginBottom: 22 }}>
+                <div style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: p.accent, textTransform: 'uppercase', marginBottom: 10 }}>
+                  {tl('What service?', '¿Qué servicio?')}
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {serviceList.map(s => <button key={s} onClick={() => setService(s)} style={chip(service === s)}>{s}</button>)}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 22 }}>
+                <div style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: p.accent, textTransform: 'uppercase', marginBottom: 10 }}>
+                  {tl('Your budget ceiling', 'Tu presupuesto máximo')}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <span style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 42, letterSpacing: '-0.03em', color: p.ink, minWidth: 90 }}>${ceiling}</span>
+                  <div style={{ flex: 1 }}>
+                    <input type="range" min={40} max={500} step={5} value={ceiling}
+                      onChange={e => setCeiling(parseInt(e.target.value))}
+                      style={{ width: '100%', accentColor: p.accent }} />
+                    <div style={{ fontFamily: type.mono, fontSize: 10, color: p.inkMuted, marginTop: 4, lineHeight: 1.4 }}>
+                      {tl('Salons bid at or below this. You pick the winner.', 'Los salones ofrecen igual o menos. Tú eliges al ganador.')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: p.accent, textTransform: 'uppercase', marginBottom: 10 }}>
+                  {tl('When & where?', '¿Cuándo y dónde?')}
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+                  {whenList.map(w => <button key={w} onClick={() => setWhen(w)} style={chip(when === w)}>{w}</button>)}
+                  <span style={{ width: 1, background: p.line, margin: '0 4px', alignSelf: 'stretch' }} />
+                  {cities.map(c => <button key={c} onClick={() => setCity(c)} style={chip(city === c)}>{c}</button>)}
+                </div>
+              </div>
+
+              <button onClick={postRequest} style={{
+                width: '100%', background: p.ink, color: p.bg, border: 0,
+                padding: '16px 24px', borderRadius: 99, fontSize: 15, fontWeight: 600,
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              }}>
+                {tl('Post request', 'Publicar solicitud')} <span style={{ fontSize: 17 }}>→</span>
+              </button>
+            </>
+          )}
+
+          {/* ── BIDDING ── */}
+          {stage === 'bidding' && (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20, gap: 12 }}>
+                <div>
+                  <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 18, color: p.ink }}>{service} · {city} · {when}</div>
+                  <div style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, marginTop: 4 }}>
+                    {tl('Ceiling', 'Tope')}: ${ceiling}
+                  </div>
+                </div>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: type.mono, fontSize: 11, fontWeight: 600, color: bids.length > 0 ? '#3D7A4E' : p.inkMuted, background: p.surface2, padding: '6px 11px', borderRadius: 99, flexShrink: 0 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: 99, background: bids.length > 0 ? '#7AB388' : p.line, animation: bids.length > 0 ? 'glossiPulse 1.4s ease-in-out infinite' : 'none' }} />
+                  {bids.length} {tl('bid(s)', 'oferta(s)')}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {bids.length === 0 && (
+                  <div style={{ textAlign: 'center', padding: '36px 0', color: p.inkMuted, fontFamily: type.mono, fontSize: 12 }}>
+                    <div style={{ fontSize: 26, marginBottom: 12 }}>⏳</div>
+                    {tl('Sending to salons…', 'Enviando a los salones…')}
+                  </div>
+                )}
+                {bids.map((bid, i) => (
+                  <div key={i} style={{
+                    display: 'grid', gridTemplateColumns: '42px 1fr auto auto',
+                    alignItems: 'center', gap: 12,
+                    padding: '13px 15px', background: p.surface2, borderRadius: 14,
+                    border: `0.5px solid ${p.line}`,
+                    animation: 'glossiSlideIn 280ms cubic-bezier(0.2,0.8,0.2,1) both',
+                  }}>
+                    <div style={{ width: 42, height: 42, borderRadius: 99, background: `linear-gradient(135deg, ${ACCENTS[i % ACCENTS.length]}, ${ACCENTS[(i + 3) % ACCENTS.length]})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontStyle: 'italic', fontSize: 14, fontWeight: 700, color: p.ink, flexShrink: 0 }}>
+                      {bid.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
+                        <span style={{ fontWeight: 600, fontSize: 14, color: p.ink }}>{bid.name}</span>
+                        <span style={{ color: p.accent, fontSize: 11 }}>★ {bid.stars}</span>
+                      </div>
+                      <div style={{ fontFamily: type.mono, fontSize: 10.5, color: p.inkMuted, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {bid.area} · {bid.reviews} {tl('reviews', 'reseñas')}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, letterSpacing: '-0.02em', color: p.ink }}>${bid.price}</div>
+                      <div style={{ fontFamily: type.mono, fontSize: 10, color: p.inkMuted }}>{bid.time}</div>
+                    </div>
+                    <button onClick={() => acceptBid(bid)} style={{
+                      background: p.ink, color: p.bg, border: 0,
+                      padding: '9px 14px', borderRadius: 99,
+                      fontSize: 12, fontWeight: 600, cursor: 'pointer', flexShrink: 0,
+                    }}>
+                      {tl('Accept', 'Aceptar')}
+                    </button>
+                  </div>
+                ))}
+                {bids.length > 0 && bids.length < 5 && (
+                  <div style={{ textAlign: 'center', padding: '10px 0', color: p.inkMuted, fontFamily: type.mono, fontSize: 11 }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: 99, background: '#7AB388', animation: 'glossiPulse 1.4s ease-in-out infinite' }} />
+                      {tl('More bids arriving…', 'Más ofertas en camino…')}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* ── SUCCESS ── */}
+          {stage === 'success' && accepted && (
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ width: 56, height: 56, borderRadius: 99, background: '#EDF5F0', color: '#3D7A4E', fontSize: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}>✓</div>
+              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 28, letterSpacing: '-0.02em', color: p.ink, marginBottom: 8 }}>
+                {tl('Booking confirmed', '¡Reserva confirmada!')}
+              </div>
+              <p style={{ color: p.inkSoft, fontSize: 14, lineHeight: 1.5, marginBottom: 24, maxWidth: '34ch', marginLeft: 'auto', marginRight: 'auto' }}>
+                {tl("You'd get a confirmation text + deposit link from the salon.", "Recibirías un mensaje de confirmación y enlace de depósito del salón.")}
+              </p>
+              <div style={{ background: p.surface2, border: `0.5px solid ${p.line}`, borderRadius: 16, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14, textAlign: 'left', marginBottom: 24 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 99, background: `linear-gradient(135deg, ${ACCENTS[0]}, ${ACCENTS[3]})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: type.display, fontStyle: 'italic', fontSize: 18, color: p.ink, flexShrink: 0 }}>
+                  {accepted.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 600, fontSize: 15, color: p.ink }}>{accepted.name}</div>
+                  <div style={{ fontFamily: type.mono, fontSize: 12, color: p.inkMuted, marginTop: 2 }}>{accepted.area} · {accepted.time}</div>
+                </div>
+                <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 28, color: p.ink, flexShrink: 0 }}>${accepted.price}</div>
+              </div>
+              <button onClick={onRealRequest} style={{
+                width: '100%', background: p.ink, color: p.bg, border: 0,
+                padding: '16px 24px', borderRadius: 99, fontSize: 15, fontWeight: 600,
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              }}>
+                {tl('Try it for real', 'Úsalo de verdad')} <span style={{ fontSize: 16 }}>→</span>
+              </button>
+              <div style={{ marginTop: 12, fontFamily: type.mono, fontSize: 11, color: p.inkMuted }}>
+                {tl('This was a demo — no account needed to try.', 'Esto fue una demo — no necesitas cuenta para probar.')}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
