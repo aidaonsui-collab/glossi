@@ -599,14 +599,13 @@ function BidModal({ lang, initialService, onClose, onRealRequest }) {
     tl('Lashes','Pestañas'), tl('Brows','Cejas'), tl('Barber','Barbería'),
     tl('Makeup','Maquillaje'), tl('Skin','Piel'),
   ];
-  const whenList = [tl('This week','Esta semana'), tl('Next week','La próxima semana'), tl('Flexible','Flexible')];
-  const cities   = ['McAllen', 'Edinburg', 'Brownsville', 'Harlingen'];
+  const whenList = [tl('Today','Hoy'), tl('This week','Esta semana'), tl('Next week','La próxima semana'), tl('Flexible','Flexible')];
 
   const defaultService = initialService || tl('Color', 'Color');
   const [service, setService] = useState(serviceList.includes(defaultService) ? defaultService : serviceList[1]);
   const [ceiling, setCeiling] = useState(200);
   const [when, setWhen]   = useState(whenList[0]);
-  const [city, setCity]   = useState('McAllen');
+  const [zip, setZip]     = useState('');
   const [stage, setStage] = useState('form'); // form | bidding | success
   const [bids, setBids]   = useState([]);
   const [accepted, setAccepted] = useState(null);
@@ -715,11 +714,24 @@ function BidModal({ lang, initialService, onClose, onRealRequest }) {
                 <div style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: p.accent, textTransform: 'uppercase', marginBottom: 10 }}>
                   {tl('When & where?', '¿Cuándo y dónde?')}
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', marginBottom: 10 }}>
                   {whenList.map(w => <button key={w} onClick={() => setWhen(w)} style={chip(when === w)}>{w}</button>)}
-                  <span style={{ width: 1, background: p.line, margin: '0 4px', alignSelf: 'stretch' }} />
-                  {cities.map(c => <button key={c} onClick={() => setCity(c)} style={chip(city === c)}>{c}</button>)}
                 </div>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={5}
+                  placeholder={tl('ZIP code', 'Código postal')}
+                  value={zip}
+                  onChange={e => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                  style={{
+                    width: '100%', boxSizing: 'border-box',
+                    background: p.surface2, border: `0.5px solid ${zip.length === 5 ? p.accent : p.line}`,
+                    borderRadius: 10, padding: '11px 14px',
+                    fontSize: 14, color: p.ink, fontFamily: type.body,
+                    outline: 'none', transition: 'border-color 160ms ease',
+                  }}
+                />
               </div>
 
               <button onClick={postRequest} style={{
@@ -737,7 +749,7 @@ function BidModal({ lang, initialService, onClose, onRealRequest }) {
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20, gap: 12 }}>
                 <div>
-                  <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 18, color: p.ink }}>{service} · {city} · {when}</div>
+                  <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 18, color: p.ink }}>{service} · {zip || tl('your area','tu zona')} · {when}</div>
                   <div style={{ fontFamily: type.mono, fontSize: 11, color: p.inkMuted, marginTop: 4 }}>
                     {tl('Ceiling', 'Tope')}: ${ceiling}
                   </div>
