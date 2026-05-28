@@ -35,7 +35,7 @@ const SERVICES = [
   { slug: 'haircut',      en: 'Hair',    es: 'Cabello',    subEn: 'Cuts, blowouts, treatments',     subEs: 'Cortes, blowouts, tratamientos',   bidsEn: '318 bids today', bidsEs: '318 ofertas hoy', photo: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=900&q=80&auto=format&fit=crop' },
   { slug: 'color',        en: 'Color',   es: 'Color',      subEn: 'Balayage, gloss, root touch-up', subEs: 'Balayage, gloss, retoque de raíz', bidsEn: '204 bids today', bidsEs: '204 ofertas hoy', photo: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=900&q=80&auto=format&fit=crop' },
   { slug: 'nails',        en: 'Nails',   es: 'Uñas',       subEn: 'Gel, acrylic, structured mani',  subEs: 'Gel, acrílico, manicura estructurada', bidsEn: '411 bids today', bidsEs: '411 ofertas hoy', photo: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=900&q=80&auto=format&fit=crop' },
-  { slug: 'lashes-brows', en: 'Lashes',  es: 'Pestañas',   subEn: 'Classic, hybrid, volume',        subEs: 'Clásicas, híbridas, volumen',      bidsEn: '276 bids today', bidsEs: '276 ofertas hoy', photo: 'https://images.unsplash.com/photo-1583241800698-9c2e6f6f6c2c?w=900&q=80&auto=format&fit=crop' },
+  { slug: 'lashes-brows', en: 'Lashes',  es: 'Pestañas',   subEn: 'Classic, hybrid, volume',        subEs: 'Clásicas, híbridas, volumen',      bidsEn: '276 bids today', bidsEs: '276 ofertas hoy', photo: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=900&q=80&auto=format&fit=crop' },
   { slug: 'lashes-brows', en: 'Brows',   es: 'Cejas',      subEn: 'Lamination, wax, tint',          subEs: 'Laminado, cera, tinte',            bidsEn: '182 bids today', bidsEs: '182 ofertas hoy', photo: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=900&q=80&auto=format&fit=crop' },
   { slug: 'haircut',      en: 'Barber',  es: 'Barbería',   subEn: 'Fades, beards, hot towel',       subEs: 'Degradados, barba, toalla caliente', bidsEn: '165 bids today', bidsEs: '165 ofertas hoy', photo: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=900&q=80&auto=format&fit=crop' },
   { slug: 'makeup',       en: 'Makeup',  es: 'Maquillaje', subEn: 'Bridal, event, lessons',         subEs: 'Novia, evento, clases',            bidsEn: '98 bids today',  bidsEs: '98 ofertas hoy',  photo: 'https://images.unsplash.com/photo-1457972729786-0411a3b2b626?w=900&q=80&auto=format&fit=crop' },
@@ -64,9 +64,9 @@ const COMPARE = [
 // Field Guide editorial — links to /editorial in the live app, copy is
 // design-supplied. Photos pull from the design's guide bucket.
 const GUIDE = [
-  { tagEn: 'Color',     tagEs: 'Color',     titleEn: 'Balayage in the Valley summer',                  titleEs: 'Balayage en el verano del Valle',                 readEn: '6 min read', readEs: '6 min', photo: 'https://images.unsplash.com/photo-1560869713-da86bd4f31e2?w=900&q=80&auto=format&fit=crop' },
-  { tagEn: 'Etiquette', tagEs: 'Etiqueta',  titleEn: 'What to bring to a first lash fill',             titleEs: 'Qué llevar a tu primer relleno de pestañas',      readEn: '3 min read', readEs: '3 min', photo: 'https://images.unsplash.com/photo-1583241800698-9c2e6f6f6c2c?w=900&q=80&auto=format&fit=crop' },
-  { tagEn: 'Maps',      tagEs: 'Mapas',     titleEn: 'Where the best blowouts hide in McAllen',        titleEs: 'Dónde se esconden los mejores blowouts en McAllen', readEn: '8 min read', readEs: '8 min', photo: 'https://images.unsplash.com/photo-1607008829749-c0f284a49841?w=900&q=80&auto=format&fit=crop' },
+  { tagEn: 'Color',     tagEs: 'Color',     titleEn: 'Balayage in the Valley summer',                  titleEs: 'Balayage en el verano del Valle',                 readEn: '6 min read', readEs: '6 min', photo: 'https://images.unsplash.com/photo-1560869713-7d0a29430803?w=900&q=80&auto=format&fit=crop' },
+  { tagEn: 'Etiquette', tagEs: 'Etiqueta',  titleEn: 'What to bring to a first lash fill',             titleEs: 'Qué llevar a tu primer relleno de pestañas',      readEn: '3 min read', readEs: '3 min', photo: 'https://images.unsplash.com/photo-1595475884562-073c30d45670?w=900&q=80&auto=format&fit=crop' },
+  { tagEn: 'Maps',      tagEs: 'Mapas',     titleEn: 'Where the best blowouts hide in McAllen',        titleEs: 'Dónde se esconden los mejores blowouts en McAllen', readEn: '8 min read', readEs: '8 min', photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=900&q=80&auto=format&fit=crop' },
   { tagEn: 'Skin',      tagEs: 'Piel',      titleEn: 'SPF, retinol, and the after-facial 48h',         titleEs: 'SPF, retinol y las 48h después de un facial',     readEn: '5 min read', readEs: '5 min', photo: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=900&q=80&auto=format&fit=crop' },
 ];
 
@@ -99,7 +99,7 @@ const TICKER_ES = [
 // HERO_PHOTO is the `full` hero variant from data.js (1800w model + warm
 // rose backdrop). Full-bleed treatment behind the headline.
 const HERO_PHOTO  = 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1800&q=80&auto=format&fit=crop';
-const PITCH_PHOTO = 'https://images.unsplash.com/photo-1633681926022-84852f3f54dc?w=1400&q=80&auto=format&fit=crop';
+const PITCH_PHOTO = 'https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=1400&q=80&auto=format&fit=crop';
 
 // ── Tiny helpers ─────────────────────────────────────────────────────────
 
