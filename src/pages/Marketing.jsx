@@ -230,12 +230,10 @@ export default function Marketing() {
         </button>
       ) : (
         <>
-          {!isPhone && (
-            <button onClick={() => setSignInOpen(true)} style={{ background: 'transparent', border: 0, padding: '8px 12px', fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer' }}>
-              {t('Log in / Sign up', 'Inicia sesión / Regístrate')}
-            </button>
-          )}
-          <button onClick={() => navigate('/signup?role=salon')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+          <button onClick={() => setSignInOpen(true)} style={{ background: 'transparent', border: 0, padding: isPhone ? '8px 6px' : '8px 12px', fontSize: 13, fontWeight: 600, color: p.ink, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+            {isPhone ? t('Log in', 'Entrar') : t('Log in / Sign up', 'Inicia sesión / Regístrate')}
+          </button>
+          <button onClick={() => navigate('/signup?role=salon')} style={{ background: p.ink, color: p.bg, border: 0, padding: isPhone ? '8px 14px' : '10px 18px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
             {isPhone ? t('List business', 'Mi negocio') : t('List your business', 'Lista tu negocio')}
           </button>
         </>
