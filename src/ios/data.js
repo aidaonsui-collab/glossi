@@ -169,6 +169,27 @@ export const GUIDES = [
     "t_en": "How Long Does a Chemical Peel Last? A Complete Timeline Guide",
     "t_es": "How Long Does a Chemical Peel Last? A Complete Timeline Guide",
     "mood": 25
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How Long Does a Brazilian Wax Last? A Real Timeline",
+    "t_es": "How Long Does a Brazilian Wax Last? A Real Timeline",
+    "mood": 26
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "Laser Hair Removal vs. Waxing: What's Better for Your Skin and Your Wallet?",
+    "t_es": "Laser Hair Removal vs. Waxing: What's Better for Your Skin and Your Wallet?",
+    "mood": 27
+  },
+  {
+    "kicker_en": "GUIDE · 3 MIN",
+    "kicker_es": "GUÍA · 3 MIN",
+    "t_en": "How Long Does Brow Lamination Last? A Realistic Timeline for RGV Clients",
+    "t_es": "How Long Does Brow Lamination Last? A Realistic Timeline for RGV Clients",
+    "mood": 28
   }
 ];
 

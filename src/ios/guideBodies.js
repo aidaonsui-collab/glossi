@@ -3046,5 +3046,597 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "18": {
+    "en": {
+      "dek": "A Brazilian wax keeps you smooth for about three to four weeks. The first 7 to 10 days you're completely hair-free; light regrowth typically appears in two to three weeks, and most people book the next appointment around the 3–4 week mark. Consistent waxing stretches that window over time.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Smooth results last 3–4 weeks on average",
+            "Completely hair-free for the first 7–10 days; light regrowth starts at 2–3 weeks",
+            "Hair grows back slower than after shaving — and finer over time with consistent waxing",
+            "Genetics, hormones, age, and consistency all shift your personal timeline",
+            "Shaving between waxes resets the cycle and undoes your progress"
+          ]
+        },
+        {
+          "h": "How long does smooth skin actually last?",
+          "p": "Skin stays hair-free for about 7 to 10 days after your appointment. Most people then enjoy smooth-looking skin for the full 3–4 weeks because initial regrowth is fine and softer than it was before waxing. Compared to shaving, regrowth takes much longer to come back in."
+        },
+        {
+          "p": "Results vary person to person based on hair type, growth rate, thickness, and hormones. Your friend's timeline isn't yours, and that's normal."
+        },
+        {
+          "h": "What changes how long your wax lasts?",
+          "p": "A few factors set your personal cycle:"
+        },
+        {
+          "bullets": [
+            "Genetics. The speed at which your hair grows is largely hereditary.",
+            "Age. As you age, you might find that you enjoy longer-lasting results.",
+            "Hormones, stress, diet, and medical conditions. Any of these can speed up or slow down regrowth.",
+            "The hair growth cycle itself. Hair grows in three phases — anagen (growing), catagen (transition), and telogen (resting), and waxing only works during the anagen phase. At any given time, about 90% of your hair follicles are in the growth phase, which is why most hairs get pulled — but the dormant ones come in later, which is why first-timers often see uneven regrowth."
+          ]
+        },
+        {
+          "h": "Does regular waxing make results last longer?",
+          "p": "Yes. You might see up to 50 percent less regrowth after a few sessions. When hair grows back after waxing, it grows back weaker — finer, softer, and more sparse. That said, waxing won't stop hair growth completely; it slows and thins it."
+        },
+        {
+          "p": "The cycle sync is the bigger benefit: after three to four waxes, all your hairs should be growing in the same cycle. That means longer stretches of smooth skin and less random regrowth between appointments. First-timers see shorter smoothness windows precisely because their hairs are still on different phases."
+        },
+        {
+          "h": "What ruins your wax results fastest?",
+          "p": "Shaving between waxes resets the cycle — and not in a good way. It encourages thick regrowth, throws off the hair phases, and makes your next wax more painful and less effective. Once you commit to waxing, the next shave undoes weeks of progress."
+        },
+        {
+          "p": "The sweet spot for booking is every 3 to 5 weeks. By then, hair reaches at least ½ inch — the ideal length for effective removal — while still keeping the growth cycles in sync for smoother, longer-lasting results."
+        },
+        {
+          "h": "What should you do right after a wax?",
+          "p": "The first 24 hours matter most."
+        },
+        {
+          "bullets": [
+            "Skip exercise, heat, and friction for 24 hours. Sweating or sauna time too soon causes irritation.",
+            "Redness fades within 24 hours. Mild post-wax redness is normal and clears overnight.",
+            "By day three, skin feels significantly smoother — the irritation is gone and the soft, hair-free result settles in.",
+            "It gets easier. The more frequently you wax, the less sensitive your skin becomes."
+          ]
+        },
+        {
+          "h": "When should you book your next wax?",
+          "p": "Hair needs to be about ¼ to ½ inch long — about two to three weeks of growth — for the wax to grip properly. If hair is too short, the wax can't pick it up, and you'll have to come back later."
+        },
+        {
+          "p": "Practically: book your next appointment around the 3–5 week mark depending on your regrowth pattern. If you've been waxing consistently for a few months and your cycles are synced, you may be able to stretch to 5 or 6 weeks. First-timers should plan closer to 3 weeks."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Will waxing eventually stop hair growth?",
+          "a": "No. Regular waxing reduces regrowth and makes hair finer over time, but it won't eliminate it. For permanent removal, look at laser or electrolysis — different treatment categories entirely."
+        },
+        {
+          "q": "Does waxing make hair grow back thicker?",
+          "a": "No — the opposite. Waxing removes hair from the root, so regrowth comes in thinner and softer over time. Shaving cuts hair at an angle and can make it feel coarser as it grows back, which is where the \"shaving makes hair thicker\" myth comes from. With waxing, that's not the case."
+        },
+        {
+          "q": "Why does my first wax last shorter than my fifth?",
+          "a": "First waxes catch your hairs at random points in their growth phases. After three to four sessions, those phases sync up — all your hairs enter the growth phase together, which means longer smoothness windows and less random regrowth."
+        },
+        {
+          "q": "Is six weeks between waxes realistic?",
+          "a": "For some people, yes. After a few sessions with consistent timing, regular clients sometimes stretch to five or six weeks with minimal regrowth. It's not universal, and your hair still needs to be at least ¼ inch when you arrive — but consistency makes it possible."
+        },
+        {
+          "q": "Can I work out the same day as my wax?",
+          "a": "Give it at least 24 hours. Sweat, heat, and friction within that window cause irritation and ingrown hairs. Once the redness clears, you're back to normal routine."
+        }
+      ]
+    },
+    "es": {
+      "dek": "A Brazilian wax keeps you smooth for about three to four weeks. The first 7 to 10 days you're completely hair-free; light regrowth typically appears in two to three weeks, and most people book the next appointment around the 3–4 week mark. Consistent waxing stretches that window over time.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Smooth results last 3–4 weeks on average",
+            "Completely hair-free for the first 7–10 days; light regrowth starts at 2–3 weeks",
+            "Hair grows back slower than after shaving — and finer over time with consistent waxing",
+            "Genetics, hormones, age, and consistency all shift your personal timeline",
+            "Shaving between waxes resets the cycle and undoes your progress"
+          ]
+        },
+        {
+          "h": "How long does smooth skin actually last?",
+          "p": "Skin stays hair-free for about 7 to 10 days after your appointment. Most people then enjoy smooth-looking skin for the full 3–4 weeks because initial regrowth is fine and softer than it was before waxing. Compared to shaving, regrowth takes much longer to come back in."
+        },
+        {
+          "p": "Results vary person to person based on hair type, growth rate, thickness, and hormones. Your friend's timeline isn't yours, and that's normal."
+        },
+        {
+          "h": "What changes how long your wax lasts?",
+          "p": "A few factors set your personal cycle:"
+        },
+        {
+          "bullets": [
+            "Genetics. The speed at which your hair grows is largely hereditary.",
+            "Age. As you age, you might find that you enjoy longer-lasting results.",
+            "Hormones, stress, diet, and medical conditions. Any of these can speed up or slow down regrowth.",
+            "The hair growth cycle itself. Hair grows in three phases — anagen (growing), catagen (transition), and telogen (resting), and waxing only works during the anagen phase. At any given time, about 90% of your hair follicles are in the growth phase, which is why most hairs get pulled — but the dormant ones come in later, which is why first-timers often see uneven regrowth."
+          ]
+        },
+        {
+          "h": "Does regular waxing make results last longer?",
+          "p": "Yes. You might see up to 50 percent less regrowth after a few sessions. When hair grows back after waxing, it grows back weaker — finer, softer, and more sparse. That said, waxing won't stop hair growth completely; it slows and thins it."
+        },
+        {
+          "p": "The cycle sync is the bigger benefit: after three to four waxes, all your hairs should be growing in the same cycle. That means longer stretches of smooth skin and less random regrowth between appointments. First-timers see shorter smoothness windows precisely because their hairs are still on different phases."
+        },
+        {
+          "h": "What ruins your wax results fastest?",
+          "p": "Shaving between waxes resets the cycle — and not in a good way. It encourages thick regrowth, throws off the hair phases, and makes your next wax more painful and less effective. Once you commit to waxing, the next shave undoes weeks of progress."
+        },
+        {
+          "p": "The sweet spot for booking is every 3 to 5 weeks. By then, hair reaches at least ½ inch — the ideal length for effective removal — while still keeping the growth cycles in sync for smoother, longer-lasting results."
+        },
+        {
+          "h": "What should you do right after a wax?",
+          "p": "The first 24 hours matter most."
+        },
+        {
+          "bullets": [
+            "Skip exercise, heat, and friction for 24 hours. Sweating or sauna time too soon causes irritation.",
+            "Redness fades within 24 hours. Mild post-wax redness is normal and clears overnight.",
+            "By day three, skin feels significantly smoother — the irritation is gone and the soft, hair-free result settles in.",
+            "It gets easier. The more frequently you wax, the less sensitive your skin becomes."
+          ]
+        },
+        {
+          "h": "When should you book your next wax?",
+          "p": "Hair needs to be about ¼ to ½ inch long — about two to three weeks of growth — for the wax to grip properly. If hair is too short, the wax can't pick it up, and you'll have to come back later."
+        },
+        {
+          "p": "Practically: book your next appointment around the 3–5 week mark depending on your regrowth pattern. If you've been waxing consistently for a few months and your cycles are synced, you may be able to stretch to 5 or 6 weeks. First-timers should plan closer to 3 weeks."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Will waxing eventually stop hair growth?",
+          "a": "No. Regular waxing reduces regrowth and makes hair finer over time, but it won't eliminate it. For permanent removal, look at laser or electrolysis — different treatment categories entirely."
+        },
+        {
+          "q": "Does waxing make hair grow back thicker?",
+          "a": "No — the opposite. Waxing removes hair from the root, so regrowth comes in thinner and softer over time. Shaving cuts hair at an angle and can make it feel coarser as it grows back, which is where the \"shaving makes hair thicker\" myth comes from. With waxing, that's not the case."
+        },
+        {
+          "q": "Why does my first wax last shorter than my fifth?",
+          "a": "First waxes catch your hairs at random points in their growth phases. After three to four sessions, those phases sync up — all your hairs enter the growth phase together, which means longer smoothness windows and less random regrowth."
+        },
+        {
+          "q": "Is six weeks between waxes realistic?",
+          "a": "For some people, yes. After a few sessions with consistent timing, regular clients sometimes stretch to five or six weeks with minimal regrowth. It's not universal, and your hair still needs to be at least ¼ inch when you arrive — but consistency makes it possible."
+        },
+        {
+          "q": "Can I work out the same day as my wax?",
+          "a": "Give it at least 24 hours. Sweat, heat, and friction within that window cause irritation and ingrown hairs. Once the redness clears, you're back to normal routine."
+        }
+      ]
+    }
+  },
+  "19": {
+    "en": {
+      "dek": "Laser hair removal and waxing are the two heavy hitters for getting rid of unwanted body hair — but they work in completely different ways. Laser uses concentrated light to destroy hair follicles and prevent regrowth; waxing yanks hair out from the root with warm wax. The right choice comes down to your skin tone, hair color, budget, and how much upkeep you'll tolerate.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Waxing works on any hair color or skin type; laser works best on dark hair and light skin",
+            "Waxing lasts 3–6 weeks; laser cuts up to 90% of hair after a few sessions",
+            "Waxing costs $50–$100 per session indefinitely; laser costs more upfront but less over a lifetime",
+            "Laser needs 6–10 sessions spaced weeks apart, then occasional maintenance",
+            "Waxing causes more skin irritation; laser feels like a quick rubber-band snap"
+          ]
+        },
+        {
+          "h": "How does each method work?",
+          "p": "Laser hair removal uses concentrated light to target and destroy the pigment in your hair follicles. Dark hairs absorb that light most effectively, which damages the follicle enough to stop future growth. It's non-invasive and performed in-office with FDA-approved devices."
+        },
+        {
+          "p": "Waxing takes the opposite approach. A technician applies warm wax to the area, lets it cool slightly, then pulls it off quickly against the direction of hair growth — yanking the hair out from the root in one motion."
+        },
+        {
+          "h": "Who is a good candidate?",
+          "p": "This is where the two diverge sharply."
+        },
+        {
+          "p": "Waxing is essentially universal. It works on any skin tone and any hair color, regardless of texture."
+        },
+        {
+          "p": "Laser is pickier. The technology targets pigment, so dark, coarse hairs on light skin respond best. People with pale skin and dark hair — thick, easy-to-spot strands — get the most dramatic results. Laser is less effective on white, gray, blonde, and peach-fuzz hair. Modern devices have improved on darker skin tones, but lighter hair colors remain challenging across the board."
+        },
+        {
+          "h": "How long do results last?",
+          "p": "Waxing gives you smooth skin for about 3–6 weeks before you rebook. You have to let hair grow back to at least a quarter-inch before the next session, so you're never fully hair-free — just cycling through grow-out periods."
+        },
+        {
+          "p": "Laser shows results with minimal regrowth after the first treatment. Most people need 6 to 10 sessions spaced 4 to 6 weeks apart for the initial round, then maintenance treatments every 6 months or so. It cuts up to 90% of hair after a few sessions — significant reduction, though not technically permanent."
+        },
+        {
+          "h": "What's the real cost over time?",
+          "p": "A single waxing session runs $50 to $100 depending on the area. That sounds cheap until you run the lifetime math: the average person spends over $23,000 on waxing across their life."
+        },
+        {
+          "p": "Laser costs more per session upfront, but once the initial treatment period is complete, your spending drops off dramatically. Over a decade or two, laser usually costs less than waxing every few weeks indefinitely."
+        },
+        {
+          "h": "Does it hurt?",
+          "p": "Waxing pulls hair out from the root — especially stinging on sensitive areas like the bikini line or underarms, and the sting repeats with each strip. It tends to be the more irritating of the two because hairs pull against their growth direction and can break at the surface, leading to redness, bumps, and ingrown hairs."
+        },
+        {
+          "p": "Laser feels like a rubber band snapping against the skin — a quick burst of heat that fades fast. It gets less painful as sessions continue and there's less hair to target."
+        },
+        {
+          "h": "Prep and aftercare",
+          "p": "The prep rules are nearly opposite for the two methods:"
+        },
+        {
+          "bullets": [
+            "Before laser: Shaving is fine and actually recommended. Do NOT wax — waxing removes the follicle the laser needs to target, so it sabotages your treatment plan. Shave between sessions if you need to.",
+            "Skin condition: Laser should never be performed on tanned skin, which raises the chance of a poor cosmetic outcome."
+          ]
+        },
+        {
+          "h": "Risks and side effects",
+          "p": "Waxing is generally safe but carries a risk of burns from overheated wax, plus irritation and ingrown hairs — rougher on sensitive skin."
+        },
+        {
+          "p": "Laser is FDA-approved and non-invasive with minimal side effects when performed correctly. The light targets pigment at the skin's surface and doesn't penetrate deeply enough to reach organs."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can you do laser hair removal on dark skin?",
+          "a": "Modern lasers have improved significantly for darker skin tones — many clinics now run devices calibrated for a wider range. Effectiveness still depends on enough contrast between your skin and hair color, since the laser needs pigment to target."
+        },
+        {
+          "q": "How many laser sessions do you really need?",
+          "a": "Plan on 6 to 10 sessions for the initial series, spaced 4 to 6 weeks apart, then maintenance every 6 months to a year depending on your hair growth and hormones."
+        },
+        {
+          "q": "Is laser hair removal actually permanent?",
+          "a": "Not technically. It produces significant long-term reduction — up to 90% — but some regrowth can occur over years, which is why maintenance sessions exist. \"Permanent reduction\" is the accurate term, not \"permanent removal.\""
+        },
+        {
+          "q": "Which is cheaper in the long run?",
+          "a": "Laser. It costs more upfront but the average lifetime cost of waxing runs about $23,000, and laser spending drops sharply once your initial series is done. For most people laser comes out ahead after three to five years of skipped wax appointments."
+        },
+        {
+          "q": "Can you switch from waxing to laser?",
+          "a": "Yes, but plan ahead. Stop waxing at least four weeks before your first laser session so the follicles recover and produce hair the laser can target. Switch to shaving in the meantime."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Laser hair removal and waxing are the two heavy hitters for getting rid of unwanted body hair — but they work in completely different ways. Laser uses concentrated light to destroy hair follicles and prevent regrowth; waxing yanks hair out from the root with warm wax. The right choice comes down to your skin tone, hair color, budget, and how much upkeep you'll tolerate.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Waxing works on any hair color or skin type; laser works best on dark hair and light skin",
+            "Waxing lasts 3–6 weeks; laser cuts up to 90% of hair after a few sessions",
+            "Waxing costs $50–$100 per session indefinitely; laser costs more upfront but less over a lifetime",
+            "Laser needs 6–10 sessions spaced weeks apart, then occasional maintenance",
+            "Waxing causes more skin irritation; laser feels like a quick rubber-band snap"
+          ]
+        },
+        {
+          "h": "How does each method work?",
+          "p": "Laser hair removal uses concentrated light to target and destroy the pigment in your hair follicles. Dark hairs absorb that light most effectively, which damages the follicle enough to stop future growth. It's non-invasive and performed in-office with FDA-approved devices."
+        },
+        {
+          "p": "Waxing takes the opposite approach. A technician applies warm wax to the area, lets it cool slightly, then pulls it off quickly against the direction of hair growth — yanking the hair out from the root in one motion."
+        },
+        {
+          "h": "Who is a good candidate?",
+          "p": "This is where the two diverge sharply."
+        },
+        {
+          "p": "Waxing is essentially universal. It works on any skin tone and any hair color, regardless of texture."
+        },
+        {
+          "p": "Laser is pickier. The technology targets pigment, so dark, coarse hairs on light skin respond best. People with pale skin and dark hair — thick, easy-to-spot strands — get the most dramatic results. Laser is less effective on white, gray, blonde, and peach-fuzz hair. Modern devices have improved on darker skin tones, but lighter hair colors remain challenging across the board."
+        },
+        {
+          "h": "How long do results last?",
+          "p": "Waxing gives you smooth skin for about 3–6 weeks before you rebook. You have to let hair grow back to at least a quarter-inch before the next session, so you're never fully hair-free — just cycling through grow-out periods."
+        },
+        {
+          "p": "Laser shows results with minimal regrowth after the first treatment. Most people need 6 to 10 sessions spaced 4 to 6 weeks apart for the initial round, then maintenance treatments every 6 months or so. It cuts up to 90% of hair after a few sessions — significant reduction, though not technically permanent."
+        },
+        {
+          "h": "What's the real cost over time?",
+          "p": "A single waxing session runs $50 to $100 depending on the area. That sounds cheap until you run the lifetime math: the average person spends over $23,000 on waxing across their life."
+        },
+        {
+          "p": "Laser costs more per session upfront, but once the initial treatment period is complete, your spending drops off dramatically. Over a decade or two, laser usually costs less than waxing every few weeks indefinitely."
+        },
+        {
+          "h": "Does it hurt?",
+          "p": "Waxing pulls hair out from the root — especially stinging on sensitive areas like the bikini line or underarms, and the sting repeats with each strip. It tends to be the more irritating of the two because hairs pull against their growth direction and can break at the surface, leading to redness, bumps, and ingrown hairs."
+        },
+        {
+          "p": "Laser feels like a rubber band snapping against the skin — a quick burst of heat that fades fast. It gets less painful as sessions continue and there's less hair to target."
+        },
+        {
+          "h": "Prep and aftercare",
+          "p": "The prep rules are nearly opposite for the two methods:"
+        },
+        {
+          "bullets": [
+            "Before laser: Shaving is fine and actually recommended. Do NOT wax — waxing removes the follicle the laser needs to target, so it sabotages your treatment plan. Shave between sessions if you need to.",
+            "Skin condition: Laser should never be performed on tanned skin, which raises the chance of a poor cosmetic outcome."
+          ]
+        },
+        {
+          "h": "Risks and side effects",
+          "p": "Waxing is generally safe but carries a risk of burns from overheated wax, plus irritation and ingrown hairs — rougher on sensitive skin."
+        },
+        {
+          "p": "Laser is FDA-approved and non-invasive with minimal side effects when performed correctly. The light targets pigment at the skin's surface and doesn't penetrate deeply enough to reach organs."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can you do laser hair removal on dark skin?",
+          "a": "Modern lasers have improved significantly for darker skin tones — many clinics now run devices calibrated for a wider range. Effectiveness still depends on enough contrast between your skin and hair color, since the laser needs pigment to target."
+        },
+        {
+          "q": "How many laser sessions do you really need?",
+          "a": "Plan on 6 to 10 sessions for the initial series, spaced 4 to 6 weeks apart, then maintenance every 6 months to a year depending on your hair growth and hormones."
+        },
+        {
+          "q": "Is laser hair removal actually permanent?",
+          "a": "Not technically. It produces significant long-term reduction — up to 90% — but some regrowth can occur over years, which is why maintenance sessions exist. \"Permanent reduction\" is the accurate term, not \"permanent removal.\""
+        },
+        {
+          "q": "Which is cheaper in the long run?",
+          "a": "Laser. It costs more upfront but the average lifetime cost of waxing runs about $23,000, and laser spending drops sharply once your initial series is done. For most people laser comes out ahead after three to five years of skipped wax appointments."
+        },
+        {
+          "q": "Can you switch from waxing to laser?",
+          "a": "Yes, but plan ahead. Stop waxing at least four weeks before your first laser session so the follicles recover and produce hair the laser can target. Switch to shaving in the meantime."
+        }
+      ]
+    }
+  },
+  "20": {
+    "en": {
+      "dek": "Brow lamination lasts 4 to 8 weeks. Most clients land around the 6-week mark with average aftercare. Skip the aftercare steps and you'll be back in the chair closer to 4 weeks — or sooner.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Brow lamination holds for 4–8 weeks depending on aftercare and hair growth",
+            "Results typically peak around 6 weeks before new growth disrupts the shape",
+            "Keep brows dry and away from steam and oil-based products for the first 24 hours",
+            "Wait 6–8 weeks between appointments to avoid weakening the hair",
+            "Pair lamination with a tint or wax to extend the visual impact"
+          ]
+        },
+        {
+          "h": "What is brow lamination?",
+          "p": "Brow lamination is a non-invasive treatment that uses solutions to shape and set the eyebrow hairs in place. It pushes each hair forward and upward, creating a fuller, lifted look without filler or microblading."
+        },
+        {
+          "p": "Right after your appointment you get fuller, bolder brows, easier daily styling, and better symmetry between both sides."
+        },
+        {
+          "h": "How long does it actually last?",
+          "p": "The honest answer: 4 to 8 weeks, depending on how well you care for your brows. Most people land around 6 weeks; diligent aftercare pushes you toward the 8-week end, and skipping it pulls you back toward 4."
+        },
+        {
+          "h": "What affects how long results last?",
+          "p": "Two factors set your window:"
+        },
+        {
+          "bullets": [
+            "Your hair growth cycle. As new brow hairs grow in, the laminated hairs slowly return to their natural direction — which is why maintenance is required. This happens on its own schedule regardless of aftercare."
+          ]
+        },
+        {
+          "bullets": [
+            "Your first 24 hours. This is the make-or-break window for the set. Right after your appointment:",
+            "Keep brows dry for 24 hours",
+            "Avoid steam baths and saunas for 24 hours",
+            "Skip oil-based brow products for the first day"
+          ]
+        },
+        {
+          "p": "Skipping these doesn't just fade the look — it can soften the set before it fully locks in."
+        },
+        {
+          "h": "Aftercare tips to reach the 8-week mark",
+          "p": "To push past the 6-week baseline:"
+        },
+        {
+          "bullets": [
+            "Keep brows completely dry for the full 24 hours",
+            "Avoid steamy showers, saunas, and hot yoga for at least a day",
+            "Wait 7 to 14 days before getting a facial",
+            "Brush brows upward each morning with a spoolie to keep the set intact",
+            "Skip heavy oils and serums around the brow area"
+          ]
+        },
+        {
+          "h": "When to book your next appointment",
+          "p": "When your brows no longer hold their lifted shape and start growing in random directions, it's time to rebook. Don't laminate more often than every 6 to 8 weeks, though — over-lamination weakens the hair and leads to brittle, fragile brow hairs that break off, which defeats the whole purpose."
+        },
+        {
+          "h": "Can you pair lamination with other services?",
+          "p": "Yes — pairing is one of the smartest ways to extend your look without booking more often. Pairing lamination with a brow wax or tint enhances the final result: a tint fills sparse areas and adds depth so brows still read full as the lamination softens, and a wax cleans up strays for a sharp shape. Many clients also keep a clear brow gel at home to refresh the hold between appointments."
+        },
+        {
+          "h": "How does it compare to other brow treatments?",
+          "p": "Where lamination sits against the alternatives:"
+        },
+        {
+          "bullets": [
+            "Microblading: Semi-permanent (1–3 years), more expensive upfront, requires touch-ups. The committed option.",
+            "Brow tinting alone: 3–4 weeks. Adds color but no shape or lift.",
+            "Brow lamination: 4–8 weeks, shapes and lifts, mid-range price — and generally easier on the wallet than microblading."
+          ]
+        },
+        {
+          "p": "If you're not ready to commit to permanent brows, lamination is the middle ground: transformative but reversible."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How often can you get brow lamination?",
+          "a": "Wait at least 6 to 8 weeks between appointments. More frequent sessions risk weakening the hair over time."
+        },
+        {
+          "q": "Does brow lamination damage your natural brows?",
+          "a": "Done correctly by a trained professional, it's safe — the solutions are semi-permanent and don't penetrate the skin. The main risk is over-lamination, which is why spacing sessions matters."
+        },
+        {
+          "q": "Can I get my brows wet after lamination?",
+          "a": "Not for the first 24 hours. Water and steam in that window break down the set before it locks in. After 24 hours, normal washing is fine."
+        },
+        {
+          "q": "What should I avoid after brow lamination?",
+          "a": "For the first 24 hours: water, steam, saunas, and oil-based products on the brows. For the first week or two: facials and aggressive scrubbing around the brow area."
+        },
+        {
+          "q": "Can I still use brow gel after lamination?",
+          "a": "Yes. A clear brow gel or a morning spoolie helps maintain the lifted shape. Keep it light — heavy products weigh the hairs back down over time."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Brow lamination lasts 4 to 8 weeks. Most clients land around the 6-week mark with average aftercare. Skip the aftercare steps and you'll be back in the chair closer to 4 weeks — or sooner.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Brow lamination holds for 4–8 weeks depending on aftercare and hair growth",
+            "Results typically peak around 6 weeks before new growth disrupts the shape",
+            "Keep brows dry and away from steam and oil-based products for the first 24 hours",
+            "Wait 6–8 weeks between appointments to avoid weakening the hair",
+            "Pair lamination with a tint or wax to extend the visual impact"
+          ]
+        },
+        {
+          "h": "What is brow lamination?",
+          "p": "Brow lamination is a non-invasive treatment that uses solutions to shape and set the eyebrow hairs in place. It pushes each hair forward and upward, creating a fuller, lifted look without filler or microblading."
+        },
+        {
+          "p": "Right after your appointment you get fuller, bolder brows, easier daily styling, and better symmetry between both sides."
+        },
+        {
+          "h": "How long does it actually last?",
+          "p": "The honest answer: 4 to 8 weeks, depending on how well you care for your brows. Most people land around 6 weeks; diligent aftercare pushes you toward the 8-week end, and skipping it pulls you back toward 4."
+        },
+        {
+          "h": "What affects how long results last?",
+          "p": "Two factors set your window:"
+        },
+        {
+          "bullets": [
+            "Your hair growth cycle. As new brow hairs grow in, the laminated hairs slowly return to their natural direction — which is why maintenance is required. This happens on its own schedule regardless of aftercare."
+          ]
+        },
+        {
+          "bullets": [
+            "Your first 24 hours. This is the make-or-break window for the set. Right after your appointment:",
+            "Keep brows dry for 24 hours",
+            "Avoid steam baths and saunas for 24 hours",
+            "Skip oil-based brow products for the first day"
+          ]
+        },
+        {
+          "p": "Skipping these doesn't just fade the look — it can soften the set before it fully locks in."
+        },
+        {
+          "h": "Aftercare tips to reach the 8-week mark",
+          "p": "To push past the 6-week baseline:"
+        },
+        {
+          "bullets": [
+            "Keep brows completely dry for the full 24 hours",
+            "Avoid steamy showers, saunas, and hot yoga for at least a day",
+            "Wait 7 to 14 days before getting a facial",
+            "Brush brows upward each morning with a spoolie to keep the set intact",
+            "Skip heavy oils and serums around the brow area"
+          ]
+        },
+        {
+          "h": "When to book your next appointment",
+          "p": "When your brows no longer hold their lifted shape and start growing in random directions, it's time to rebook. Don't laminate more often than every 6 to 8 weeks, though — over-lamination weakens the hair and leads to brittle, fragile brow hairs that break off, which defeats the whole purpose."
+        },
+        {
+          "h": "Can you pair lamination with other services?",
+          "p": "Yes — pairing is one of the smartest ways to extend your look without booking more often. Pairing lamination with a brow wax or tint enhances the final result: a tint fills sparse areas and adds depth so brows still read full as the lamination softens, and a wax cleans up strays for a sharp shape. Many clients also keep a clear brow gel at home to refresh the hold between appointments."
+        },
+        {
+          "h": "How does it compare to other brow treatments?",
+          "p": "Where lamination sits against the alternatives:"
+        },
+        {
+          "bullets": [
+            "Microblading: Semi-permanent (1–3 years), more expensive upfront, requires touch-ups. The committed option.",
+            "Brow tinting alone: 3–4 weeks. Adds color but no shape or lift.",
+            "Brow lamination: 4–8 weeks, shapes and lifts, mid-range price — and generally easier on the wallet than microblading."
+          ]
+        },
+        {
+          "p": "If you're not ready to commit to permanent brows, lamination is the middle ground: transformative but reversible."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How often can you get brow lamination?",
+          "a": "Wait at least 6 to 8 weeks between appointments. More frequent sessions risk weakening the hair over time."
+        },
+        {
+          "q": "Does brow lamination damage your natural brows?",
+          "a": "Done correctly by a trained professional, it's safe — the solutions are semi-permanent and don't penetrate the skin. The main risk is over-lamination, which is why spacing sessions matters."
+        },
+        {
+          "q": "Can I get my brows wet after lamination?",
+          "a": "Not for the first 24 hours. Water and steam in that window break down the set before it locks in. After 24 hours, normal washing is fine."
+        },
+        {
+          "q": "What should I avoid after brow lamination?",
+          "a": "For the first 24 hours: water, steam, saunas, and oil-based products on the brows. For the first week or two: facials and aggressive scrubbing around the brow area."
+        },
+        {
+          "q": "Can I still use brow gel after lamination?",
+          "a": "Yes. A clear brow gel or a morning spoolie helps maintain the lifted shape. Keep it light — heavy products weigh the hairs back down over time."
+        }
+      ]
+    }
   }
 };
