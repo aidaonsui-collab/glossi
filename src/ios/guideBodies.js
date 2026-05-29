@@ -3638,5 +3638,433 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "21": {
+    "en": {
+      "dek": "Brassy hair shows up when the warm undertones in your hair — red, orange, and yellow — become visible as your color fades. It happens to blondes, brunettes with highlights, and anyone who's gone lighter than their natural shade. The fix is color theory: purple pigments cancel yellow, blue pigments cancel orange. Mild brassiness responds to at-home shampoos and glosses; severe cases need a stylist.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Brassiness is your color fading and revealing warm undertones",
+            "Yellow tones need purple shampoo; orange tones need blue shampoo",
+            "Hard water and chlorine accelerate brassiness in Valley hair",
+            "Glosses and toners are gentler than re-dyeing",
+            "Wait 1–2 weeks after bleaching before applying toning products"
+          ]
+        },
+        {
+          "h": "What actually causes brassy hair?",
+          "p": "Your hair isn't one solid color — it contains layers of pigment. Red, orange, and yellow tones sit underneath and are more dominant the darker your natural hair. When you lighten with dye or bleach, the darker pigments lift but some warm ones stay behind, and the result is brassiness."
+        },
+        {
+          "p": "Hair color doesn't just turn brassy — it fades brassy. When yellow or orange tones start shining through, that's usually a sign your shade is fading and letting the underlying warm pigments show."
+        },
+        {
+          "p": "Everyday factors speed up that fade:"
+        },
+        {
+          "bullets": [
+            "Hard water. The RGV has mineral-heavy water — it deposits minerals like iron and copper on your hair, making brassiness more visible.",
+            "Chlorine. Swimming in chlorinated pools triggers chemical reactions that pull your hair toward brassy tones.",
+            "Sulfate shampoos. Products with sulfates or harsh ingredients accelerate fading, which leads to brassiness.",
+            "Sun exposure. UV light lifts color the same way bleach does.",
+            "Product buildup. Hair overloaded with product, oil, and impurities is more likely to look brassy and dull."
+          ]
+        },
+        {
+          "h": "How color theory fixes brassiness",
+          "p": "It's simply a matter of color theory — complementary colors cancel out unwanted warm tones. Purple sits opposite yellow on the color wheel; blue sits opposite orange. Apply those pigments to brassy hair and they neutralize the warmth, pulling your color back toward cool."
+        },
+        {
+          "p": "The rule is straightforward:"
+        },
+        {
+          "bullets": [
+            "Yellow tones → purple. A purple toner contains violet pigments that neutralize the yellow undertone for an even color.",
+            "Orange tones → blue. A blue toner contains blue pigments that neutralize orange tones."
+          ]
+        },
+        {
+          "p": "Blondes and brunettes with highlights typically deal with yellow; darker brunette hair tends to show orange. Violet masks and purple shampoos are best for the yellow tones common in blondes and highlighted brunettes, while a brown tint with a hint of chocolatey coolness calms orange tones in darker brunette hair."
+        },
+        {
+          "h": "At-home fixes"
+        },
+        {
+          "h": "Purple or blue shampoo",
+          "p": "Blue and purple shampoos neutralize brassy tones to reveal a cooler blonde or light brown. Match the color to your tone: if your bleached hair looks more yellow than orange, use a purple shampoo to neutralize the yellow; if it's turned orange, use a blue shampoo to cancel it. Limit use to 1–2 times a week — overuse can leave a tint, and some stylists caution that the dyes in these shampoos can irritate the scalp with heavy long-term use, so don't overdo it."
+        },
+        {
+          "h": "Glosses and toners",
+          "p": "Glosses and toners are gentler than re-dyeing, and they add shine while correcting brassy color. Unlike permanent dye, a gloss coats the outside of the hair shaft rather than penetrating it, and your stylist can mix a custom shade to match your goal color."
+        },
+        {
+          "h": "Color-depositing shampoo and conditioner",
+          "p": "Use a color-treated shampoo and conditioner matched to your desired shade. These deposit a small amount of color each wash, topping up your tone between dye jobs. It won't fix severe brassiness, but it maintains results after a salon treatment."
+        },
+        {
+          "h": "Going darker",
+          "p": "If your brassy damage is extensive and your hair can handle more processing, dyeing darker can be the healthier solution — a darker color covers unwanted tones. Worth discussing with your stylist."
+        },
+        {
+          "h": "How to prevent brassiness"
+        },
+        {
+          "h": "Filter your shower water",
+          "p": "Hard water's minerals — most commonly copper from the pipes — deposit on your hair and make brassiness more visible. A filtered shower head helps keep those impurities from being absorbed."
+        },
+        {
+          "h": "Switch to sulfate-free products",
+          "p": "Sulfate shampoos strip color faster. A gentle, sulfate-free formula made for color-treated hair can extend the life of your color by weeks."
+        },
+        {
+          "h": "Rinse with cool water",
+          "p": "Turn down the shower temperature — rinsing in cool water maintains color longer because it closes the cuticle and locks in pigment."
+        },
+        {
+          "h": "Deep condition weekly",
+          "p": "Use a deep conditioning treatment at least once a week. Color-treated hair needs the extra moisture; dry, damaged hair reflects light poorly and makes brassiness more obvious."
+        },
+        {
+          "h": "Rinse after swimming",
+          "p": "Rinse your hair immediately after the pool. Better yet, wet it with clean water before swimming — your hair acts like a sponge and can only soak up so much, so pre-soaked hair absorbs less chlorinated water."
+        },
+        {
+          "h": "Wait before toning after bleaching",
+          "p": "To avoid serious post-bleach damage, wait at least a week or two to restore your hair's moisture balance before toning. Toners and glosses applied too soon can cause breakage."
+        },
+        {
+          "h": "When to see a stylist instead",
+          "p": "At-home products handle mild brassiness; severe cases need professional help. A stylist's correction usually means re-lightening to fully remove the orange, then toning with an ash or light beige to neutralize the brassiness."
+        },
+        {
+          "p": "This matters most for big lightening jumps. If you've got darker hair and chose a permanent color more than two shades lighter than your natural shade, it'll likely come out brassy orange — permanent color can generally only lighten about two shades, so anything lighter just exposes the underlying warm pigment without covering it. That's a job for a professional, not a box dye."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Will purple shampoo fix orange hair?",
+          "a": "No. Purple cancels yellow, not orange. Orange needs a blue shampoo. If your hair reads orange rather than yellow, reach for blue."
+        },
+        {
+          "q": "How often should I use purple shampoo?",
+          "a": "Two to three times a week is typical. Overuse can leave a purple tint, especially on lighter shades — alternate with your regular sulfate-free shampoo."
+        },
+        {
+          "q": "Can hard water in the RGV cause brassy hair?",
+          "a": "Yes. Valley water carries minerals like iron and copper that deposit on your hair and accelerate brassiness. A filtered shower head is one of the most effective fixes for residents here."
+        },
+        {
+          "q": "How long does brassiness take to fade naturally?",
+          "a": "It doesn't really fade on its own — it persists until you recolor or grow it out. At-home toning products usually show results within 1–2 weeks of consistent use."
+        },
+        {
+          "q": "Should I bleach my hair again to fix brassiness?",
+          "a": "Only if a professional recommends it. Re-bleaching at home risks severe damage. A stylist can assess whether lightening followed by a toner is the right move for your hair's current condition."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Brassy hair shows up when the warm undertones in your hair — red, orange, and yellow — become visible as your color fades. It happens to blondes, brunettes with highlights, and anyone who's gone lighter than their natural shade. The fix is color theory: purple pigments cancel yellow, blue pigments cancel orange. Mild brassiness responds to at-home shampoos and glosses; severe cases need a stylist.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Brassiness is your color fading and revealing warm undertones",
+            "Yellow tones need purple shampoo; orange tones need blue shampoo",
+            "Hard water and chlorine accelerate brassiness in Valley hair",
+            "Glosses and toners are gentler than re-dyeing",
+            "Wait 1–2 weeks after bleaching before applying toning products"
+          ]
+        },
+        {
+          "h": "What actually causes brassy hair?",
+          "p": "Your hair isn't one solid color — it contains layers of pigment. Red, orange, and yellow tones sit underneath and are more dominant the darker your natural hair. When you lighten with dye or bleach, the darker pigments lift but some warm ones stay behind, and the result is brassiness."
+        },
+        {
+          "p": "Hair color doesn't just turn brassy — it fades brassy. When yellow or orange tones start shining through, that's usually a sign your shade is fading and letting the underlying warm pigments show."
+        },
+        {
+          "p": "Everyday factors speed up that fade:"
+        },
+        {
+          "bullets": [
+            "Hard water. The RGV has mineral-heavy water — it deposits minerals like iron and copper on your hair, making brassiness more visible.",
+            "Chlorine. Swimming in chlorinated pools triggers chemical reactions that pull your hair toward brassy tones.",
+            "Sulfate shampoos. Products with sulfates or harsh ingredients accelerate fading, which leads to brassiness.",
+            "Sun exposure. UV light lifts color the same way bleach does.",
+            "Product buildup. Hair overloaded with product, oil, and impurities is more likely to look brassy and dull."
+          ]
+        },
+        {
+          "h": "How color theory fixes brassiness",
+          "p": "It's simply a matter of color theory — complementary colors cancel out unwanted warm tones. Purple sits opposite yellow on the color wheel; blue sits opposite orange. Apply those pigments to brassy hair and they neutralize the warmth, pulling your color back toward cool."
+        },
+        {
+          "p": "The rule is straightforward:"
+        },
+        {
+          "bullets": [
+            "Yellow tones → purple. A purple toner contains violet pigments that neutralize the yellow undertone for an even color.",
+            "Orange tones → blue. A blue toner contains blue pigments that neutralize orange tones."
+          ]
+        },
+        {
+          "p": "Blondes and brunettes with highlights typically deal with yellow; darker brunette hair tends to show orange. Violet masks and purple shampoos are best for the yellow tones common in blondes and highlighted brunettes, while a brown tint with a hint of chocolatey coolness calms orange tones in darker brunette hair."
+        },
+        {
+          "h": "At-home fixes"
+        },
+        {
+          "h": "Purple or blue shampoo",
+          "p": "Blue and purple shampoos neutralize brassy tones to reveal a cooler blonde or light brown. Match the color to your tone: if your bleached hair looks more yellow than orange, use a purple shampoo to neutralize the yellow; if it's turned orange, use a blue shampoo to cancel it. Limit use to 1–2 times a week — overuse can leave a tint, and some stylists caution that the dyes in these shampoos can irritate the scalp with heavy long-term use, so don't overdo it."
+        },
+        {
+          "h": "Glosses and toners",
+          "p": "Glosses and toners are gentler than re-dyeing, and they add shine while correcting brassy color. Unlike permanent dye, a gloss coats the outside of the hair shaft rather than penetrating it, and your stylist can mix a custom shade to match your goal color."
+        },
+        {
+          "h": "Color-depositing shampoo and conditioner",
+          "p": "Use a color-treated shampoo and conditioner matched to your desired shade. These deposit a small amount of color each wash, topping up your tone between dye jobs. It won't fix severe brassiness, but it maintains results after a salon treatment."
+        },
+        {
+          "h": "Going darker",
+          "p": "If your brassy damage is extensive and your hair can handle more processing, dyeing darker can be the healthier solution — a darker color covers unwanted tones. Worth discussing with your stylist."
+        },
+        {
+          "h": "How to prevent brassiness"
+        },
+        {
+          "h": "Filter your shower water",
+          "p": "Hard water's minerals — most commonly copper from the pipes — deposit on your hair and make brassiness more visible. A filtered shower head helps keep those impurities from being absorbed."
+        },
+        {
+          "h": "Switch to sulfate-free products",
+          "p": "Sulfate shampoos strip color faster. A gentle, sulfate-free formula made for color-treated hair can extend the life of your color by weeks."
+        },
+        {
+          "h": "Rinse with cool water",
+          "p": "Turn down the shower temperature — rinsing in cool water maintains color longer because it closes the cuticle and locks in pigment."
+        },
+        {
+          "h": "Deep condition weekly",
+          "p": "Use a deep conditioning treatment at least once a week. Color-treated hair needs the extra moisture; dry, damaged hair reflects light poorly and makes brassiness more obvious."
+        },
+        {
+          "h": "Rinse after swimming",
+          "p": "Rinse your hair immediately after the pool. Better yet, wet it with clean water before swimming — your hair acts like a sponge and can only soak up so much, so pre-soaked hair absorbs less chlorinated water."
+        },
+        {
+          "h": "Wait before toning after bleaching",
+          "p": "To avoid serious post-bleach damage, wait at least a week or two to restore your hair's moisture balance before toning. Toners and glosses applied too soon can cause breakage."
+        },
+        {
+          "h": "When to see a stylist instead",
+          "p": "At-home products handle mild brassiness; severe cases need professional help. A stylist's correction usually means re-lightening to fully remove the orange, then toning with an ash or light beige to neutralize the brassiness."
+        },
+        {
+          "p": "This matters most for big lightening jumps. If you've got darker hair and chose a permanent color more than two shades lighter than your natural shade, it'll likely come out brassy orange — permanent color can generally only lighten about two shades, so anything lighter just exposes the underlying warm pigment without covering it. That's a job for a professional, not a box dye."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Will purple shampoo fix orange hair?",
+          "a": "No. Purple cancels yellow, not orange. Orange needs a blue shampoo. If your hair reads orange rather than yellow, reach for blue."
+        },
+        {
+          "q": "How often should I use purple shampoo?",
+          "a": "Two to three times a week is typical. Overuse can leave a purple tint, especially on lighter shades — alternate with your regular sulfate-free shampoo."
+        },
+        {
+          "q": "Can hard water in the RGV cause brassy hair?",
+          "a": "Yes. Valley water carries minerals like iron and copper that deposit on your hair and accelerate brassiness. A filtered shower head is one of the most effective fixes for residents here."
+        },
+        {
+          "q": "How long does brassiness take to fade naturally?",
+          "a": "It doesn't really fade on its own — it persists until you recolor or grow it out. At-home toning products usually show results within 1–2 weeks of consistent use."
+        },
+        {
+          "q": "Should I bleach my hair again to fix brassiness?",
+          "a": "Only if a professional recommends it. Re-bleaching at home risks severe damage. A stylist can assess whether lightening followed by a toner is the right move for your hair's current condition."
+        }
+      ]
+    }
+  },
+  "22": {
+    "en": {
+      "dek": "The standard guidance: wait at least 24 hours before any kissing after lip filler, hold off on gentle pecks until the tenderness eases (most providers say 24–48 hours), and wait a full 72 hours before anything passionate. The reason comes down to pressure, healing, and bacteria.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "No kissing of any kind for the first 24 hours",
+            "Gentle pecks: once initial tenderness eases, around 24–48 hours",
+            "Passionate or French kissing: 72 hours",
+            "Pressure can shift filler and ruin your shape",
+            "Bacteria in saliva raises infection risk at injection sites"
+          ]
+        },
+        {
+          "h": "Why the wait matters",
+          "p": "Fillers need time to integrate into the tissue, and any pressure — like kissing — can risk filler migration or uneven results. The first 24 to 48 hours are the most sensitive, when swelling, bruising, and tenderness are most common. Kissing puts pressure on lips that are still healing, which can increase swelling and bruising around the injection sites."
+        },
+        {
+          "p": "There's also an infection angle. Kissing can transfer bacteria from your partner's lips or saliva, and if the injection site hasn't fully closed, even a little smooch can introduce germs. Your mouth carries over 700 species of bacteria — roughly 6 million of them living in your kisser at any time."
+        },
+        {
+          "p": "And the cosmetic risk is real: pressure on the lips in the first few days can cause filler to shift from where it was placed, leading to uneven results. In the worst case, the migration or lumpiness requires retreatment to fix."
+        },
+        {
+          "h": "The timeline in practice",
+          "bullets": [
+            "First 24 hours: Avoid all kissing, including gentle pecks. This gives the hyaluronic acid gel time to settle.",
+            "24–48 hours: Light, gentle pecks are generally safer once the initial tenderness eases — keep it soft and brief.",
+            "72 hours: Wait the full three days before any passionate kissing."
+          ]
+        },
+        {
+          "p": "The same logic covers anything that puckers your lips. Shaping your mouth into a pucker — to kiss or to drink through a straw — can interfere with the placement of the injection material, so skip straws for the first day or two as well."
+        },
+        {
+          "h": "What affects your timeline",
+          "p": "Swelling usually settles within a day or so, though some people see swelling and bruising linger from a few days up to a week. Mild swelling and soreness are normal — but pain that worsens, swelling that won't improve, or changes in lip shape warrant a call to your provider."
+        },
+        {
+          "p": "Practically, your lips feel natural for kissing again after about a week. And honestly, they'll likely be tender and swollen enough in the first couple of days that kissing won't be that appealing anyway."
+        },
+        {
+          "h": "First 48 hours: do's and don'ts",
+          "bullets": [
+            "Apply ice packs wrapped in cloth to reduce swelling and discomfort.",
+            "Skip lipstick, gloss, and balm for 24 hours post-treatment.",
+            "Steer clear of sun, saunas, and hot drinks for at least 24 hours.",
+            "Avoid straws — sucking applies the same pucker pressure.",
+            "Sleep on your back; pressure on your face can shift filler.",
+            "Wash your face gently, using upward strokes and avoiding direct lip contact.",
+            "Don't touch your lips unless necessary."
+          ]
+        },
+        {
+          "h": "Can you kiss sooner if swelling is minimal?",
+          "p": "Maybe — light air kisses or soft pecks may be okay sooner if your swelling is minimal, but still wait at least 24 hours to let the tiny injection points heal and reduce infection risk. Gentle pecks are safer after the first day; intense contact should wait until the lips feel less sore and swollen. Keep in mind lip movement can affect blood flow and potentially slow healing in the early phase, so when in doubt, give it the full window."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I kiss my partner 24 hours after lip filler?",
+          "a": "A soft peck is generally okay after the first 24 hours if swelling is minimal, but if you're unsure, waiting toward the 48-hour mark further reduces infection risk while the injection points close."
+        },
+        {
+          "q": "Does kissing ruin lip filler?",
+          "a": "It can if you go too hard too soon. Pressure in the first 48 hours can shift filler, leading to uneven results or lumpiness that needs correction. Gentle, brief contact after 24 hours is much lower risk."
+        },
+        {
+          "q": "When do lips feel normal after filler?",
+          "a": "Most people feel natural kissing again after about a week. Mild tenderness usually resolves within a few days."
+        },
+        {
+          "q": "What counts as 'passionate' kissing?",
+          "a": "French kissing, deep kissing, or anything with strong, sustained pressure on the lips. Wait the full 72 hours for that level of contact."
+        },
+        {
+          "q": "Can I drink from a straw while healing?",
+          "a": "Skip it for the first day or two. Sucking from a straw puckers your lips, applying the same pressure that can disrupt filler placement."
+        }
+      ]
+    },
+    "es": {
+      "dek": "The standard guidance: wait at least 24 hours before any kissing after lip filler, hold off on gentle pecks until the tenderness eases (most providers say 24–48 hours), and wait a full 72 hours before anything passionate. The reason comes down to pressure, healing, and bacteria.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "No kissing of any kind for the first 24 hours",
+            "Gentle pecks: once initial tenderness eases, around 24–48 hours",
+            "Passionate or French kissing: 72 hours",
+            "Pressure can shift filler and ruin your shape",
+            "Bacteria in saliva raises infection risk at injection sites"
+          ]
+        },
+        {
+          "h": "Why the wait matters",
+          "p": "Fillers need time to integrate into the tissue, and any pressure — like kissing — can risk filler migration or uneven results. The first 24 to 48 hours are the most sensitive, when swelling, bruising, and tenderness are most common. Kissing puts pressure on lips that are still healing, which can increase swelling and bruising around the injection sites."
+        },
+        {
+          "p": "There's also an infection angle. Kissing can transfer bacteria from your partner's lips or saliva, and if the injection site hasn't fully closed, even a little smooch can introduce germs. Your mouth carries over 700 species of bacteria — roughly 6 million of them living in your kisser at any time."
+        },
+        {
+          "p": "And the cosmetic risk is real: pressure on the lips in the first few days can cause filler to shift from where it was placed, leading to uneven results. In the worst case, the migration or lumpiness requires retreatment to fix."
+        },
+        {
+          "h": "The timeline in practice",
+          "bullets": [
+            "First 24 hours: Avoid all kissing, including gentle pecks. This gives the hyaluronic acid gel time to settle.",
+            "24–48 hours: Light, gentle pecks are generally safer once the initial tenderness eases — keep it soft and brief.",
+            "72 hours: Wait the full three days before any passionate kissing."
+          ]
+        },
+        {
+          "p": "The same logic covers anything that puckers your lips. Shaping your mouth into a pucker — to kiss or to drink through a straw — can interfere with the placement of the injection material, so skip straws for the first day or two as well."
+        },
+        {
+          "h": "What affects your timeline",
+          "p": "Swelling usually settles within a day or so, though some people see swelling and bruising linger from a few days up to a week. Mild swelling and soreness are normal — but pain that worsens, swelling that won't improve, or changes in lip shape warrant a call to your provider."
+        },
+        {
+          "p": "Practically, your lips feel natural for kissing again after about a week. And honestly, they'll likely be tender and swollen enough in the first couple of days that kissing won't be that appealing anyway."
+        },
+        {
+          "h": "First 48 hours: do's and don'ts",
+          "bullets": [
+            "Apply ice packs wrapped in cloth to reduce swelling and discomfort.",
+            "Skip lipstick, gloss, and balm for 24 hours post-treatment.",
+            "Steer clear of sun, saunas, and hot drinks for at least 24 hours.",
+            "Avoid straws — sucking applies the same pucker pressure.",
+            "Sleep on your back; pressure on your face can shift filler.",
+            "Wash your face gently, using upward strokes and avoiding direct lip contact.",
+            "Don't touch your lips unless necessary."
+          ]
+        },
+        {
+          "h": "Can you kiss sooner if swelling is minimal?",
+          "p": "Maybe — light air kisses or soft pecks may be okay sooner if your swelling is minimal, but still wait at least 24 hours to let the tiny injection points heal and reduce infection risk. Gentle pecks are safer after the first day; intense contact should wait until the lips feel less sore and swollen. Keep in mind lip movement can affect blood flow and potentially slow healing in the early phase, so when in doubt, give it the full window."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I kiss my partner 24 hours after lip filler?",
+          "a": "A soft peck is generally okay after the first 24 hours if swelling is minimal, but if you're unsure, waiting toward the 48-hour mark further reduces infection risk while the injection points close."
+        },
+        {
+          "q": "Does kissing ruin lip filler?",
+          "a": "It can if you go too hard too soon. Pressure in the first 48 hours can shift filler, leading to uneven results or lumpiness that needs correction. Gentle, brief contact after 24 hours is much lower risk."
+        },
+        {
+          "q": "When do lips feel normal after filler?",
+          "a": "Most people feel natural kissing again after about a week. Mild tenderness usually resolves within a few days."
+        },
+        {
+          "q": "What counts as 'passionate' kissing?",
+          "a": "French kissing, deep kissing, or anything with strong, sustained pressure on the lips. Wait the full 72 hours for that level of contact."
+        },
+        {
+          "q": "Can I drink from a straw while healing?",
+          "a": "Skip it for the first day or two. Sucking from a straw puckers your lips, applying the same pressure that can disrupt filler placement."
+        }
+      ]
+    }
   }
 };

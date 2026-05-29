@@ -190,6 +190,20 @@ export const GUIDES = [
     "t_en": "How Long Does Brow Lamination Last? A Realistic Timeline for RGV Clients",
     "t_es": "How Long Does Brow Lamination Last? A Realistic Timeline for RGV Clients",
     "mood": 28
+  },
+  {
+    "kicker_en": "GUIDE · 5 MIN",
+    "kicker_es": "GUÍA · 5 MIN",
+    "t_en": "How to Get Rid of Brassy Hair: Fix Orange and Yellow Tones Fast",
+    "t_es": "How to Get Rid of Brassy Hair: Fix Orange and Yellow Tones Fast",
+    "mood": 29
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How Long After Lip Filler Can You Kiss?",
+    "t_es": "How Long After Lip Filler Can You Kiss?",
+    "mood": 30
   }
 ];
 
