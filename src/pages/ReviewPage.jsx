@@ -4,18 +4,20 @@ import { defaultPalette as p, defaultType as type } from '../theme.js';
 import Review from '../components/Review.jsx';
 import { useBookings } from '../store.jsx';
 import { useT } from '../lib/i18n.js';
+import { useNarrow } from '../hooks.js';
 
 export default function ReviewPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const t = useT();
   const { bookings } = useBookings();
+  const isPhone = useNarrow();
   const booking = bookings.find(b => b.id === id);
 
   if (!booking) {
     return (
       <CustomerLayout active="bookings" mobileTitle={t('Review', 'Reseña')}>
-        <div style={{ padding: '80px 32px', textAlign: 'center' }}>
+        <div style={{ padding: isPhone ? '40px 18px' : '80px 32px', textAlign: 'center' }}>
           <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 36 }}>{t('Booking not found', 'Reservación no encontrada')}</h1>
           <button onClick={() => navigate('/bookings')} style={{ marginTop: 24, padding: '12px 22px', borderRadius: 99, background: p.ink, color: p.bg, border: 0, fontSize: 14, cursor: 'pointer' }}>{t('Back to bookings', 'Volver a reservaciones')}</button>
         </div>

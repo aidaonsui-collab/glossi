@@ -134,13 +134,13 @@ export default function Salon() {
       <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 24, fontWeight: type.displayWeight, marginTop: 6, letterSpacing: '-0.02em' }}>{activeReq?.service}</div>
       <div style={{ marginTop: 16, padding: '18px', background: p.ink, color: p.bg, borderRadius: 14, textAlign: 'center' }}>
         <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.5)' }}>YOUR BID</div>
-        <div style={{ fontFamily: type.mono, fontSize: 48, fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1, marginTop: 6 }}>${bidPrice}</div>
+        <div style={{ fontFamily: type.mono, fontSize: isPhone ? 36 : 48, fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1, marginTop: 6 }}>${bidPrice}</div>
         <input type="range" min={70} max={180} step={1} value={bidPrice} onChange={e => setBidPrice(Number(e.target.value))} style={{ width: '100%', marginTop: 10, accentColor: p.accent }} />
         <div style={{ fontSize: 10.5, color: p.accent, fontWeight: 700, marginTop: 4, letterSpacing: '0.1em' }}>{bidPrice < 117 ? `BEATS LOWEST BY $${117 - bidPrice}` : 'ABOVE CURRENT LOWEST'}</div>
       </div>
       <div style={{ marginTop: 14 }}>
         <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: p.inkMuted }}>NEXT SLOT</div>
-        <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6 }}>
+        <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: isPhone ? 'repeat(2,1fr)' : 'repeat(3,1fr)', gap: 6 }}>
           {SLOTS.map(s => (
             <button key={s} onClick={() => setSlot(s)} style={{ padding: '9px 8px', borderRadius: 10, background: s === slot ? p.ink : p.bg, color: s === slot ? p.bg : p.ink, border: `0.5px solid ${s === slot ? p.ink : p.line}`, fontSize: 11.5, fontWeight: 600, textAlign: 'center', cursor: 'pointer', fontFamily: 'inherit' }}>{s}</button>
           ))}

@@ -241,16 +241,16 @@ export default function SalonBids() {
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: p.ink }}>{b.client}</div>
                 <div style={{ fontSize: 12, color: p.inkMuted, marginTop: 1 }}>{b.service}</div>
               </div>
-              <div style={{ minWidth: 100 }}>
+              <div style={{ minWidth: isPhone ? 72 : 100 }}>
                 <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>BID</div>
-                <div style={{ fontFamily: type.mono, fontSize: 17, fontWeight: 600, color: p.ink, marginTop: 1 }}>${b.bid}</div>
+                <div style={{ fontFamily: type.mono, fontSize: isPhone ? 15 : 17, fontWeight: 600, color: p.ink, marginTop: 1 }}>${b.bid}</div>
                 {b.isCountered && (
                   <div style={{ fontFamily: type.mono, fontSize: 12, fontWeight: 600, color: p.accent, marginTop: 2 }}>
                     counter ${b.counterPrice}
                   </div>
                 )}
               </div>
-              <div style={{ minWidth: 130 }}>
+              <div style={{ minWidth: isPhone ? 90 : 130 }}>
                 <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.12em', color: p.inkMuted }}>{b.status === 'won' ? 'BOOKED' : 'STATUS'}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
                   <span style={{ width: 7, height: 7, borderRadius: 99, background: b.isCountered ? p.accent : STATUS_COLOR(p, b.status) }} />

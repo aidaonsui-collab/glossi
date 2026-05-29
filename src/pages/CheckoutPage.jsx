@@ -5,6 +5,7 @@ import { BIDS } from '../ios/data.js';
 import { useToast } from '../components/Toast.jsx';
 import { useBookings, useLang } from '../store.jsx';
 import { useT } from '../lib/i18n.js';
+import { useNarrow } from '../hooks.js';
 
 export default function CheckoutPage() {
   const { id } = useParams();
@@ -13,11 +14,12 @@ export default function CheckoutPage() {
   const t = useT();
   const { lang } = useLang();
   const { add: addBooking } = useBookings();
+  const isPhone = useNarrow();
   const bid = BIDS.find(b => b.id === id);
 
   if (!bid) {
     return (
-      <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body, padding: '80px 32px', textAlign: 'center' }}>
+      <div style={{ background: p.bg, minHeight: '100vh', color: p.ink, fontFamily: type.body, padding: isPhone ? '48px 18px' : '80px 32px', textAlign: 'center' }}>
         <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 36 }}>{t('Bid not found', 'Cotización no encontrada')}</h1>
         <button onClick={() => navigate('/quotes')} style={{ marginTop: 24, padding: '12px 22px', borderRadius: 99, background: p.ink, color: p.bg, border: 0, fontSize: 14, cursor: 'pointer' }}>{t('Back to quotes', 'Volver a cotizaciones')}</button>
       </div>
@@ -25,7 +27,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto', background: p.bg, minHeight: '100vh' }}>
+    <div style={{ maxWidth: 720, margin: '0 auto', background: p.bg, minHeight: '100vh', padding: isPhone ? '0 0 32px' : '0' }}>
       <Checkout
         p={p} type={type} lang={lang} surface="web" bid={bid}
         onBack={() => navigate(-1)}
