@@ -432,14 +432,15 @@ export default function Marketing() {
           'Mapas de servicios, teoría del color y la etiqueta silenciosa de conseguir una buena silla.'
         )}
       />
-      <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : 'repeat(3, 1fr)', gap: isPhone ? 14 : 20, marginTop: isPhone ? 28 : 44 }}>
+      {/* 4 uniform cards. Phone = 1-col stack, desktop = 4-across strip so
+          each image stays modest (~4/3 at quarter width) and the grid is
+          always balanced — no stranded card, no oversized feature. */}
+      <div style={{ display: 'grid', gridTemplateColumns: isPhone ? '1fr' : 'repeat(4, 1fr)', gap: isPhone ? 14 : 20, marginTop: isPhone ? 28 : 44 }}>
         {GUIDE.map((g, i) => (
           <Link
             key={i}
             to="/editorial"
             style={{
-              gridColumn: !isPhone && i === 0 ? 'span 2' : 'span 1',
-              gridRow: !isPhone && i === 0 ? 'span 2' : 'span 1',
               background: p.bg, borderRadius: 16, overflow: 'hidden', textDecoration: 'none', color: p.ink,
               display: 'flex', flexDirection: 'column',
               border: `0.5px solid ${p.line}`,
@@ -448,12 +449,12 @@ export default function Marketing() {
             onMouseEnter={e => { if (!isPhone) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 16px 32px rgba(26,23,20,0.08)'; } }}
             onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
           >
-            <div style={{ aspectRatio: i === 0 && !isPhone ? '16/10' : '5/4', background: ACCENTS[(i + 2) % ACCENTS.length], overflow: 'hidden', position: 'relative' }}>
+            <div style={{ aspectRatio: '4/3', background: ACCENTS[(i + 2) % ACCENTS.length], overflow: 'hidden', position: 'relative' }}>
               <img src={g.photo} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
-            <div style={{ padding: isPhone ? 16 : 22, flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ padding: isPhone ? 16 : 18, flex: 1, display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: p.accent, textTransform: 'uppercase' }}>{lang === 'es' ? g.tagEs : g.tagEn}</span>
-              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: i === 0 && !isPhone ? 30 : 21, fontWeight: type.displayWeight, letterSpacing: '-0.015em', lineHeight: 1.15, margin: '10px 0 14px', textWrap: 'balance' }}>{lang === 'es' ? g.titleEs : g.titleEn}</div>
+              <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 20, fontWeight: type.displayWeight, letterSpacing: '-0.015em', lineHeight: 1.15, margin: '10px 0 14px', textWrap: 'balance' }}>{lang === 'es' ? g.titleEs : g.titleEn}</div>
               <div style={{ marginTop: 'auto', fontFamily: type.mono, fontSize: 11, color: p.inkMuted, letterSpacing: '0.04em' }}>{lang === 'es' ? g.readEs : g.readEn}</div>
             </div>
           </Link>
