@@ -4066,5 +4066,339 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "23": {
+    "en": {
+      "dek": "The right massage frequency depends entirely on what you're using it for — there's no universal standard. For general maintenance, once a month keeps most people on track. For injury recovery or chronic pain, weekly or biweekly sessions are the clinical sweet spot. Athletes and high-stress workers usually land between every two weeks and weekly.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Maintenance for healthy adults: every 4–8 weeks",
+            "Injury recovery or chronic pain: weekly or biweekly, in a short series of 3–8 sessions",
+            "Athletes and high-stress jobs: every 2–4 weeks",
+            "Allow at least 48 hours between deep tissue sessions",
+            "Benefits build on each other — consistency matters more than intensity"
+          ]
+        },
+        {
+          "h": "What determines how often you need a massage?",
+          "p": "There are no standard guidelines for how many massages you can get, but a massage therapist or doctor can recommend a frequency that fits your needs. It always comes down to your personal situation — lifestyle, daily habits, overall health, occupation, and budget all factor in."
+        },
+        {
+          "p": "The biggest variable is your goal. Massages for injury are typically more frequent, while massages for relaxation can happen less often. If you're chasing a specific outcome — pain relief, better sleep, faster recovery — your schedule needs to be tighter than someone who just wants to decompress."
+        },
+        {
+          "h": "How often for general relaxation and stress relief?",
+          "p": "For general relaxation, every two to four weeks is a comfortable rhythm. A monthly massage brings a real range of benefits — reduced stress, more energy, and relief from muscle tension — and keeps you feeling grounded between sessions."
+        },
+        {
+          "p": "If you're specifically targeting stress and anxiety, going more often early on helps. Physical touch and massage can relieve feelings of anxiety and loneliness by reducing cortisol levels. Starting with a tighter cadence for a few weeks helps interrupt the body's stress-holding patterns before you taper to maintenance."
+        },
+        {
+          "h": "How often for injury recovery and chronic pain?",
+          "p": "If you're dealing with aches and pains from an injury or something chronic, weekly massage helps get you back on track. For pain relief after an injury, it's most often used more frequently at first — once or twice per week — tapering to once a week or every other week through recovery."
+        },
+        {
+          "p": "When dealing with active pain, aim for a short series spaced no more than two weeks apart. Most clients need 3–8 sessions to reset dysfunctional patterns and restore movement. A practical gauge: if pain returns within a few days, it's time to go back; if you're pain-free a week later, start adding time between sessions. For chronic conditions, once a week is the typical starting point depending on how your body responds."
+        },
+        {
+          "p": "One hard rule: it takes a good 48 hours for the system to rebalance after a deep massage, so leave at least a two-day gap between deep tissue sessions. Massage stimulates blood flow, which helps muscles and joints recover faster."
+        },
+        {
+          "h": "How often for athletes?",
+          "p": "Competitive athletes often go one to two times a week. The common recommendation is bi-weekly massage to loosen tight muscles, increase flexibility, and keep you on top of your training — scaling up to weekly around an event or competition for a speedier recovery."
+        },
+        {
+          "h": "The maintenance zone: what's enough to stay pain-free?",
+          "p": "For most healthy adults, every 4–8 weeks is enough to stay pain-free. For people with high-stress jobs or intense workout schedules, every 2–4 weeks works better. Relaxation massage is lighter and less invasive than sports massage, so it can be tolerated more often — as often as you find useful."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can you get a massage too often?",
+          "a": "For deep tissue work, yes — your body needs at least 48 hours between sessions to rebalance. Lighter relaxation massage can be done more frequently based on what your body tolerates."
+        },
+        {
+          "q": "How many sessions do you need to feel results?",
+          "a": "For active pain or injury, most people need 3–8 sessions to reset dysfunctional patterns. For general maintenance, you may feel the benefit after the first session."
+        },
+        {
+          "q": "What's the minimum effective frequency?",
+          "a": "If you're not chasing a specific outcome, once a month is a solid baseline. Budget-conscious? Stretching to every 4–8 weeks still gives meaningful maintenance for healthy adults with lower physical demand."
+        },
+        {
+          "q": "How soon after an injury can you get a massage?",
+          "a": "Work with your therapist or doctor on timing. Early recovery often means frequent sessions — once or twice a week — that taper as you heal, supporting recovery without overtaxing the injured area."
+        }
+      ]
+    },
+    "es": {
+      "dek": "The right massage frequency depends entirely on what you're using it for — there's no universal standard. For general maintenance, once a month keeps most people on track. For injury recovery or chronic pain, weekly or biweekly sessions are the clinical sweet spot. Athletes and high-stress workers usually land between every two weeks and weekly.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Maintenance for healthy adults: every 4–8 weeks",
+            "Injury recovery or chronic pain: weekly or biweekly, in a short series of 3–8 sessions",
+            "Athletes and high-stress jobs: every 2–4 weeks",
+            "Allow at least 48 hours between deep tissue sessions",
+            "Benefits build on each other — consistency matters more than intensity"
+          ]
+        },
+        {
+          "h": "What determines how often you need a massage?",
+          "p": "There are no standard guidelines for how many massages you can get, but a massage therapist or doctor can recommend a frequency that fits your needs. It always comes down to your personal situation — lifestyle, daily habits, overall health, occupation, and budget all factor in."
+        },
+        {
+          "p": "The biggest variable is your goal. Massages for injury are typically more frequent, while massages for relaxation can happen less often. If you're chasing a specific outcome — pain relief, better sleep, faster recovery — your schedule needs to be tighter than someone who just wants to decompress."
+        },
+        {
+          "h": "How often for general relaxation and stress relief?",
+          "p": "For general relaxation, every two to four weeks is a comfortable rhythm. A monthly massage brings a real range of benefits — reduced stress, more energy, and relief from muscle tension — and keeps you feeling grounded between sessions."
+        },
+        {
+          "p": "If you're specifically targeting stress and anxiety, going more often early on helps. Physical touch and massage can relieve feelings of anxiety and loneliness by reducing cortisol levels. Starting with a tighter cadence for a few weeks helps interrupt the body's stress-holding patterns before you taper to maintenance."
+        },
+        {
+          "h": "How often for injury recovery and chronic pain?",
+          "p": "If you're dealing with aches and pains from an injury or something chronic, weekly massage helps get you back on track. For pain relief after an injury, it's most often used more frequently at first — once or twice per week — tapering to once a week or every other week through recovery."
+        },
+        {
+          "p": "When dealing with active pain, aim for a short series spaced no more than two weeks apart. Most clients need 3–8 sessions to reset dysfunctional patterns and restore movement. A practical gauge: if pain returns within a few days, it's time to go back; if you're pain-free a week later, start adding time between sessions. For chronic conditions, once a week is the typical starting point depending on how your body responds."
+        },
+        {
+          "p": "One hard rule: it takes a good 48 hours for the system to rebalance after a deep massage, so leave at least a two-day gap between deep tissue sessions. Massage stimulates blood flow, which helps muscles and joints recover faster."
+        },
+        {
+          "h": "How often for athletes?",
+          "p": "Competitive athletes often go one to two times a week. The common recommendation is bi-weekly massage to loosen tight muscles, increase flexibility, and keep you on top of your training — scaling up to weekly around an event or competition for a speedier recovery."
+        },
+        {
+          "h": "The maintenance zone: what's enough to stay pain-free?",
+          "p": "For most healthy adults, every 4–8 weeks is enough to stay pain-free. For people with high-stress jobs or intense workout schedules, every 2–4 weeks works better. Relaxation massage is lighter and less invasive than sports massage, so it can be tolerated more often — as often as you find useful."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can you get a massage too often?",
+          "a": "For deep tissue work, yes — your body needs at least 48 hours between sessions to rebalance. Lighter relaxation massage can be done more frequently based on what your body tolerates."
+        },
+        {
+          "q": "How many sessions do you need to feel results?",
+          "a": "For active pain or injury, most people need 3–8 sessions to reset dysfunctional patterns. For general maintenance, you may feel the benefit after the first session."
+        },
+        {
+          "q": "What's the minimum effective frequency?",
+          "a": "If you're not chasing a specific outcome, once a month is a solid baseline. Budget-conscious? Stretching to every 4–8 weeks still gives meaningful maintenance for healthy adults with lower physical demand."
+        },
+        {
+          "q": "How soon after an injury can you get a massage?",
+          "a": "Work with your therapist or doctor on timing. Early recovery often means frequent sessions — once or twice a week — that taper as you heal, supporting recovery without overtaxing the injured area."
+        }
+      ]
+    }
+  },
+  "24": {
+    "en": {
+      "dek": "An ingrown hair is a strand of hair that grows back into your skin after shaving, tweezing, or waxing. It happens when the hair gets trapped and curls back into the skin instead of growing outward, showing up as raised, itchy bumps — more likely if you have thick, curly, or coarse hair. Most clear up on their own within one to two weeks, but a few simple steps speed things along and keep them from coming back.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Ingrown hairs happen when trapped hair curls back into the skin",
+            "Gentle exfoliation and warm compresses help release them",
+            "Don't pick or pop them — that risks infection and scarring",
+            "Shave in the direction of growth and keep skin moisturized to prevent them",
+            "See a dermatologist if one becomes painful, warm, or red"
+          ]
+        },
+        {
+          "h": "What does an ingrown hair look like?",
+          "p": "An ingrown hair can look like a tiny, flesh-colored bump, or sometimes a black spot just under your skin. If it gets irritated, the bump can grow bigger and turn pink or red, resembling a pimple. On lighter skin the bumps may look red; on black or brown skin the redness can be harder to see, but the bump may look a different color than the surrounding skin."
+        },
+        {
+          "p": "The usual trigger is hair removal — shaving, waxing, tweezing, plucking, or threading can all cause ingrown hairs. You're more likely to get them if you have coarse or curly hair."
+        },
+        {
+          "h": "How to get rid of an ingrown hair at home"
+        },
+        {
+          "h": "Apply a warm compress",
+          "p": "Warm compresses open your pores and make it easier for the trapped hair to release. Press one on the spot and move it in gentle circles for 5 to 10 minutes."
+        },
+        {
+          "h": "Gently exfoliate",
+          "p": "Exfoliation removes the dead skin cells blocking the hair from growing out. Use warm — not hot — water and small, circular motions with a washcloth, exfoliating brush, or a gentle scrub. Sloughing off that outer layer helps the hair grow out properly instead of curling back in."
+        },
+        {
+          "h": "Try to release the hair",
+          "p": "If the compress and exfoliation don't work, you can gently pull out a hair that's looped or curled back into the skin using a sterile needle, pin, or tweezers — then apply rubbing alcohol to the surrounding skin to prevent infection. If the hair doesn't come out easily, leave it alone for at least a few days. Don't dig for it."
+        },
+        {
+          "h": "Keep skin moisturized",
+          "p": "Keep your skin soft and elastic with a moisturizing lotion or oil, especially after exfoliating. Dryness worsens irritation and raises the risk of more ingrowns."
+        },
+        {
+          "h": "What NOT to do",
+          "p": "Don't pick at, scratch, or pop your ingrown hairs. Popping one exposes the follicle to bacteria, which can lead to infection or scarring."
+        },
+        {
+          "h": "How to prevent ingrown hairs"
+        },
+        {
+          "h": "Change your shaving routine",
+          "p": "Shave in the direction of hair growth to minimize the risk of hair curling back into the skin. Use a good shaving cream to reduce friction and protect the skin, and replace your razor regularly — a dull blade makes hair grow back incorrectly."
+        },
+        {
+          "h": "Exfoliate before hair removal",
+          "p": "Exfoliating before you shave or wax lowers the risk of hairs getting trapped. Use a gentle scrub with fine granules, or a chemical exfoliant like glycolic or salicylic acid."
+        },
+        {
+          "h": "Keep skin moisturized",
+          "p": "Hydrated skin keeps its elasticity, which reduces the chance of hairs becoming trapped."
+        },
+        {
+          "h": "Wear loose clothing",
+          "p": "Tight clothes irritate the skin and can cause ingrown hairs — go for loose-fitting garments, especially right after shaving or waxing."
+        },
+        {
+          "h": "Reconsider your hair removal method",
+          "p": "Wax strips remove hair from the root for longer-lasting smoothness. If you shave, an electric shaver held just above the skin avoids the close cuts that lead to ingrowns."
+        },
+        {
+          "h": "When to see a doctor",
+          "p": "If an ingrown hair hurts to the touch, feels warm, or looks red, see a dermatologist. They may prescribe an antibiotic for infection, or a retinoid to help clear dead skin and prevent recurrence."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How long does an ingrown hair take to go away?",
+          "a": "Most heal on their own within one to two weeks as the hair grows out and releases from the skin. The home steps above can speed that up."
+        },
+        {
+          "q": "Can I pop an ingrown hair?",
+          "a": "No. Popping it exposes the follicle to bacteria and risks infection or scarring. If it won't release on its own, leave it alone for a few days and keep the area exfoliated."
+        },
+        {
+          "q": "Why do I keep getting ingrown hairs in the same spot?",
+          "a": "Coarse or curly hair in high-friction areas (bikini line, neck, underarms) is most prone. Consistent exfoliation, shaving with the grain, and looser clothing in those areas usually breaks the cycle. If it persists, a dermatologist can help."
+        },
+        {
+          "q": "Does waxing cause more ingrowns than shaving?",
+          "a": "Both can cause them. Waxing pulls from the root so regrowth is slower, but the regrowing hair can still curl back in. Exfoliating between sessions is the key prevention either way."
+        },
+        {
+          "q": "When should I worry about an ingrown hair?",
+          "a": "If it's painful, warm, swollen, or filled with pus, it may be infected — see a dermatologist rather than treating it at home."
+        }
+      ]
+    },
+    "es": {
+      "dek": "An ingrown hair is a strand of hair that grows back into your skin after shaving, tweezing, or waxing. It happens when the hair gets trapped and curls back into the skin instead of growing outward, showing up as raised, itchy bumps — more likely if you have thick, curly, or coarse hair. Most clear up on their own within one to two weeks, but a few simple steps speed things along and keep them from coming back.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Ingrown hairs happen when trapped hair curls back into the skin",
+            "Gentle exfoliation and warm compresses help release them",
+            "Don't pick or pop them — that risks infection and scarring",
+            "Shave in the direction of growth and keep skin moisturized to prevent them",
+            "See a dermatologist if one becomes painful, warm, or red"
+          ]
+        },
+        {
+          "h": "What does an ingrown hair look like?",
+          "p": "An ingrown hair can look like a tiny, flesh-colored bump, or sometimes a black spot just under your skin. If it gets irritated, the bump can grow bigger and turn pink or red, resembling a pimple. On lighter skin the bumps may look red; on black or brown skin the redness can be harder to see, but the bump may look a different color than the surrounding skin."
+        },
+        {
+          "p": "The usual trigger is hair removal — shaving, waxing, tweezing, plucking, or threading can all cause ingrown hairs. You're more likely to get them if you have coarse or curly hair."
+        },
+        {
+          "h": "How to get rid of an ingrown hair at home"
+        },
+        {
+          "h": "Apply a warm compress",
+          "p": "Warm compresses open your pores and make it easier for the trapped hair to release. Press one on the spot and move it in gentle circles for 5 to 10 minutes."
+        },
+        {
+          "h": "Gently exfoliate",
+          "p": "Exfoliation removes the dead skin cells blocking the hair from growing out. Use warm — not hot — water and small, circular motions with a washcloth, exfoliating brush, or a gentle scrub. Sloughing off that outer layer helps the hair grow out properly instead of curling back in."
+        },
+        {
+          "h": "Try to release the hair",
+          "p": "If the compress and exfoliation don't work, you can gently pull out a hair that's looped or curled back into the skin using a sterile needle, pin, or tweezers — then apply rubbing alcohol to the surrounding skin to prevent infection. If the hair doesn't come out easily, leave it alone for at least a few days. Don't dig for it."
+        },
+        {
+          "h": "Keep skin moisturized",
+          "p": "Keep your skin soft and elastic with a moisturizing lotion or oil, especially after exfoliating. Dryness worsens irritation and raises the risk of more ingrowns."
+        },
+        {
+          "h": "What NOT to do",
+          "p": "Don't pick at, scratch, or pop your ingrown hairs. Popping one exposes the follicle to bacteria, which can lead to infection or scarring."
+        },
+        {
+          "h": "How to prevent ingrown hairs"
+        },
+        {
+          "h": "Change your shaving routine",
+          "p": "Shave in the direction of hair growth to minimize the risk of hair curling back into the skin. Use a good shaving cream to reduce friction and protect the skin, and replace your razor regularly — a dull blade makes hair grow back incorrectly."
+        },
+        {
+          "h": "Exfoliate before hair removal",
+          "p": "Exfoliating before you shave or wax lowers the risk of hairs getting trapped. Use a gentle scrub with fine granules, or a chemical exfoliant like glycolic or salicylic acid."
+        },
+        {
+          "h": "Keep skin moisturized",
+          "p": "Hydrated skin keeps its elasticity, which reduces the chance of hairs becoming trapped."
+        },
+        {
+          "h": "Wear loose clothing",
+          "p": "Tight clothes irritate the skin and can cause ingrown hairs — go for loose-fitting garments, especially right after shaving or waxing."
+        },
+        {
+          "h": "Reconsider your hair removal method",
+          "p": "Wax strips remove hair from the root for longer-lasting smoothness. If you shave, an electric shaver held just above the skin avoids the close cuts that lead to ingrowns."
+        },
+        {
+          "h": "When to see a doctor",
+          "p": "If an ingrown hair hurts to the touch, feels warm, or looks red, see a dermatologist. They may prescribe an antibiotic for infection, or a retinoid to help clear dead skin and prevent recurrence."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How long does an ingrown hair take to go away?",
+          "a": "Most heal on their own within one to two weeks as the hair grows out and releases from the skin. The home steps above can speed that up."
+        },
+        {
+          "q": "Can I pop an ingrown hair?",
+          "a": "No. Popping it exposes the follicle to bacteria and risks infection or scarring. If it won't release on its own, leave it alone for a few days and keep the area exfoliated."
+        },
+        {
+          "q": "Why do I keep getting ingrown hairs in the same spot?",
+          "a": "Coarse or curly hair in high-friction areas (bikini line, neck, underarms) is most prone. Consistent exfoliation, shaving with the grain, and looser clothing in those areas usually breaks the cycle. If it persists, a dermatologist can help."
+        },
+        {
+          "q": "Does waxing cause more ingrowns than shaving?",
+          "a": "Both can cause them. Waxing pulls from the root so regrowth is slower, but the regrowing hair can still curl back in. Exfoliating between sessions is the key prevention either way."
+        },
+        {
+          "q": "When should I worry about an ingrown hair?",
+          "a": "If it's painful, warm, swollen, or filled with pus, it may be infected — see a dermatologist rather than treating it at home."
+        }
+      ]
+    }
   }
 };

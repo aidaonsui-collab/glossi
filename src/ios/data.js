@@ -204,6 +204,20 @@ export const GUIDES = [
     "t_en": "How Long After Lip Filler Can You Kiss?",
     "t_es": "How Long After Lip Filler Can You Kiss?",
     "mood": 30
+  },
+  {
+    "kicker_en": "GUIDE · 3 MIN",
+    "kicker_es": "GUÍA · 3 MIN",
+    "t_en": "How Often Should You Get a Massage? A Science-Backed Guide by Frequency Goal",
+    "t_es": "How Often Should You Get a Massage? A Science-Backed Guide by Frequency Goal",
+    "mood": 31
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How to Get Rid of Ingrown Hairs: Treatments and Prevention Tips",
+    "t_es": "How to Get Rid of Ingrown Hairs: Treatments and Prevention Tips",
+    "mood": 8
   }
 ];
 
