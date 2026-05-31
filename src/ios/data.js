@@ -218,6 +218,13 @@ export const GUIDES = [
     "t_en": "How to Get Rid of Ingrown Hairs: Treatments and Prevention Tips",
     "t_es": "How to Get Rid of Ingrown Hairs: Treatments and Prevention Tips",
     "mood": 8
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How to Get Rid of Blackheads: A Complete Guide",
+    "t_es": "How to Get Rid of Blackheads: A Complete Guide",
+    "mood": 9
   }
 ];
 

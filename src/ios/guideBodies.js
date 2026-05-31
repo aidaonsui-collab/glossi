@@ -4400,5 +4400,211 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "25": {
+    "en": {
+      "dek": "Blackheads are clogged pores that look dark because the trapped oil and dead skin cells oxidize from air exposure — not because your skin is dirty. You can treat most of them at home with salicylic acid, retinoids, and gentle exfoliation. Deep, stubborn ones are safest removed by a dermatologist or medical aesthetician.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Salicylic acid cleansers are the first-line at-home treatment",
+            "Retinoids prevent new blackheads by speeding skin cell turnover",
+            "Never squeeze blackheads at home — you risk scarring and infection",
+            "Oil-free, noncomedogenic products help prevent future clogs",
+            "Professional extraction is the safest option for deep blackheads"
+          ]
+        },
+        {
+          "h": "What are blackheads?",
+          "p": "Blackheads are small, dark spots that form when pores clog with excess oil and dead skin cells, then oxidize from air exposure. They're open comedones — the pore opening dilates, exposing its contents to the air, which is what turns the plug dark. They show up most on the nose, chin, and forehead."
+        },
+        {
+          "p": "The dark color doesn't mean your skin is dirty — it's just oxygen reacting with oil and dead cells in the pore. The nose has more oil glands than other parts of the face, which is why it's especially prone."
+        },
+        {
+          "h": "What causes blackheads?",
+          "p": "Blackheads form when excess oil mixes with dead skin cells and clogs the pore, and people prone to them tend to produce more sebum. Genetics play a role too — one study put the chance of inheriting acne risk through genes at around 80%."
+        },
+        {
+          "p": "Outside factors add to it: ingredients in hair, makeup, and skincare products can be comedogenic and clog pores, and oil- or alcohol-based cleansers can make things worse. Picking at them only makes blackheads more painful and noticeable."
+        },
+        {
+          "h": "How to treat blackheads at home"
+        },
+        {
+          "h": "Salicylic acid cleansers",
+          "p": "Salicylic acid is the first-line home treatment — it dissolves dead skin cells to keep follicles from clogging. Products range from 0.5% to 5% strength; a cleanser with 0.5–2% used once or twice daily is the sweet spot for most people."
+        },
+        {
+          "h": "Retinoids",
+          "p": "Retinoids break up blackheads and help prevent new clogged pores by increasing cellular renewal and generating a fresher skin layer. Start with two or three nights a week, a pea-sized amount for the whole face. Most retinoids are prescription, but adapalene is available over the counter."
+        },
+        {
+          "h": "Benzoyl peroxide",
+          "p": "Benzoyl peroxide targets surface bacteria — but blackheads don't contain bacteria, so it may or may not help. If you use it, a 2.5–5% cleanser left on for 1–2 minutes then rinsed well is the standard approach."
+        },
+        {
+          "h": "Chemical exfoliants",
+          "p": "Chemical exfoliants remove the dead skin cells that clog pores. Glycolic acid gently exfoliates to prevent blackheads from forming, niacinamide helps control oil, and BHAs penetrate the pore to break down the plug."
+        },
+        {
+          "h": "At-home scrubs",
+          "p": "Gentle physical options can help in a pinch:"
+        },
+        {
+          "bullets": [
+            "Sugar or salt scrub: wet your face, massage into affected areas in small circles for up to 30 seconds, then rinse.",
+            "Wet green tea leaves: mix dry leaves with water and massage in for up to 30 seconds to help reduce oil, then rinse.",
+            "Pore strips: use sparingly — they can irritate the skin."
+          ]
+        },
+        {
+          "h": "When to see a professional",
+          "p": "Deep blackheads are best removed by a dermatologist or medical aesthetician, who uses a small tool with rigid metal loops — a comedo extractor — to apply even pressure. That's the safest method for the stubborn ones."
+        },
+        {
+          "p": "Whatever you do, don't squeeze at home: squeezing pushes debris deeper, causing inflammation, infection, and scarring. And there's no harm in simply leaving blackheads alone if you'd rather not treat them."
+        },
+        {
+          "h": "How to prevent blackheads",
+          "bullets": [
+            "Use oil-free, noncomedogenic moisturizers",
+            "Avoid oil-based and alcohol-based cleansers",
+            "Cleanse regularly with salicylic acid",
+            "Use a retinoid to maintain cell turnover",
+            "Always remove makeup before bed",
+            "Skip pore-clogging hair and skincare products"
+          ]
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I squeeze blackheads at home?",
+          "a": "No. Squeezing pushes debris deeper, risking inflammation, infection, and scarring. Deep blackheads should be extracted by a professional with the right tool."
+        },
+        {
+          "q": "Do blackheads mean my skin is dirty?",
+          "a": "No. The dark color is oxidation — oxygen reacting with oil and dead cells inside the pore. Blackheads are a form of acne, not a hygiene problem, and over-scrubbing to 'clean' them usually backfires."
+        },
+        {
+          "q": "How fast will treatment work?",
+          "a": "Salicylic acid and retinoids work gradually — expect a few weeks of consistent use before real change, and longer to prevent new ones. Piling on products faster just irritates the skin barrier."
+        },
+        {
+          "q": "Are pore strips worth it?",
+          "a": "They lift surface blackheads temporarily but don't stop new ones forming, and frequent use irritates skin. Treat them as an occasional touch-up, not a routine."
+        },
+        {
+          "q": "What's the single best prevention habit?",
+          "a": "Consistency with a salicylic acid cleanser plus a nightly retinoid does more than any one-off treatment. Pair it with noncomedogenic products and removing makeup before bed."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Blackheads are clogged pores that look dark because the trapped oil and dead skin cells oxidize from air exposure — not because your skin is dirty. You can treat most of them at home with salicylic acid, retinoids, and gentle exfoliation. Deep, stubborn ones are safest removed by a dermatologist or medical aesthetician.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Salicylic acid cleansers are the first-line at-home treatment",
+            "Retinoids prevent new blackheads by speeding skin cell turnover",
+            "Never squeeze blackheads at home — you risk scarring and infection",
+            "Oil-free, noncomedogenic products help prevent future clogs",
+            "Professional extraction is the safest option for deep blackheads"
+          ]
+        },
+        {
+          "h": "What are blackheads?",
+          "p": "Blackheads are small, dark spots that form when pores clog with excess oil and dead skin cells, then oxidize from air exposure. They're open comedones — the pore opening dilates, exposing its contents to the air, which is what turns the plug dark. They show up most on the nose, chin, and forehead."
+        },
+        {
+          "p": "The dark color doesn't mean your skin is dirty — it's just oxygen reacting with oil and dead cells in the pore. The nose has more oil glands than other parts of the face, which is why it's especially prone."
+        },
+        {
+          "h": "What causes blackheads?",
+          "p": "Blackheads form when excess oil mixes with dead skin cells and clogs the pore, and people prone to them tend to produce more sebum. Genetics play a role too — one study put the chance of inheriting acne risk through genes at around 80%."
+        },
+        {
+          "p": "Outside factors add to it: ingredients in hair, makeup, and skincare products can be comedogenic and clog pores, and oil- or alcohol-based cleansers can make things worse. Picking at them only makes blackheads more painful and noticeable."
+        },
+        {
+          "h": "How to treat blackheads at home"
+        },
+        {
+          "h": "Salicylic acid cleansers",
+          "p": "Salicylic acid is the first-line home treatment — it dissolves dead skin cells to keep follicles from clogging. Products range from 0.5% to 5% strength; a cleanser with 0.5–2% used once or twice daily is the sweet spot for most people."
+        },
+        {
+          "h": "Retinoids",
+          "p": "Retinoids break up blackheads and help prevent new clogged pores by increasing cellular renewal and generating a fresher skin layer. Start with two or three nights a week, a pea-sized amount for the whole face. Most retinoids are prescription, but adapalene is available over the counter."
+        },
+        {
+          "h": "Benzoyl peroxide",
+          "p": "Benzoyl peroxide targets surface bacteria — but blackheads don't contain bacteria, so it may or may not help. If you use it, a 2.5–5% cleanser left on for 1–2 minutes then rinsed well is the standard approach."
+        },
+        {
+          "h": "Chemical exfoliants",
+          "p": "Chemical exfoliants remove the dead skin cells that clog pores. Glycolic acid gently exfoliates to prevent blackheads from forming, niacinamide helps control oil, and BHAs penetrate the pore to break down the plug."
+        },
+        {
+          "h": "At-home scrubs",
+          "p": "Gentle physical options can help in a pinch:"
+        },
+        {
+          "bullets": [
+            "Sugar or salt scrub: wet your face, massage into affected areas in small circles for up to 30 seconds, then rinse.",
+            "Wet green tea leaves: mix dry leaves with water and massage in for up to 30 seconds to help reduce oil, then rinse.",
+            "Pore strips: use sparingly — they can irritate the skin."
+          ]
+        },
+        {
+          "h": "When to see a professional",
+          "p": "Deep blackheads are best removed by a dermatologist or medical aesthetician, who uses a small tool with rigid metal loops — a comedo extractor — to apply even pressure. That's the safest method for the stubborn ones."
+        },
+        {
+          "p": "Whatever you do, don't squeeze at home: squeezing pushes debris deeper, causing inflammation, infection, and scarring. And there's no harm in simply leaving blackheads alone if you'd rather not treat them."
+        },
+        {
+          "h": "How to prevent blackheads",
+          "bullets": [
+            "Use oil-free, noncomedogenic moisturizers",
+            "Avoid oil-based and alcohol-based cleansers",
+            "Cleanse regularly with salicylic acid",
+            "Use a retinoid to maintain cell turnover",
+            "Always remove makeup before bed",
+            "Skip pore-clogging hair and skincare products"
+          ]
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I squeeze blackheads at home?",
+          "a": "No. Squeezing pushes debris deeper, risking inflammation, infection, and scarring. Deep blackheads should be extracted by a professional with the right tool."
+        },
+        {
+          "q": "Do blackheads mean my skin is dirty?",
+          "a": "No. The dark color is oxidation — oxygen reacting with oil and dead cells inside the pore. Blackheads are a form of acne, not a hygiene problem, and over-scrubbing to 'clean' them usually backfires."
+        },
+        {
+          "q": "How fast will treatment work?",
+          "a": "Salicylic acid and retinoids work gradually — expect a few weeks of consistent use before real change, and longer to prevent new ones. Piling on products faster just irritates the skin barrier."
+        },
+        {
+          "q": "Are pore strips worth it?",
+          "a": "They lift surface blackheads temporarily but don't stop new ones forming, and frequent use irritates skin. Treat them as an occasional touch-up, not a routine."
+        },
+        {
+          "q": "What's the single best prevention habit?",
+          "a": "Consistency with a salicylic acid cleanser plus a nightly retinoid does more than any one-off treatment. Pair it with noncomedogenic products and removing makeup before bed."
+        }
+      ]
+    }
   }
 };
