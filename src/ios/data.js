@@ -232,6 +232,20 @@ export const GUIDES = [
     "t_en": "How to Make Balayage Last Longer — Expert Tips That Actually Work",
     "t_es": "How to Make Balayage Last Longer — Expert Tips That Actually Work",
     "mood": 10
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How Often Should You Get a Haircut?",
+    "t_es": "How Often Should You Get a Haircut?",
+    "mood": 11
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How to Repair Damaged Hair: A Practical Guide to Getting Your Strands Back",
+    "t_es": "How to Repair Damaged Hair: A Practical Guide to Getting Your Strands Back",
+    "mood": 12
   }
 ];
 

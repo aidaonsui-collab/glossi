@@ -4838,5 +4838,399 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "27": {
+    "en": {
+      "dek": "Most adults should get a haircut every 4 to 8 weeks — but the right number depends heavily on your length, texture, and how much chemical processing your hair has been through.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Short styles (pixie, fade) need trimming every 3–5 weeks to hold their shape",
+            "Medium-length hair holds up 6–8 weeks between appointments",
+            "Long hair can stretch 8–12 weeks, longer if you're growing it out",
+            "Curly and textured hair does best every 6–10 weeks",
+            "Split ends spread — no product reverses them, so timing matters"
+          ]
+        },
+        {
+          "h": "Why timing actually matters",
+          "p": "Split ends don't stop at the tip. Once the ends split, the break travels up the shaft, causing breakage that makes your hair look thinner and shorter overall — and there's no magic potion that reverses split ends. By the time the damage shows, you often end up cutting off more than you planned. Waiting too long doesn't save money; it costs more later when you're reviving a shape that's lost its structure."
+        },
+        {
+          "h": "Haircut frequency by length"
+        },
+        {
+          "h": "Short hair (pixie, fade, buzzcut)",
+          "p": "Short styles need the most attention because shape defines their impact — pixie cuts and fades lose structure fast, so most clients visit every 3 to 5 weeks. Clipper cuts like fades and tapers need fresh edges about every 3 weeks to stay sharp."
+        },
+        {
+          "h": "Medium-length hair",
+          "p": "Medium styles allow more flexibility — these shapes usually last 6 to 8 weeks. You can stretch toward 8–10 weeks if you're not fighting split ends."
+        },
+        {
+          "h": "Long hair",
+          "p": "Long hair needs less maintenance than shorter styles. Many clients wait 8 to 12 weeks, though a trim every 6–8 weeks keeps split ends at bay if your ends are prone to them."
+        },
+        {
+          "h": "Haircut frequency by texture"
+        },
+        {
+          "h": "Curly and textured hair",
+          "p": "Curls can disguise uneven ends, but without maintenance, dryness and breakage build. Visiting every 6 to 10 weeks maintains curl definition and makes styling easier."
+        },
+        {
+          "h": "Fine hair",
+          "p": "Fine hair shows regrowth faster and loses shape sooner — medium-length fine hair every 6 to 8 weeks, long fine hair 8 to 12 weeks."
+        },
+        {
+          "h": "Thick or coarse hair",
+          "p": "Thick hair holds a style longer but still needs attention at the ends. The same general bands apply, though you may push closer to 10–12 weeks if your ends are holding up."
+        },
+        {
+          "h": "When your hair needs more frequent trims",
+          "p": "Some situations call for shorter intervals:"
+        },
+        {
+          "bullets": [
+            "Split-end-prone or damaged hair: every 4–6 weeks.",
+            "Bangs or fringe: every 2–4 weeks, since they grow fast and frame your face.",
+            "Chemically treated hair: color, lightening, and chemical treatments open the cuticle and increase vulnerability, so trims every 4 to 6 weeks help. If you also heat-style colored hair, every 6 to 8 weeks protects it from both stressors."
+          ]
+        },
+        {
+          "h": "Trim vs. cut: what's the difference?",
+          "p": "A trim takes off an inch or two at the ends; a cut is more drastic, with two to three inches or more chopped off. A trim usually removes about ¼ to ½ inch to clean up split ends and maintain your shape. Getting it done by a professional ensures an even result customized to your face shape and hair health — when you trim your own hair, you tend to miss split ends or leave your length uneven."
+        },
+        {
+          "h": "Can you skip the salon?",
+          "p": "The frequency that's right for you depends on your cut, texture, lifestyle, and grooming habits. When you skip haircuts, weakness builds gradually, and by the time it's noticeable you end up cutting off more than you planned. If your hair is healthy and strong, you can sometimes stretch to every 10 to 12 weeks — but if you're growing it out, never exceed 12 weeks between trims."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How often should I get a haircut if I'm growing it out?",
+          "a": "Stretch to 8–12 weeks between trims, but never exceed 12 weeks — split ends travel up the shaft and cost you more length in the long run."
+        },
+        {
+          "q": "Does cutting hair make it grow faster?",
+          "a": "Not directly, but trims prevent breakage at the ends. Less breakage means your hair looks longer and fuller over time."
+        },
+        {
+          "q": "What if I can't afford to go every 6 weeks?",
+          "a": "If your hair is healthy, you can often stretch to 10–12 weeks. Just watch for split ends — once they show up, book a trim."
+        },
+        {
+          "q": "Do curly-haired people really need trims as often?",
+          "a": "Yes. Curly hair hides uneven ends visually, but dryness and breakage still happen underneath. Every 6 to 10 weeks keeps curls defined."
+        },
+        {
+          "q": "How do I know it's time even if it's been under 6 weeks?",
+          "a": "If your hair looks dry or starts losing its shape, it's time. Split ends, frizz at the ends, and lost shape are all signals — don't wait for the calendar."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Most adults should get a haircut every 4 to 8 weeks — but the right number depends heavily on your length, texture, and how much chemical processing your hair has been through.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Short styles (pixie, fade) need trimming every 3–5 weeks to hold their shape",
+            "Medium-length hair holds up 6–8 weeks between appointments",
+            "Long hair can stretch 8–12 weeks, longer if you're growing it out",
+            "Curly and textured hair does best every 6–10 weeks",
+            "Split ends spread — no product reverses them, so timing matters"
+          ]
+        },
+        {
+          "h": "Why timing actually matters",
+          "p": "Split ends don't stop at the tip. Once the ends split, the break travels up the shaft, causing breakage that makes your hair look thinner and shorter overall — and there's no magic potion that reverses split ends. By the time the damage shows, you often end up cutting off more than you planned. Waiting too long doesn't save money; it costs more later when you're reviving a shape that's lost its structure."
+        },
+        {
+          "h": "Haircut frequency by length"
+        },
+        {
+          "h": "Short hair (pixie, fade, buzzcut)",
+          "p": "Short styles need the most attention because shape defines their impact — pixie cuts and fades lose structure fast, so most clients visit every 3 to 5 weeks. Clipper cuts like fades and tapers need fresh edges about every 3 weeks to stay sharp."
+        },
+        {
+          "h": "Medium-length hair",
+          "p": "Medium styles allow more flexibility — these shapes usually last 6 to 8 weeks. You can stretch toward 8–10 weeks if you're not fighting split ends."
+        },
+        {
+          "h": "Long hair",
+          "p": "Long hair needs less maintenance than shorter styles. Many clients wait 8 to 12 weeks, though a trim every 6–8 weeks keeps split ends at bay if your ends are prone to them."
+        },
+        {
+          "h": "Haircut frequency by texture"
+        },
+        {
+          "h": "Curly and textured hair",
+          "p": "Curls can disguise uneven ends, but without maintenance, dryness and breakage build. Visiting every 6 to 10 weeks maintains curl definition and makes styling easier."
+        },
+        {
+          "h": "Fine hair",
+          "p": "Fine hair shows regrowth faster and loses shape sooner — medium-length fine hair every 6 to 8 weeks, long fine hair 8 to 12 weeks."
+        },
+        {
+          "h": "Thick or coarse hair",
+          "p": "Thick hair holds a style longer but still needs attention at the ends. The same general bands apply, though you may push closer to 10–12 weeks if your ends are holding up."
+        },
+        {
+          "h": "When your hair needs more frequent trims",
+          "p": "Some situations call for shorter intervals:"
+        },
+        {
+          "bullets": [
+            "Split-end-prone or damaged hair: every 4–6 weeks.",
+            "Bangs or fringe: every 2–4 weeks, since they grow fast and frame your face.",
+            "Chemically treated hair: color, lightening, and chemical treatments open the cuticle and increase vulnerability, so trims every 4 to 6 weeks help. If you also heat-style colored hair, every 6 to 8 weeks protects it from both stressors."
+          ]
+        },
+        {
+          "h": "Trim vs. cut: what's the difference?",
+          "p": "A trim takes off an inch or two at the ends; a cut is more drastic, with two to three inches or more chopped off. A trim usually removes about ¼ to ½ inch to clean up split ends and maintain your shape. Getting it done by a professional ensures an even result customized to your face shape and hair health — when you trim your own hair, you tend to miss split ends or leave your length uneven."
+        },
+        {
+          "h": "Can you skip the salon?",
+          "p": "The frequency that's right for you depends on your cut, texture, lifestyle, and grooming habits. When you skip haircuts, weakness builds gradually, and by the time it's noticeable you end up cutting off more than you planned. If your hair is healthy and strong, you can sometimes stretch to every 10 to 12 weeks — but if you're growing it out, never exceed 12 weeks between trims."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "How often should I get a haircut if I'm growing it out?",
+          "a": "Stretch to 8–12 weeks between trims, but never exceed 12 weeks — split ends travel up the shaft and cost you more length in the long run."
+        },
+        {
+          "q": "Does cutting hair make it grow faster?",
+          "a": "Not directly, but trims prevent breakage at the ends. Less breakage means your hair looks longer and fuller over time."
+        },
+        {
+          "q": "What if I can't afford to go every 6 weeks?",
+          "a": "If your hair is healthy, you can often stretch to 10–12 weeks. Just watch for split ends — once they show up, book a trim."
+        },
+        {
+          "q": "Do curly-haired people really need trims as often?",
+          "a": "Yes. Curly hair hides uneven ends visually, but dryness and breakage still happen underneath. Every 6 to 10 weeks keeps curls defined."
+        },
+        {
+          "q": "How do I know it's time even if it's been under 6 weeks?",
+          "a": "If your hair looks dry or starts losing its shape, it's time. Split ends, frizz at the ends, and lost shape are all signals — don't wait for the calendar."
+        }
+      ]
+    }
+  },
+  "28": {
+    "en": {
+      "dek": "Here's the hard truth upfront: damaged hair can't truly be repaired. Hair is mostly keratin, a protein that forms the protective outer cuticle — once that structure breaks down, the damage is done. The only real cure is time, a pair of shears, and preventing new damage. The good news: you have more control over how your hair looks and feels than you'd think.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Damaged hair can't be repaired — only trimmed off and protected from further harm",
+            "Signs of damage: dryness, split ends, dullness, breakage, and tangles",
+            "Weekly deep conditioning and penetrating oils restore moisture and smoothness",
+            "Heat, chemical treatments, and tight styles are the main culprits",
+            "A professional colorist minimizes damage better than any box dye"
+          ]
+        },
+        {
+          "h": "What does damaged hair look like?",
+          "p": "Extremely damaged hair develops cracks in the outer cuticle layer. Once the cuticle lifts, the strand is open to further damage and breakage. Warning signs:"
+        },
+        {
+          "bullets": [
+            "Dryness that doesn't respond to conditioner",
+            "Split ends that travel up the shaft",
+            "Dull color even after a fresh dye job",
+            "Breakage near the crown and nape",
+            "Tangling that worsens through the day"
+          ]
+        },
+        {
+          "p": "If these sound familiar, your hair isn't beyond hope — the cuticle just needs attention, and that's manageable."
+        },
+        {
+          "h": "The three main causes of hair damage"
+        },
+        {
+          "h": "Chemical damage",
+          "p": "Color, perms, and relaxers penetrate the cuticle to alter your hair's structure. To limit it, experts suggest choosing a dye within three shades of your natural color and going darker rather than lighter, and waiting 8–10 weeks (or longer) between dye jobs so the cuticle can recover. There's no substitute for an experienced pro painting your strands — salon technique and products measurably reduce how much damage your hair absorbs."
+        },
+        {
+          "h": "Heat damage",
+          "p": "Blow dryers, flat irons, and curling wands weaken the cuticle over time. One study found that holding the blow dryer about 15 cm (six inches) away and keeping it moving reduces damage. Apply heat protectant a few minutes before heat-styling — it coats the shaft and buys protection, but it's not a license to crank the heat to max."
+        },
+        {
+          "h": "Mechanical damage",
+          "p": "Mechanical damage comes from excessive physical stress on the hair. Wet hair is more fragile than dry, so handle it gently and minimize rough brushing. Tight styles like high ponytails or braids pull on the hair and can cause traction alopecia, where hair is pulled from the roots — looser styles protect your hairline."
+        },
+        {
+          "h": "How to restore moisture and smooth the cuticle",
+          "p": "You can't reverse damage, but the right products restore the look and feel of your hair."
+        },
+        {
+          "h": "Penetrating oils",
+          "bullets": [
+            "Coconut oil: its molecules are small enough to penetrate the cuticle and hydrate from the inside out. Apply a small amount to damp mid-lengths and ends.",
+            "Olive oil: shown to rehydrate hair and smooth the cuticle.",
+            "Almond oil: softens and strengthens; a dime-sized amount on the ends before drying cuts frizz."
+          ]
+        },
+        {
+          "h": "Weekly treatments",
+          "p": "Use a deep conditioner or mask once a week to restore moisture — leave it the recommended time, since over-saturating can weigh hair down. A rice water rinse can help too: inositol in rice water penetrates damaged hair and strengthens it from within. Use it as a final rinse after shampooing."
+        },
+        {
+          "h": "How to handle hair without making it worse"
+        },
+        {
+          "h": "Drying",
+          "p": "Never rub — blot and squeeze gently when towel-drying. Rough friction lifts the cuticle and creates frizz; a microfiber towel or cotton t-shirt is gentler."
+        },
+        {
+          "h": "Detangling",
+          "p": "Use a wide-tooth comb on wet hair and skip vigorous towel drying. The flexible bristles yield to tension instead of tearing through knots. Start at the bottom and work up to clear snags safely — forcing a brush from root to tip through knots is a fast track to breakage."
+        },
+        {
+          "h": "Sleeping",
+          "p": "Silk or satin pillowcases lessen frizz and breakage because silk creates less friction than cotton. No silk pillowcase? A silk bonnet works too."
+        },
+        {
+          "h": "Trims",
+          "p": "Going too long between cuts leads to dry split ends, and you can't put a split end back together. Regular trims remove split ends and prevent the damage from spreading — every 8–12 weeks is a good baseline, or sooner if you see splits climbing the shaft."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can damaged hair be repaired at home?",
+          "a": "No. Hair is a collection of dead cells, so the damaged portion is beyond repair. You can mask the look of damage with oils, deep conditioners, and protective styling, but the damaged part has to grow out or be cut off."
+        },
+        {
+          "q": "How can I repair damaged hair naturally?",
+          "a": "Coconut, olive, or almond oil to hydrate and smooth the cuticle, plus a weekly rice-water rinse for strength. Pair them with gentle handling — no rough towel drying, no tight styles, minimal heat."
+        },
+        {
+          "q": "How often should I trim damaged hair?",
+          "a": "Every 8 to 12 weeks, or sooner if split ends start traveling up the shaft. Trims remove the damage before it spreads."
+        },
+        {
+          "q": "What products help color-treated damaged hair?",
+          "a": "Color-safe shampoo and conditioner, formulated at the right pH to keep the shaft from swelling and leaking dye. Add a weekly deep-conditioning mask and a silk pillowcase to cut overnight breakage."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Here's the hard truth upfront: damaged hair can't truly be repaired. Hair is mostly keratin, a protein that forms the protective outer cuticle — once that structure breaks down, the damage is done. The only real cure is time, a pair of shears, and preventing new damage. The good news: you have more control over how your hair looks and feels than you'd think.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Damaged hair can't be repaired — only trimmed off and protected from further harm",
+            "Signs of damage: dryness, split ends, dullness, breakage, and tangles",
+            "Weekly deep conditioning and penetrating oils restore moisture and smoothness",
+            "Heat, chemical treatments, and tight styles are the main culprits",
+            "A professional colorist minimizes damage better than any box dye"
+          ]
+        },
+        {
+          "h": "What does damaged hair look like?",
+          "p": "Extremely damaged hair develops cracks in the outer cuticle layer. Once the cuticle lifts, the strand is open to further damage and breakage. Warning signs:"
+        },
+        {
+          "bullets": [
+            "Dryness that doesn't respond to conditioner",
+            "Split ends that travel up the shaft",
+            "Dull color even after a fresh dye job",
+            "Breakage near the crown and nape",
+            "Tangling that worsens through the day"
+          ]
+        },
+        {
+          "p": "If these sound familiar, your hair isn't beyond hope — the cuticle just needs attention, and that's manageable."
+        },
+        {
+          "h": "The three main causes of hair damage"
+        },
+        {
+          "h": "Chemical damage",
+          "p": "Color, perms, and relaxers penetrate the cuticle to alter your hair's structure. To limit it, experts suggest choosing a dye within three shades of your natural color and going darker rather than lighter, and waiting 8–10 weeks (or longer) between dye jobs so the cuticle can recover. There's no substitute for an experienced pro painting your strands — salon technique and products measurably reduce how much damage your hair absorbs."
+        },
+        {
+          "h": "Heat damage",
+          "p": "Blow dryers, flat irons, and curling wands weaken the cuticle over time. One study found that holding the blow dryer about 15 cm (six inches) away and keeping it moving reduces damage. Apply heat protectant a few minutes before heat-styling — it coats the shaft and buys protection, but it's not a license to crank the heat to max."
+        },
+        {
+          "h": "Mechanical damage",
+          "p": "Mechanical damage comes from excessive physical stress on the hair. Wet hair is more fragile than dry, so handle it gently and minimize rough brushing. Tight styles like high ponytails or braids pull on the hair and can cause traction alopecia, where hair is pulled from the roots — looser styles protect your hairline."
+        },
+        {
+          "h": "How to restore moisture and smooth the cuticle",
+          "p": "You can't reverse damage, but the right products restore the look and feel of your hair."
+        },
+        {
+          "h": "Penetrating oils",
+          "bullets": [
+            "Coconut oil: its molecules are small enough to penetrate the cuticle and hydrate from the inside out. Apply a small amount to damp mid-lengths and ends.",
+            "Olive oil: shown to rehydrate hair and smooth the cuticle.",
+            "Almond oil: softens and strengthens; a dime-sized amount on the ends before drying cuts frizz."
+          ]
+        },
+        {
+          "h": "Weekly treatments",
+          "p": "Use a deep conditioner or mask once a week to restore moisture — leave it the recommended time, since over-saturating can weigh hair down. A rice water rinse can help too: inositol in rice water penetrates damaged hair and strengthens it from within. Use it as a final rinse after shampooing."
+        },
+        {
+          "h": "How to handle hair without making it worse"
+        },
+        {
+          "h": "Drying",
+          "p": "Never rub — blot and squeeze gently when towel-drying. Rough friction lifts the cuticle and creates frizz; a microfiber towel or cotton t-shirt is gentler."
+        },
+        {
+          "h": "Detangling",
+          "p": "Use a wide-tooth comb on wet hair and skip vigorous towel drying. The flexible bristles yield to tension instead of tearing through knots. Start at the bottom and work up to clear snags safely — forcing a brush from root to tip through knots is a fast track to breakage."
+        },
+        {
+          "h": "Sleeping",
+          "p": "Silk or satin pillowcases lessen frizz and breakage because silk creates less friction than cotton. No silk pillowcase? A silk bonnet works too."
+        },
+        {
+          "h": "Trims",
+          "p": "Going too long between cuts leads to dry split ends, and you can't put a split end back together. Regular trims remove split ends and prevent the damage from spreading — every 8–12 weeks is a good baseline, or sooner if you see splits climbing the shaft."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can damaged hair be repaired at home?",
+          "a": "No. Hair is a collection of dead cells, so the damaged portion is beyond repair. You can mask the look of damage with oils, deep conditioners, and protective styling, but the damaged part has to grow out or be cut off."
+        },
+        {
+          "q": "How can I repair damaged hair naturally?",
+          "a": "Coconut, olive, or almond oil to hydrate and smooth the cuticle, plus a weekly rice-water rinse for strength. Pair them with gentle handling — no rough towel drying, no tight styles, minimal heat."
+        },
+        {
+          "q": "How often should I trim damaged hair?",
+          "a": "Every 8 to 12 weeks, or sooner if split ends start traveling up the shaft. Trims remove the damage before it spreads."
+        },
+        {
+          "q": "What products help color-treated damaged hair?",
+          "a": "Color-safe shampoo and conditioner, formulated at the right pH to keep the shaft from swelling and leaking dye. Add a weekly deep-conditioning mask and a silk pillowcase to cut overnight breakage."
+        }
+      ]
+    }
   }
 };
