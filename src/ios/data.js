@@ -225,6 +225,13 @@ export const GUIDES = [
     "t_en": "How to Get Rid of Blackheads: A Complete Guide",
     "t_es": "How to Get Rid of Blackheads: A Complete Guide",
     "mood": 9
+  },
+  {
+    "kicker_en": "GUIDE · 4 MIN",
+    "kicker_es": "GUÍA · 4 MIN",
+    "t_en": "How to Make Balayage Last Longer — Expert Tips That Actually Work",
+    "t_es": "How to Make Balayage Last Longer — Expert Tips That Actually Work",
+    "mood": 10
   }
 ];
 

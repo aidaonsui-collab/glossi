@@ -4606,5 +4606,237 @@ export const GUIDE_BODIES = {
         }
       ]
     }
+  },
+  "26": {
+    "en": {
+      "dek": "Balayage is low-maintenance by design, but it still needs maintenance. With the right aftercare — starting in the 48 hours right after your appointment — you can stretch a fresh balayage from about 12 weeks to a full 4–5 months. Here's how to make it last.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Wait 48 hours before washing so the color seals",
+            "Wash only 2–3 times a week with sulfate-free shampoo",
+            "Rinse cool, protect from heat and UV, and pre-soak before pools",
+            "A gloss or toner at 6–8 weeks neutralizes brassiness and extends tone",
+            "Trim every 8–12 weeks and plan a refresh around 3–4 months"
+          ]
+        },
+        {
+          "h": "What makes balayage fade?",
+          "p": "The main culprits are sulfate shampoo, hard water, heat styling without protection, and UV exposure. In the Valley, hard water and relentless sun are hard to avoid — so the rest of this guide focuses on what you can control."
+        },
+        {
+          "h": "The first 48 hours",
+          "p": "Give the color 48 hours to fully oxidize and seal into the hair shaft. Don't wash, don't sweat it out at the gym, don't swim. That window is non-negotiable if you want the pigment to settle right."
+        },
+        {
+          "h": "How often should you wash?",
+          "p": "Wash your balayage 2–3 times a week — every wash is color escaping down the drain, so washing less often is the single most effective way to slow fading. When you need to stretch a day, dry shampoo buys you time. Spray it in before work and you're good until lunch."
+        },
+        {
+          "h": "Switch to sulfate-free shampoo",
+          "p": "Standard shampoos contain sulfates that strip color. Research published in the Journal of Cosmetic Science found that sulfate shampoos can cause significant color fading after just a few washes, as the sulfates penetrate the cuticle and strip color molecules along with dirt and oil. Choose sulfate-free, color-safe formulas instead."
+        },
+        {
+          "p": "What to look for on the label:"
+        },
+        {
+          "bullets": [
+            "Sulfate-free",
+            "Color-safe",
+            "Bond-repair technology",
+            "pH-balanced"
+          ]
+        },
+        {
+          "h": "Rinse with cooler water",
+          "p": "Hot water opens the hair cuticle and lets color escape; cooler water seals the cuticle, reduces brassiness, and keeps the smooth, reflective finish. If you can't manage a full cold rinse, at least finish with 30 seconds of cool. Your Tía has been saying this for years — she was right."
+        },
+        {
+          "h": "Don't skip heat protectant",
+          "p": "Excessive heat styling can cut color retention by as much as 25%. Never skip heat protectant — think of it as SPF for your hair. You don't need 400°F: start at 300°F and only go higher if you have to. Air dry whenever you can, and keep heat tools on low settings."
+        },
+        {
+          "h": "Protect it from the RGV sun",
+          "p": "Texas sun is the fastest way to turn a beautiful balayage brassy — UV breaks down the color molecules that keep your tone cool and dimensional. Use UV-protective products and wear a hat anytime you'll be outside for a few hours. At the farmers market on Nolana, at the kids' soccer games on Conway — hat on, balayage intact."
+        },
+        {
+          "h": "Chlorine and pool water",
+          "p": "Before you jump in, soak your hair with clean water. Wet hair absorbs less chlorine than dry hair — a five-minute trick that saves you an emergency gloss."
+        },
+        {
+          "h": "When to get a gloss or toner refresh",
+          "p": "A gloss or toner refresh at the 6-to-8-week mark neutralizes warmth and restores your tone without re-lightening, and it's what stretches a balayage from ~12 weeks to 4–5 months. Using professional-grade products at home prolongs the time between salon visits."
+        },
+        {
+          "p": "For brassiness between glosses, purple shampoo acts as a toner to pull brassy tones back to a cooler blonde:"
+        },
+        {
+          "bullets": [
+            "Bright blondes: 1–2 times a week",
+            "Beige balayage: every 1–2 weeks"
+          ]
+        },
+        {
+          "h": "Bond repair and deep conditioning",
+          "p": "Lightened hair weakens over time, especially with repeated coloring or heat. Bond-repair treatments strengthen the hair structure, reduce breakage, and improve how long your balayage lasts. Pair that with a weekly deep-conditioning treatment to restore moisture and shine."
+        },
+        {
+          "h": "How your hair type affects longevity",
+          "p": "Your starting hair changes the math:"
+        },
+        {
+          "bullets": [
+            "Thickness: Thicker, denser strands hold pigment longer than fine hair.",
+            "Porosity: High-porosity hair takes color fast but loses it fast; low-porosity hair colors slowly but holds longer.",
+            "Target shade: Going much lighter than your natural color needs more lifting, which fades faster; darker shades fade more slowly."
+          ]
+        },
+        {
+          "h": "How often to trim and refresh",
+          "p": "Trim every 8–12 weeks to prevent split ends and keep the color looking healthy through grow-out. As for the color itself, most people only need a balayage touch-up every 3–4 months, and with good home care you can often stretch to 4 months between salon visits."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I wash my hair every day after balayage?",
+          "a": "No. Wash 2–3 times a week — washing less is the single most effective way to slow fading. Dry shampoo covers the in-between days."
+        },
+        {
+          "q": "Does hard water affect balayage in the Valley?",
+          "a": "Yes — it's one of the main fade culprits alongside sulfates and UV. A shower filter helps, and sulfate-free products offset some of the damage."
+        },
+        {
+          "q": "How many weeks until I need a gloss?",
+          "a": "A gloss or toner at 6–8 weeks neutralizes warmth and refreshes tone without re-lightening, stretching your balayage toward 4–5 months total."
+        },
+        {
+          "q": "Is heat protectant really necessary every time?",
+          "a": "Every time. Excessive heat styling can cut color retention by about 25%. Start at 300°F and only go hotter if you must."
+        },
+        {
+          "q": "How do I fight brassiness between appointments?",
+          "a": "Purple shampoo — 1–2 times a week for bright blondes, every 1–2 weeks for beige tones. It works like a toner to pull warmth back to a cooler shade."
+        }
+      ]
+    },
+    "es": {
+      "dek": "Balayage is low-maintenance by design, but it still needs maintenance. With the right aftercare — starting in the 48 hours right after your appointment — you can stretch a fresh balayage from about 12 weeks to a full 4–5 months. Here's how to make it last.",
+      "author": "The Glossi Editors",
+      "authorRole": "Rio Grande Valley, TX",
+      "sections": [
+        {
+          "h": "Key takeaways",
+          "bullets": [
+            "Wait 48 hours before washing so the color seals",
+            "Wash only 2–3 times a week with sulfate-free shampoo",
+            "Rinse cool, protect from heat and UV, and pre-soak before pools",
+            "A gloss or toner at 6–8 weeks neutralizes brassiness and extends tone",
+            "Trim every 8–12 weeks and plan a refresh around 3–4 months"
+          ]
+        },
+        {
+          "h": "What makes balayage fade?",
+          "p": "The main culprits are sulfate shampoo, hard water, heat styling without protection, and UV exposure. In the Valley, hard water and relentless sun are hard to avoid — so the rest of this guide focuses on what you can control."
+        },
+        {
+          "h": "The first 48 hours",
+          "p": "Give the color 48 hours to fully oxidize and seal into the hair shaft. Don't wash, don't sweat it out at the gym, don't swim. That window is non-negotiable if you want the pigment to settle right."
+        },
+        {
+          "h": "How often should you wash?",
+          "p": "Wash your balayage 2–3 times a week — every wash is color escaping down the drain, so washing less often is the single most effective way to slow fading. When you need to stretch a day, dry shampoo buys you time. Spray it in before work and you're good until lunch."
+        },
+        {
+          "h": "Switch to sulfate-free shampoo",
+          "p": "Standard shampoos contain sulfates that strip color. Research published in the Journal of Cosmetic Science found that sulfate shampoos can cause significant color fading after just a few washes, as the sulfates penetrate the cuticle and strip color molecules along with dirt and oil. Choose sulfate-free, color-safe formulas instead."
+        },
+        {
+          "p": "What to look for on the label:"
+        },
+        {
+          "bullets": [
+            "Sulfate-free",
+            "Color-safe",
+            "Bond-repair technology",
+            "pH-balanced"
+          ]
+        },
+        {
+          "h": "Rinse with cooler water",
+          "p": "Hot water opens the hair cuticle and lets color escape; cooler water seals the cuticle, reduces brassiness, and keeps the smooth, reflective finish. If you can't manage a full cold rinse, at least finish with 30 seconds of cool. Your Tía has been saying this for years — she was right."
+        },
+        {
+          "h": "Don't skip heat protectant",
+          "p": "Excessive heat styling can cut color retention by as much as 25%. Never skip heat protectant — think of it as SPF for your hair. You don't need 400°F: start at 300°F and only go higher if you have to. Air dry whenever you can, and keep heat tools on low settings."
+        },
+        {
+          "h": "Protect it from the RGV sun",
+          "p": "Texas sun is the fastest way to turn a beautiful balayage brassy — UV breaks down the color molecules that keep your tone cool and dimensional. Use UV-protective products and wear a hat anytime you'll be outside for a few hours. At the farmers market on Nolana, at the kids' soccer games on Conway — hat on, balayage intact."
+        },
+        {
+          "h": "Chlorine and pool water",
+          "p": "Before you jump in, soak your hair with clean water. Wet hair absorbs less chlorine than dry hair — a five-minute trick that saves you an emergency gloss."
+        },
+        {
+          "h": "When to get a gloss or toner refresh",
+          "p": "A gloss or toner refresh at the 6-to-8-week mark neutralizes warmth and restores your tone without re-lightening, and it's what stretches a balayage from ~12 weeks to 4–5 months. Using professional-grade products at home prolongs the time between salon visits."
+        },
+        {
+          "p": "For brassiness between glosses, purple shampoo acts as a toner to pull brassy tones back to a cooler blonde:"
+        },
+        {
+          "bullets": [
+            "Bright blondes: 1–2 times a week",
+            "Beige balayage: every 1–2 weeks"
+          ]
+        },
+        {
+          "h": "Bond repair and deep conditioning",
+          "p": "Lightened hair weakens over time, especially with repeated coloring or heat. Bond-repair treatments strengthen the hair structure, reduce breakage, and improve how long your balayage lasts. Pair that with a weekly deep-conditioning treatment to restore moisture and shine."
+        },
+        {
+          "h": "How your hair type affects longevity",
+          "p": "Your starting hair changes the math:"
+        },
+        {
+          "bullets": [
+            "Thickness: Thicker, denser strands hold pigment longer than fine hair.",
+            "Porosity: High-porosity hair takes color fast but loses it fast; low-porosity hair colors slowly but holds longer.",
+            "Target shade: Going much lighter than your natural color needs more lifting, which fades faster; darker shades fade more slowly."
+          ]
+        },
+        {
+          "h": "How often to trim and refresh",
+          "p": "Trim every 8–12 weeks to prevent split ends and keep the color looking healthy through grow-out. As for the color itself, most people only need a balayage touch-up every 3–4 months, and with good home care you can often stretch to 4 months between salon visits."
+        },
+        {
+          "h": "Frequently asked questions"
+        },
+        {
+          "q": "Can I wash my hair every day after balayage?",
+          "a": "No. Wash 2–3 times a week — washing less is the single most effective way to slow fading. Dry shampoo covers the in-between days."
+        },
+        {
+          "q": "Does hard water affect balayage in the Valley?",
+          "a": "Yes — it's one of the main fade culprits alongside sulfates and UV. A shower filter helps, and sulfate-free products offset some of the damage."
+        },
+        {
+          "q": "How many weeks until I need a gloss?",
+          "a": "A gloss or toner at 6–8 weeks neutralizes warmth and refreshes tone without re-lightening, stretching your balayage toward 4–5 months total."
+        },
+        {
+          "q": "Is heat protectant really necessary every time?",
+          "a": "Every time. Excessive heat styling can cut color retention by about 25%. Start at 300°F and only go hotter if you must."
+        },
+        {
+          "q": "How do I fight brassiness between appointments?",
+          "a": "Purple shampoo — 1–2 times a week for bright blondes, every 1–2 weeks for beige tones. It works like a toner to pull warmth back to a cooler shade."
+        }
+      ]
+    }
   }
 };
