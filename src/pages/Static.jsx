@@ -77,6 +77,22 @@ export function Terms() {
         <p>{t("We may update these terms from time to time. We'll email you 30 days before any meaningful change, and the in-app banner will tell you what changed.", 'Podemos actualizar estos términos de vez en cuando. Te enviaremos un correo 30 días antes de cualquier cambio importante, y el banner dentro de la app te dirá qué cambió.')}</p>
         <H>{t('8. Disputes', '8. Disputas')}</H>
         <p>{t("If something goes wrong, email us first — most issues resolve in a day. If we can't agree, disputes are handled by binding arbitration in Hidalgo County, Texas.", 'Si algo sale mal, escríbenos primero — la mayoría de los problemas se resuelven en un día. Si no podemos llegar a un acuerdo, las disputas se manejan por arbitraje vinculante en el Condado de Hidalgo, Texas.')}</p>
+        <H>{t('9. SMS notifications', '9. Notificaciones por SMS')}</H>
+        <p>
+          {t(
+            'By checking the SMS opt-in box at signup, you consent to receive text messages from Glossi (booking confirmations, bid alerts, and appointment reminders). Message frequency varies — typically 1–5 messages per booking. ',
+            'Al marcar la casilla de opt-in SMS al registrarte, consientes recibir mensajes de texto de Glossi (confirmaciones de reservas, alertas de ofertas y recordatorios de citas). La frecuencia de mensajes varía — típicamente 1–5 mensajes por reserva. '
+          )}
+          <strong>{t('Msg & data rates may apply.', 'Se pueden aplicar tarifas de mensajes y datos.')}</strong>
+          {t(' Reply ', ' Responde ')}
+          <strong>STOP</strong>
+          {t(' to unsubscribe at any time. Reply ', ' para cancelar la suscripción en cualquier momento. Responde ')}
+          <strong>HELP</strong>
+          {t(' for assistance. For support: ', ' para obtener ayuda. Soporte: ')}
+          <span style={{ color: p.ink, fontWeight: 600 }}>support@glossi.cc</span>
+          {t(' or ', ' o ')}
+          <span style={{ color: p.ink, fontWeight: 600 }}>glossi.cc/help</span>.
+        </p>
       </Body>
     </Shell>
   );
