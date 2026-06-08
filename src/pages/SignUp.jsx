@@ -41,6 +41,7 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [agree, setAgree] = useState(false);
+  const [smsOptIn, setSmsOptIn] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const pwStrength = strength(password);
@@ -58,7 +59,7 @@ export default function SignUp() {
     }
     setSubmitting(true);
     try {
-      const result = await signUp({ name: name.trim(), email, password, role });
+      const result = await signUp({ name: name.trim(), email, password, role, smsOptIn });
       if (!result?.ok) {
         toast(result?.error || t('Sign up failed.', 'Falló el registro.'), { tone: 'warn' });
         return;
@@ -306,9 +307,29 @@ export default function SignUp() {
               </button>
               <span onClick={e => { if (e.target.tagName !== 'A') setAgree(v => !v); }} style={{ fontSize: 12.5, color: p.inkSoft, lineHeight: 1.55, cursor: 'pointer', userSelect: 'none' }}>
                 {lang === 'es' ? (
-                  <>Acepto los <Link to="/terms" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Términos de Servicio</Link> y la <Link to="/privacy" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Política de Privacidad</Link> de Glossi. Glossi puede enviar recordatorios de citas y actualizaciones de ofertas por correo y SMS — puedes desactivarlos cuando quieras en ajustes.</>
+                  <>Acepto los <Link to="/terms" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Términos de Servicio</Link> y la <Link to="/privacy" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Política de Privacidad</Link> de Glossi.</>
                 ) : (
-                  <>I agree to Glossi's <Link to="/terms" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Terms of Service</Link> and <Link to="/privacy" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Privacy Policy</Link>. Glossi may send appointment reminders and bid updates by email and SMS — you can opt out anytime in settings.</>
+                  <>I agree to Glossi's <Link to="/terms" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Terms of Service</Link> and <Link to="/privacy" target="_blank" rel="noopener" style={{ color: p.ink, textDecoration: 'underline', fontWeight: 600 }}>Privacy Policy</Link>.</>
+                )}
+              </span>
+            </div>
+
+            {/* SMS opt-in — separate checkbox required for A2P 10DLC TCR compliance */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+              <button type="button" onClick={() => setSmsOptIn(v => !v)} aria-pressed={smsOptIn} aria-label="Opt in to SMS notifications" style={{
+                width: 20, height: 20, borderRadius: 5, flexShrink: 0, padding: 0,
+                background: smsOptIn ? p.ink : 'transparent',
+                border: `1.5px solid ${smsOptIn ? p.ink : p.inkMuted}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.bg, marginTop: 1,
+                cursor: 'pointer',
+              }}>
+                {smsOptIn && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M5 13l4 4L19 7" /></svg>}
+              </button>
+              <span onClick={() => setSmsOptIn(v => !v)} style={{ fontSize: 12.5, color: p.inkSoft, lineHeight: 1.55, cursor: 'pointer', userSelect: 'none' }}>
+                {lang === 'es' ? (
+                  <>Acepto recibir mensajes de texto de Glossi sobre mis reservas, ofertas y citas. La frecuencia varía. <strong style={{ color: p.ink }}>Se pueden aplicar tarifas de mensajes y datos.</strong> Responde STOP para cancelar. Responde HELP para ayuda. <span style={{ opacity: 0.7 }}>(Opcional)</span></>
+                ) : (
+                  <>I agree to receive text messages from Glossi about my bookings, bids, and appointments. Message frequency varies. <strong style={{ color: p.ink }}>Msg & data rates may apply.</strong> Reply STOP to unsubscribe. Reply HELP for help. <span style={{ opacity: 0.7 }}>(Optional)</span></>
                 )}
               </span>
             </div>
