@@ -36,8 +36,24 @@ export default function SignUp() {
     if (user) navigate(user.type === 'salon' ? '/salon' : '/quotes', { replace: true });
   }, [user, navigate]);
 
+  // A rep's per-salon QR (see /r) deep-links here with the salon's details in the
+  // URL. Stash them so OnboardingSalon can pre-fill its form after the owner
+  // creates their account. Survives the signup + OAuth redirect (same origin).
+  useEffect(() => {
+    if (params.get('role') !== 'salon') return;
+    const prefill = {};
+    for (const [key, param] of [['name', 'name'], ['address', 'address'], ['city', 'city'], ['zip', 'zip'], ['phone', 'phone'], ['instagram', 'ig'], ['ref', 'ref']]) {
+      const v = params.get(param);
+      if (v) prefill[key] = v;
+    }
+    if (Object.keys(prefill).length > 0) {
+      try { localStorage.setItem('glossi.salonPrefill', JSON.stringify(prefill)); } catch { /* private mode */ }
+    }
+  }, [params]);
+
   const [role, setRole] = useState(params.get('role') === 'salon' ? 'salon' : 'customer');
-  const [name, setName] = useState('');
+  // Salon name can arrive pre-filled from a rep's per-salon QR (see /r).
+  const [name, setName] = useState(() => params.get('name') || '');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [agree, setAgree] = useState(false);
