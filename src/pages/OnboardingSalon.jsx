@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { defaultPalette as p, defaultType as type } from '../theme.js';
 import { useNarrow } from '../hooks.js';
@@ -36,13 +36,40 @@ const slugify = s => (s || '')
   .toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'salon';
 
+// Merges salon details delivered by a rep's per-salon QR (see /r). The owner
+// arrives via /signup, which stashes the details in localStorage; live URL
+// params (if onboarding is opened directly) take precedence over the stash.
+function readSalonPrefill(sp) {
+  let stored = {};
+  try { stored = JSON.parse(localStorage.getItem('glossi.salonPrefill') || '{}') || {}; } catch { /* ignore */ }
+  const out = { ...stored };
+  for (const [key, param] of [['name', 'name'], ['address', 'address'], ['city', 'city'], ['zip', 'zip'], ['phone', 'phone'], ['instagram', 'ig']]) {
+    const v = sp.get(param);
+    if (v) out[key] = v;
+  }
+  if (out.zip) out.zip = String(out.zip).replace(/\D/g, '').slice(0, 5);
+  if (out.instagram) out.instagram = String(out.instagram).replace(/^@/, '');
+  return out;
+}
+
 export default function OnboardingSalon() {
   const isPhone = useNarrow();
   const navigate = useNavigate();
   const toast = useToast();
   const { user } = useAuth();
   const { businesses, loading: bizLoading } = useMyBusinesses();
+  const [searchParams] = useSearchParams();
   const step = 2;
+
+  // Read the rep-QR prefill exactly once (URL params win over the localStorage stash).
+  const prefillRef = useRef(null);
+  if (prefillRef.current === null) prefillRef.current = readSalonPrefill(searchParams);
+  const prefill = prefillRef.current;
+
+  // Consume the stash so a later manual visit starts clean.
+  useEffect(() => {
+    try { localStorage.removeItem('glossi.salonPrefill'); } catch { /* ignore */ }
+  }, []);
 
   // Symmetric guard: if the user already has a business listing, this
   // page (which always creates a new one on submit) is wrong for them.
@@ -53,14 +80,14 @@ export default function OnboardingSalon() {
     }
   }, [user, bizLoading, businesses, navigate]);
 
-  // Business basics
-  const [name, setName] = useState('');
+  // Business basics — seeded from the rep-QR prefill when present.
+  const [name, setName] = useState(() => prefill.name || '');
   const [bio, setBio] = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [zip, setZip] = useState('');
-  const [phone, setPhone] = useState('');
-  const [instagram, setInstagram] = useState('');
+  const [address, setAddress] = useState(() => prefill.address || '');
+  const [city, setCity] = useState(() => prefill.city || '');
+  const [zip, setZip] = useState(() => prefill.zip || '');
+  const [phone, setPhone] = useState(() => prefill.phone || '');
+  const [instagram, setInstagram] = useState(() => prefill.instagram || '');
   const [priceTier, setPriceTier] = useState('$$');
 
   // Prefill name from auth user once loaded

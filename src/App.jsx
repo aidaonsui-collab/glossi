@@ -104,6 +104,7 @@ import SalonInbox from './pages/SalonInbox.jsx';
 import SalonInboxDetail from './pages/SalonInboxDetail.jsx';
 import Pros from './pages/Pros.jsx';
 import AdminOutreach from './pages/AdminOutreach.jsx';
+import RepOnboard from './pages/RepOnboard.jsx';
 
 export default function App() {
   return (
@@ -153,6 +154,7 @@ export default function App() {
         <Route path="/salon/inbox/:id" element={<SalonInboxDetail />} />
         <Route path="/pros" element={<Pros />} />
         <Route path="/admin/outreach" element={<AdminOutreach />} />
+        <Route path="/r" element={<RepOnboard />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
       </Routes>
     </BrowserRouter>

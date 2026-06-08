@@ -14,5 +14,6 @@ Disallow: /signup
 Disallow: /onboarding/
 Disallow: /admin/
 Disallow: /auth/
+Disallow: /r
 
 Sitemap: https://www.glossi.cc/sitemap.xml
