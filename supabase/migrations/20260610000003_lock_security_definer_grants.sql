@@ -63,22 +63,40 @@ revoke execute on function public.trg_send_notification_sms()       from anon, a
 -- ---------------------------------------------------------------------
 -- Group C — legitimate signed-in actions. They already enforce identity
 -- via auth.uid() internally (anon has a null uid, so these no-op for
--- anon), but anon has no business reaching them. Revoke anon, keep
--- authenticated.
+-- anon), but anon has no business reaching them.
+--
+-- NOTE: for these, anon's access comes through the PUBLIC role, not a
+-- direct grant — so REVOKE ... FROM anon alone is NOT enough (anon still
+-- inherits EXECUTE from PUBLIC). Revoke PUBLIC (and anon), then grant
+-- authenticated explicitly so signed-in users keep access.
 -- ---------------------------------------------------------------------
-revoke execute on function public.accept_bid(uuid)                  from anon;
-revoke execute on function public.prepare_bid_acceptance(uuid)      from anon;
-revoke execute on function public.mark_booking_complete(uuid)       from anon;
-revoke execute on function public.mark_booking_no_show(uuid)        from anon;
-revoke execute on function public.mark_notifications_read(uuid[])   from anon;
-revoke execute on function public.unread_notifications_count()      from anon;
-revoke execute on function public.mark_reviews_seen(uuid)           from anon;
-revoke execute on function public.unseen_reviews_count(uuid)        from anon;
-revoke execute on function public.request_customer_contact(uuid)    from anon;
-revoke execute on function public.my_bookings()                     from anon;
-revoke execute on function public.salon_bids()                      from anon;
-revoke execute on function public.salon_bookings(uuid)              from anon;
-revoke execute on function public.seed_outreach_prospects(jsonb)    from anon;
+revoke execute on function public.accept_bid(uuid)                  from public, anon;
+revoke execute on function public.prepare_bid_acceptance(uuid)      from public, anon;
+revoke execute on function public.mark_booking_complete(uuid)       from public, anon;
+revoke execute on function public.mark_booking_no_show(uuid)        from public, anon;
+revoke execute on function public.mark_notifications_read(uuid[])   from public, anon;
+revoke execute on function public.unread_notifications_count()      from public, anon;
+revoke execute on function public.mark_reviews_seen(uuid)           from public, anon;
+revoke execute on function public.unseen_reviews_count(uuid)        from public, anon;
+revoke execute on function public.request_customer_contact(uuid)    from public, anon;
+revoke execute on function public.my_bookings()                     from public, anon;
+revoke execute on function public.salon_bids()                      from public, anon;
+revoke execute on function public.salon_bookings(uuid)              from public, anon;
+revoke execute on function public.seed_outreach_prospects(jsonb)    from public, anon;
+
+grant execute on function public.accept_bid(uuid)                   to authenticated;
+grant execute on function public.prepare_bid_acceptance(uuid)       to authenticated;
+grant execute on function public.mark_booking_complete(uuid)        to authenticated;
+grant execute on function public.mark_booking_no_show(uuid)         to authenticated;
+grant execute on function public.mark_notifications_read(uuid[])    to authenticated;
+grant execute on function public.unread_notifications_count()       to authenticated;
+grant execute on function public.mark_reviews_seen(uuid)            to authenticated;
+grant execute on function public.unseen_reviews_count(uuid)         to authenticated;
+grant execute on function public.request_customer_contact(uuid)     to authenticated;
+grant execute on function public.my_bookings()                      to authenticated;
+grant execute on function public.salon_bids()                       to authenticated;
+grant execute on function public.salon_bookings(uuid)               to authenticated;
+grant execute on function public.seed_outreach_prospects(jsonb)     to authenticated;
 
 -- ---------------------------------------------------------------------
 -- Deliberately left callable by anon (public, read-only, or harmless):
