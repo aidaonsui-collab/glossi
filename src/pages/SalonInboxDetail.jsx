@@ -171,7 +171,11 @@ export default function SalonInboxDetail() {
             <div style={{ padding: '12px 14px', background: p.surface, border: `0.5px solid ${p.line}`, borderRadius: 12, fontSize: 13, color: p.ink }}>
               <div style={{ fontSize: 9.5, color: p.inkMuted, fontWeight: 700, letterSpacing: '0.14em' }}>CUSTOMER</div>
               <div style={{ marginTop: 4, fontWeight: 600 }}>{contact.full_name || '—'}</div>
-              <div style={{ fontSize: 12, color: p.inkSoft, marginTop: 2 }}>{contact.email}{contact.phone ? ` · ${contact.phone}` : ''}</div>
+              {contact.contact_unlocked ? (
+                <div style={{ fontSize: 12, color: p.inkSoft, marginTop: 2 }}>{contact.email}{contact.phone ? ` · ${contact.phone}` : ''}</div>
+              ) : (
+                <div style={{ fontSize: 11.5, color: p.inkMuted, marginTop: 4, fontStyle: 'italic' }}>Phone & email unlock once the customer books you.</div>
+              )}
             </div>
           ) : myBid ? (
             <button type="button" onClick={onRevealContact} style={{ background: 'transparent', color: p.accent, border: `0.5px solid ${p.line}`, padding: '10px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
