@@ -14,27 +14,30 @@
 //   3. Stamp notifications.email_sent_at so we don't double-send if
 //      the webhook ever fires twice.
 //
-// verify_jwt is FALSE on this function — the DB webhook ships a
-// service-role JWT, but the simpler path is to gate via a shared
-// secret header that Supabase Studio lets you configure on the
-// webhook itself. We accept either.
+// verify_jwt is FALSE on this function — the pg_net DB trigger that
+// invokes it doesn't ship a Supabase JWT. Authentication is via the
+// x-notify-secret header (NOTIFY_WEBHOOK_SECRET), compared in constant
+// time; see _shared/notifyAuth.ts and migration
+// 20260610000001_notification_webhook_secret.sql for the one-time setup.
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { requireEnv } from "../_shared/env.ts";
+import { verifyNotifySecret } from "../_shared/notifyAuth.ts";
 
-requireEnv(["RESEND_API_KEY", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]);
+requireEnv(["RESEND_API_KEY", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "NOTIFY_WEBHOOK_SECRET"]);
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const NOTIFY_WEBHOOK_SECRET = Deno.env.get("NOTIFY_WEBHOOK_SECRET")!;
 const APP_URL = Deno.env.get("APP_URL") || "https://glossi.cc";
 const FROM = Deno.env.get("RESEND_FROM") || "Glossi <onboarding@resend.dev>";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, content-type, x-supabase-webhook-source",
+  "Access-Control-Allow-Headers": "authorization, content-type, x-supabase-webhook-source, x-notify-secret",
 };
 
 function emailHtml({ title, body, ctaUrl, ctaLabel }: {
@@ -74,6 +77,17 @@ async function sendResend(to: string, subject: string, html: string) {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
+
+  // Shared-secret gate. verify_jwt is false on this function, so this is
+  // the only thing standing between the public internet and our Resend
+  // credentials + arbitrary email content. Reject before any work.
+  if (!verifyNotifySecret(req, NOTIFY_WEBHOOK_SECRET)) {
+    return new Response(JSON.stringify({ error: "unauthorized" }), {
+      status: 401,
+      headers: { ...CORS, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
     const payload = await req.json().catch(() => ({} as Record<string, unknown>));

@@ -39,13 +39,17 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { requireEnv } from "../_shared/env.ts";
 import { checkRateLimit } from "../_shared/rateLimit.ts";
+import { verifyNotifySecret } from "../_shared/notifyAuth.ts";
 
 // Fail loud at cold start if Supabase secrets are missing. Twilio creds
 // stay lazy because the function legitimately returns 200 + skipped for
 // opt-out / no-phone notifications without ever needing Twilio; the
 // sendTwilio() helper validates them at the point of actual send.
-requireEnv(["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]);
+// NOTIFY_WEBHOOK_SECRET is required: verify_jwt is false here, so the
+// x-notify-secret header is the only authentication on the endpoint.
+requireEnv(["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "NOTIFY_WEBHOOK_SECRET"]);
 
+const NOTIFY_WEBHOOK_SECRET = Deno.env.get("NOTIFY_WEBHOOK_SECRET")!;
 const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID");
 const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN");
 const TWILIO_FROM_NUMBER = Deno.env.get("TWILIO_FROM_NUMBER");
@@ -64,7 +68,7 @@ const SMS_RATE_LIMIT_PER_MIN = 5;
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, content-type, x-supabase-webhook-source",
+  "Access-Control-Allow-Headers": "authorization, content-type, x-supabase-webhook-source, x-notify-secret",
 };
 
 // Normalize a US phone to E.164. Accepts "(956) 555-1234", "9565551234",
@@ -128,6 +132,17 @@ async function sendTwilio(to: string, body: string) {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
+
+  // Shared-secret gate. verify_jwt is false on this function — without
+  // this check anyone could POST and burn Twilio sends with arbitrary
+  // content to any opted-in user. Reject before any work.
+  if (!verifyNotifySecret(req, NOTIFY_WEBHOOK_SECRET)) {
+    return new Response(JSON.stringify({ error: "unauthorized" }), {
+      status: 401,
+      headers: { ...CORS, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const payload = await req.json().catch(() => ({} as Record<string, unknown>));
     const record = (payload as { record?: Record<string, unknown> }).record;
