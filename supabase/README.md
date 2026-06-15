@@ -48,3 +48,22 @@ running on localStorage as before.
 Files are timestamped with deliberate gaps (e.g. `20260414000001`,
 `...000002`) so we can wedge new migrations between them later. Don't
 renumber existing files — Supabase tracks them by name.
+
+## Edge function auth settings (IMPORTANT — verify_jwt)
+
+There is no `config.toml` in this repo; functions are deployed via the
+dashboard/MCP, so `verify_jwt` must be set **explicitly on each deploy**.
+A redeploy that forgets the flag silently defaults to `verify_jwt = true`
+and breaks inbound calls that don't carry a Supabase JWT.
+
+- **`stripe-webhook` → `verify_jwt = FALSE`.** Stripe authenticates via the
+  `Stripe-Signature` header, not a JWT. If this is `true`, Stripe webhooks
+  get 401'd at the gateway and `payment_intent.succeeded` /
+  `account.updated` never process (bookings don't finalize, Connect status
+  never refreshes). This regressed once — always redeploy with the flag off.
+- **`send-notification-sms` / `send-notification-email` → `verify_jwt = TRUE`
+  (the default).** The DB triggers call them with an `Authorization: Bearer`
+  header built from the Vault secret `edge_auth_key` (see migration
+  `20260615000001_notification_triggers_auth_header`). Leave these on.
+- **`create-payment-intent` / `create-connect-account` → `verify_jwt = TRUE`.**
+  Called from the authenticated app.
