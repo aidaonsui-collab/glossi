@@ -193,7 +193,6 @@ export default function SignUp() {
                 {[
                   { name: 'Yelp / IG ads', kind: t('Marketing spend — flat regardless of bookings', 'Gasto de marketing — fijo sin importar reservas'), c0: '$500', c5: '$500', c20: '$500' },
                   { name: 'Square Appointments', kind: t('Tool — not a customer source', 'Herramienta — no es fuente de clientes'), c0: '$0', c5: '$26', c20: '$104' },
-                  { name: 'GlossGenius', kind: t('Tool — not a customer source', 'Herramienta — no es fuente de clientes'), c0: '$24', c5: '$24', c20: '$24' },
                   { name: 'Booksy + Boost', kind: t('Tool + 30% commission on app-sourced bookings', 'Herramienta + 30% de comisión en reservas de la app'), c0: '$30', c5: '$330', c20: '$1,230' },
                   { name: 'Glossi', highlight: true, kind: t('Customer source — 5% only on the bid you won', 'Fuente de clientes — 5% solo en la oferta que ganaste'), c0: '$0', c5: '$50', c20: '$200' },
                 ].map((r, i) => {
@@ -266,8 +265,8 @@ export default function SignUp() {
 
               <div style={{ marginTop: 10, fontSize: 11, color: p.inkMuted, lineHeight: 1.45 }}>
                 {t(
-                  'Numbers reflect public 2026 pricing. Square / GlossGenius / Booksy figures are subscription + card-processing only; they don\'t source customers — that cost is somewhere else in your budget (IG ads, Yelp, referrals).',
-                  'Cifras según precios públicos 2026. Square / GlossGenius / Booksy incluyen solo suscripción + procesamiento de tarjeta; no traen clientes — ese costo está en otra parte de tu presupuesto (anuncios IG, Yelp, referidos).'
+                  'Numbers reflect public 2026 pricing. Square / Booksy figures are subscription + card-processing only; they don\'t source customers — that cost is somewhere else in your budget (IG ads, Yelp, referrals).',
+                  'Cifras según precios públicos 2026. Square / Booksy incluyen solo suscripción + procesamiento de tarjeta; no traen clientes — ese costo está en otra parte de tu presupuesto (anuncios IG, Yelp, referidos).'
                 )}
                 <br />
                 {t(
