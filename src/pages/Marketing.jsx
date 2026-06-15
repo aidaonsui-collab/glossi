@@ -678,10 +678,15 @@ function BidModal({ lang, initialService, onClose, onRealRequest }) {
           padding: '22px 24px 18px', borderBottom: `0.5px solid ${p.line}`,
           flexShrink: 0,
         }}>
-          <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 21, letterSpacing: '-0.02em', color: p.ink }}>
-            {stage === 'success'
-              ? tl('Booking confirmed', '¡Reserva confirmada!')
-              : tl('Post a request', 'Publica una solicitud')}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 21, letterSpacing: '-0.02em', color: p.ink }}>
+              {stage === 'success'
+                ? tl('Booking confirmed', '¡Reserva confirmada!')
+                : tl('Post a request', 'Publica una solicitud')}
+            </div>
+            <span style={{ fontFamily: type.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: '0.14em', color: p.accent, background: 'rgba(184,137,62,0.12)', border: '1px solid rgba(184,137,62,0.3)', borderRadius: 99, padding: '3px 9px', textTransform: 'uppercase' }}>
+              {tl('Preview', 'Demo')}
+            </span>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 0, cursor: 'pointer', color: p.inkMuted, fontSize: 22, lineHeight: 1, padding: '2px 8px' }}>×</button>
         </div>
@@ -692,6 +697,9 @@ function BidModal({ lang, initialService, onClose, onRealRequest }) {
           {/* ── FORM ── */}
           {stage === 'form' && (
             <>
+              <div style={{ marginBottom: 18, fontSize: 13, color: p.inkSoft, lineHeight: 1.5 }}>
+                {tl('A quick preview of how Glossi works. The salons shown are examples. No account needed.', 'Una vista previa rápida de cómo funciona Glossi. Los salones que ves son ejemplos. No necesitas cuenta.')}
+              </div>
               <div style={{ marginBottom: 22 }}>
                 <div style={{ fontFamily: type.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: p.accent, textTransform: 'uppercase', marginBottom: 10 }}>
                   {tl('What service?', '¿Qué servicio?')}
