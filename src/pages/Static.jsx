@@ -56,7 +56,7 @@ export function Terms() {
   const t = useT();
   return (
     <Shell>
-      <Hero eyebrow={t('LEGAL', 'LEGAL')} title={t('Terms of Service.', 'Términos de Servicio.')} sub={t('Last updated April 30, 2026. By using Glossi you agree to these terms — read them once, then forget about them.', 'Última actualización 30 de abril de 2026. Al usar Glossi aceptas estos términos — léelos una vez y olvídate de ellos.')} />
+      <Hero eyebrow={t('LEGAL', 'LEGAL')} title={t('Terms of Service.', 'Términos de Servicio.')} sub={t('Last updated June 15, 2026. By using Glossi you agree to these terms — read them once, then forget about them.', 'Última actualización 15 de junio de 2026. Al usar Glossi aceptas estos términos — léelos una vez y olvídate de ellos.')} />
       <Body>
         <H>{t('1. The marketplace', '1. El mercado')}</H>
         <p>{t('Glossi is a marketplace that connects customers with independent salons in the Rio Grande Valley. Glossi is not a salon and does not perform beauty services. Bookings, services, and the relationship around them are between you and the salon.', 'Glossi es un mercado que conecta a clientes con salones independientes en el Valle del Río Grande. Glossi no es un salón y no realiza servicios de belleza. Las reservas, servicios y la relación que los rodea son entre tú y el salón.')}</p>
@@ -115,7 +115,7 @@ export function Privacy() {
         <H>{t('Your rights', 'Tus derechos')}</H>
         <p>
           {t('Email ', 'Escríbenos a ')}
-          <span style={{ color: p.ink, fontWeight: 600 }}>privacy@glossi.app</span>
+          <span style={{ color: p.ink, fontWeight: 600 }}>support@glossi.cc</span>
           {t(" to download everything we have on you, correct anything that's wrong, or delete your account. We respond within 30 days. Texas residents have additional rights under Texas Data Privacy and Security Act — same email, same response.", ' para descargar todo lo que tenemos sobre ti, corregir lo que esté mal o eliminar tu cuenta. Respondemos dentro de 30 días. Los residentes de Texas tienen derechos adicionales bajo la Ley de Privacidad y Seguridad de Datos de Texas — mismo correo, misma respuesta.')}
         </p>
         <H>{t('Cookies', 'Cookies')}</H>
@@ -141,7 +141,7 @@ export function Help() {
   ];
   return (
     <Shell>
-      <Hero eyebrow={t('HELP CENTER', 'CENTRO DE AYUDA')} title={t('How can we help?', '¿Cómo podemos ayudarte?')} sub={t("The questions we hear the most. If yours isn't here, email support@glossi.cc — we answer in under 4 hours weekdays.", 'Las preguntas que más escuchamos. Si la tuya no está aquí, escribe a support@glossi.cc — respondemos en menos de 4 horas entre semana.')} />
+      <Hero eyebrow={t('HELP CENTER', 'CENTRO DE AYUDA')} title={t('How can we help?', '¿Cómo podemos ayudarte?')} sub={t("The questions we hear the most. If yours isn't here, email support@glossi.cc — we usually reply the same day.", 'Las preguntas que más escuchamos. Si la tuya no está aquí, escribe a support@glossi.cc — normalmente respondemos el mismo día.')} />
       <Body>
         {FAQ.map((f, i) => (
           <div key={i} style={{ paddingTop: 24, marginTop: 24, borderTop: i ? `0.5px solid ${p.line}` : 'none' }}>
@@ -152,7 +152,7 @@ export function Help() {
         <div style={{ marginTop: 56, padding: '28px 32px', background: p.surface, borderRadius: 18, border: `0.5px solid ${p.line}` }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>{t('STILL STUCK?', '¿AÚN ATORADA?')}</div>
           <h3 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 24, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.02em', margin: '8px 0 6px' }}>{t('Email us — we read every message.', 'Escríbenos — leemos cada mensaje.')}</h3>
-          <p style={{ margin: '0 0 14px' }}>{t("Average response time: 3h 42m. We're a small team based in McAllen.", 'Tiempo promedio de respuesta: 3h 42m. Somos un equipo pequeño en McAllen.')}</p>
+          <p style={{ margin: '0 0 14px' }}>{t("We're a small team based in McAllen — and we read every message.", 'Somos un equipo pequeño en McAllen — y leemos cada mensaje.')}</p>
           <a href="mailto:support@glossi.cc" style={{ display: 'inline-block', background: p.ink, color: p.bg, padding: '11px 20px', borderRadius: 99, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>support@glossi.cc</a>
         </div>
       </Body>
@@ -165,20 +165,20 @@ export function Cities() {
   const isPhone = useNarrow();
   const t = useT();
   const CITIES = [
-    { name: 'Pharr', salons: 487, mood: 0, bookings: 312, status: 'live' },
-    { name: 'McAllen', salons: 612, mood: 3, bookings: 489, status: 'live' },
-    { name: 'Edinburg', salons: 218, mood: 5, bookings: 144, status: 'live' },
-    { name: 'Mission', salons: 134, mood: 1, bookings: 88, status: 'live' },
-    { name: 'Weslaco', salons: 96, mood: 4, bookings: 51, status: 'live' },
-    { name: 'Brownsville', salons: 0, mood: 7, bookings: 0, status: 'soon', when: t('Summer 2026', 'Verano 2026') },
-    { name: 'Harlingen', salons: 0, mood: 6, bookings: 0, status: 'soon', when: t('Summer 2026', 'Verano 2026') },
-    { name: 'Laredo', salons: 0, mood: 2, bookings: 0, status: 'requested' },
-    { name: 'Corpus Christi', salons: 0, mood: 4, bookings: 0, status: 'requested' },
-    { name: 'San Antonio', salons: 0, mood: 5, bookings: 0, status: 'requested' },
+    { name: 'Pharr', mood: 0, status: 'live' },
+    { name: 'McAllen', mood: 3, status: 'live' },
+    { name: 'Edinburg', mood: 5, status: 'live' },
+    { name: 'Mission', mood: 1, status: 'live' },
+    { name: 'Weslaco', mood: 4, status: 'live' },
+    { name: 'Brownsville', mood: 7, status: 'soon', when: t('Summer 2026', 'Verano 2026') },
+    { name: 'Harlingen', mood: 6, status: 'soon', when: t('Summer 2026', 'Verano 2026') },
+    { name: 'Laredo', mood: 2, status: 'requested' },
+    { name: 'Corpus Christi', mood: 4, status: 'requested' },
+    { name: 'San Antonio', mood: 5, status: 'requested' },
   ];
   return (
     <Shell>
-      <Hero eyebrow={t('WHERE WE OPERATE', 'DÓNDE OPERAMOS')} title={t('Cities.', 'Ciudades.')} sub={t('Glossi is live in the Rio Grande Valley with 1,547 salons. Brownsville and Harlingen are next — request your city to vote it forward.', 'Glossi está activo en el Valle del Río Grande con 1,547 salones. Brownsville y Harlingen siguen — solicita tu ciudad para impulsarla.')} />
+      <Hero eyebrow={t('WHERE WE OPERATE', 'DÓNDE OPERAMOS')} title={t('Cities.', 'Ciudades.')} sub={t('Glossi is launching across the Rio Grande Valley — post a request and local salons send you quotes. Brownsville and Harlingen are next; request your city to move it up the list.', 'Glossi está llegando a todo el Valle del Río Grande — publica una solicitud y los salones locales te envían cotizaciones. Brownsville y Harlingen siguen; solicita tu ciudad para impulsarla.')} />
       <div style={{ padding: isPhone ? '0 18px 60px' : '0 64px 80px', maxWidth: 1040 }}>
         <div style={{ display: 'grid', gap: 12, gridTemplateColumns: isPhone ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))' }}>
           {CITIES.map(c => (
@@ -196,17 +196,8 @@ export function Cities() {
                 <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 22, fontWeight: type.displayWeight, color: p.ink, letterSpacing: '-0.015em' }}>{c.name}</div>
                 {c.status === 'live' ? (
                   <>
-                    <div style={{ display: 'flex', gap: 14, marginTop: 8 }}>
-                      <div>
-                        <div style={{ fontFamily: type.mono, fontSize: 18, fontWeight: 600, color: p.ink }}>{c.salons}</div>
-                        <div style={{ fontSize: 10.5, color: p.inkMuted, fontWeight: 600, letterSpacing: '0.1em' }}>{t('SALONS', 'SALONES')}</div>
-                      </div>
-                      <div>
-                        <div style={{ fontFamily: type.mono, fontSize: 18, fontWeight: 600, color: p.ink }}>{c.bookings}/{t('wk', 'sem')}</div>
-                        <div style={{ fontSize: 10.5, color: p.inkMuted, fontWeight: 600, letterSpacing: '0.1em' }}>{t('BOOKINGS', 'RESERVAS')}</div>
-                      </div>
-                    </div>
-                    <button onClick={() => navigate('/explore')} style={{ marginTop: 14, background: p.ink, color: p.bg, border: 0, padding: '9px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>{t(`Browse ${c.name} →`, `Explora ${c.name} →`)}</button>
+                    <div style={{ marginTop: 8, fontSize: 13, color: p.inkSoft }}>{t('Post a request — local pros send you quotes.', 'Publica una solicitud — los pros te envían cotizaciones.')}</div>
+                    <button onClick={() => navigate('/request')} style={{ marginTop: 14, background: p.ink, color: p.bg, border: 0, padding: '9px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>{t(`Request in ${c.name} →`, `Solicita en ${c.name} →`)}</button>
                   </>
                 ) : c.status === 'soon' ? (
                   <>
@@ -215,8 +206,8 @@ export function Cities() {
                   </>
                 ) : (
                   <>
-                    <div style={{ marginTop: 8, fontSize: 13, color: p.inkSoft }}>{t('Requested by 200+ users', 'Solicitada por 200+ usuarios')}</div>
-                    <a href={`mailto:hello@glossi.app?subject=${encodeURIComponent('Bring Glossi to ' + c.name)}`} style={{ display: 'inline-block', marginTop: 14, background: 'transparent', color: p.accent, border: `0.5px solid ${p.accent}`, padding: '9px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, textDecoration: 'none' }}>{t(`Vote for ${c.name} →`, `Vota por ${c.name} →`)}</a>
+                    <div style={{ marginTop: 8, fontSize: 13, color: p.inkSoft }}>{t('Not here yet — vote to bring Glossi to your city.', 'Aún no — vota para traer Glossi a tu ciudad.')}</div>
+                    <a href={`mailto:support@glossi.cc?subject=${encodeURIComponent('Bring Glossi to ' + c.name)}`} style={{ display: 'inline-block', marginTop: 14, background: 'transparent', color: p.accent, border: `0.5px solid ${p.accent}`, padding: '9px 16px', borderRadius: 99, fontSize: 12.5, fontWeight: 600, textDecoration: 'none' }}>{t(`Vote for ${c.name} →`, `Vota por ${c.name} →`)}</a>
                   </>
                 )}
               </div>
@@ -228,7 +219,7 @@ export function Cities() {
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: p.accent }}>{t('YOUR CITY?', '¿TU CIUDAD?')}</div>
             <div style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 28, fontWeight: type.displayWeight, marginTop: 4 }}>{t('Tell us where you want Glossi next.', 'Dinos dónde quieres Glossi después.')}</div>
           </div>
-          <a href="mailto:hello@glossi.app?subject=City%20request" style={{ background: p.accent, color: p.ink, padding: '12px 22px', borderRadius: 99, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>{t('Email us →', 'Escríbenos →')}</a>
+          <a href="mailto:support@glossi.cc?subject=City%20request" style={{ background: p.accent, color: p.ink, padding: '12px 22px', borderRadius: 99, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>{t('Email us →', 'Escríbenos →')}</a>
         </div>
       </div>
     </Shell>

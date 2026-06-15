@@ -165,9 +165,9 @@ export default function Marketing() {
   const t = useT();
 
   // Live founder counter — RPC stays so the homepage stat tracks real
-  // signups, same as /pros. Falls back to the migration's pre-launch
-  // offset (23) until the RPC resolves.
-  const [founderCount, setFounderCount] = useState(23);
+  // signups, same as /pros. Starts at 0 until the RPC resolves; the
+  // "{n} salons in the founding cohort" line is hidden while count is 0.
+  const [founderCount, setFounderCount] = useState(0);
   useEffect(() => {
     if (!isSupabaseConfigured) return;
     supabase.rpc('founder_count').then(({ data, error }) => {
