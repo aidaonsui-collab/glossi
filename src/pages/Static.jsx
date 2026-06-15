@@ -17,10 +17,12 @@ function Shell({ children }) {
       {children}
       <div style={{ padding: isPhone ? '24px 18px' : '40px 64px', borderTop: `0.5px solid ${p.line}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
         <div style={{ fontFamily: type.body, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: p.inkMuted }}>GLOSSI · 2026</div>
-        <div style={{ fontSize: 11.5, color: p.inkMuted, display: 'flex', gap: 18 }}>
+        <div style={{ fontSize: 11.5, color: p.inkMuted, display: 'flex', gap: 18, flexWrap: 'wrap' }}>
+          <Link to="/about" style={{ color: p.inkMuted, textDecoration: 'none' }}>{t('About', 'Nosotros')}</Link>
           <Link to="/privacy" style={{ color: p.inkMuted, textDecoration: 'none' }}>{t('Privacy', 'Privacidad')}</Link>
           <Link to="/terms" style={{ color: p.inkMuted, textDecoration: 'none' }}>{t('Terms', 'Términos')}</Link>
           <Link to="/help" style={{ color: p.inkMuted, textDecoration: 'none' }}>{t('Help', 'Ayuda')}</Link>
+          <a href="https://instagram.com/glossi.cc" target="_blank" rel="noopener" style={{ color: p.inkMuted, textDecoration: 'none' }}>Instagram</a>
         </div>
       </div>
     </div>
@@ -92,6 +94,30 @@ export function Terms() {
           <span style={{ color: p.ink, fontWeight: 600 }}>support@glossi.cc</span>
           {t(' or ', ' o ')}
           <span style={{ color: p.ink, fontWeight: 600 }}>glossi.cc/help</span>.
+        </p>
+      </Body>
+    </Shell>
+  );
+}
+
+export function About() {
+  const t = useT();
+  return (
+    <Shell>
+      <Hero eyebrow={t('ABOUT', 'NOSOTROS')} title={t('Built in the Valley.', 'Hecho en el Valle.')} sub={t('Glossi is a small team based in McAllen, building a better way to book beauty in the Rio Grande Valley.', 'Glossi es un equipo pequeño en McAllen, construyendo una mejor forma de reservar belleza en el Valle del Río Grande.')} />
+      <Body>
+        <H>{t('Why we built it', 'Por qué lo construimos')}</H>
+        <p>{t("Booking beauty in the Valley meant DMing ten salons for prices and hoping someone replied. For the salons, the tools out there charge a monthly fee whether or not anyone books, or take a cut of every lead. We thought both sides deserved better, so we flipped it. You post what you want, local salons send you real quotes, and you choose.", 'Reservar belleza en el Valle significaba pedir precios por DM a diez salones y esperar respuesta. Para los salones, las herramientas cobran una cuota mensual reserven o no, o se llevan una parte de cada contacto. Pensamos que ambos lados merecían algo mejor, así que lo volteamos. Publicas lo que quieres, los salones locales te envían cotizaciones reales y tú eliges.')}</p>
+        <H>{t('How we make money', 'Cómo ganamos dinero')}</H>
+        <p>{t("Plainly: salons pay $0 a month and 5% only on a booking they actually win. That is the whole model. We don't sell your data, we don't run ads, and we don't charge for leads. When a salon wins work, we earn a little. When they don't, we earn nothing.", 'Claramente: los salones pagan $0 al mes y 5% solo en una reserva que realmente ganan. Ese es todo el modelo. No vendemos tus datos, no mostramos anuncios y no cobramos por contactos. Cuando un salón gana trabajo, ganamos un poco. Cuando no, no ganamos nada.')}</p>
+        <H>{t('Local first', 'Primero lo local')}</H>
+        <p>{t('We are starting where we live: McAllen, Pharr, Edinburg, Mission, Weslaco, and Brownsville, with the rest of the Valley close behind. Built in the RGV, for the RGV.', 'Empezamos donde vivimos: McAllen, Pharr, Edinburg, Mission, Weslaco y Brownsville, con el resto del Valle muy cerca. Hecho en el Valle, para el Valle.')}</p>
+        <H>{t('Reach us', 'Contáctanos')}</H>
+        <p>
+          {t('Questions, ideas, or just want to say hi? Email ', '¿Preguntas, ideas o solo quieres saludar? Escríbenos a ')}
+          <span style={{ color: p.ink, fontWeight: 600 }}>support@glossi.cc</span>
+          {t(' or find us on Instagram at ', ' o encuéntranos en Instagram en ')}
+          <a href="https://instagram.com/glossi.cc" target="_blank" rel="noopener" style={{ color: p.ink, fontWeight: 600, textDecoration: 'underline' }}>@glossi.cc</a>.
         </p>
       </Body>
     </Shell>

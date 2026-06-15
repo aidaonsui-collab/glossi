@@ -46,9 +46,11 @@ export default function PublicChrome({ children }) {
             <span>·</span>
             <span style={{ color: lang === 'es' ? p.ink : p.inkMuted, fontWeight: lang === 'es' ? 700 : 500 }}>ES</span>
           </button>
+          <Link to="/about" style={{ ...footerBtn, textDecoration: 'none' }}>{t('About', 'Nosotros')}</Link>
           <Link to="/privacy" style={{ ...footerBtn, textDecoration: 'none' }}>{t('Privacy', 'Privacidad')}</Link>
           <Link to="/terms" style={{ ...footerBtn, textDecoration: 'none' }}>{t('Terms', 'Términos')}</Link>
           <Link to="/help" style={{ ...footerBtn, textDecoration: 'none' }}>{t('Help', 'Ayuda')}</Link>
+          <a href="https://instagram.com/glossi.cc" target="_blank" rel="noopener" style={{ ...footerBtn, textDecoration: 'none' }}>Instagram</a>
         </div>
       </div>
     </div>

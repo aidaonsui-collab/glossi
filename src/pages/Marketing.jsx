@@ -558,6 +558,15 @@ export default function Marketing() {
           <span style={{ opacity: 0.7 }}>built in the rgv</span>
         </div>
       </div>
+      <div style={{ marginTop: isPhone ? 28 : 44, paddingTop: 20, borderTop: `0.5px solid ${p.line}`, display: 'flex', gap: 20, flexWrap: 'wrap', fontSize: 12.5, color: p.inkMuted }}>
+        <Link to="/about" style={{ color: p.inkMuted, textDecoration: 'none' }}>{t('About', 'Nosotros')}</Link>
+        <Link to="/help" style={{ color: p.inkMuted, textDecoration: 'none' }}>{t('Help', 'Ayuda')}</Link>
+        <Link to="/privacy" style={{ color: p.inkMuted, textDecoration: 'none' }}>{t('Privacy', 'Privacidad')}</Link>
+        <Link to="/terms" style={{ color: p.inkMuted, textDecoration: 'none' }}>{t('Terms', 'Términos')}</Link>
+        <a href="https://instagram.com/glossi.cc" target="_blank" rel="noopener" style={{ color: p.inkMuted, textDecoration: 'none' }}>Instagram</a>
+        <span style={{ flex: 1 }} />
+        <a href="mailto:support@glossi.cc" style={{ color: p.inkMuted, textDecoration: 'none' }}>support@glossi.cc</a>
+      </div>
     </footer>
   );
 
