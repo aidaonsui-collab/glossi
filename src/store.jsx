@@ -224,7 +224,7 @@ export function useAuth() {
 
 // ── Saved salons ───────────────────────────────────────────────────
 export function useSaved() {
-  const [ids, setIds] = useLocalState('glossi.saved', ['b1', 'b2', 'b3']);
+  const [ids, setIds] = useLocalState('glossi.saved', []);
   const isSaved = useCallback(id => ids.includes(id), [ids]);
   const toggle = useCallback(id => setIds(curr => curr.includes(id) ? curr.filter(x => x !== id) : [...curr, id]), [setIds]);
   const remove = useCallback(id => setIds(curr => curr.filter(x => x !== id)), [setIds]);

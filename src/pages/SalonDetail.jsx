@@ -86,7 +86,7 @@ export default function SalonDetail() {
       <CustomerLayout mobileTitle={t('Salon', 'Salón')}>
         <div style={{ padding: '80px 32px', textAlign: 'center' }}>
           <h1 style={{ fontFamily: type.display, fontStyle: 'italic', fontSize: 36 }}>{t('Salon not found', 'Salón no encontrado')}</h1>
-          <button onClick={() => navigate('/explore')} style={{ marginTop: 24, padding: '12px 22px', borderRadius: 99, background: p.ink, color: p.bg, border: 0, fontSize: 14, cursor: 'pointer' }}>{t('Back to explore', 'Volver a explorar')}</button>
+          <button onClick={() => navigate('/quotes')} style={{ marginTop: 24, padding: '12px 22px', borderRadius: 99, background: p.ink, color: p.bg, border: 0, fontSize: 14, cursor: 'pointer' }}>{t('Back to my quotes', 'Volver a mis solicitudes')}</button>
         </div>
       </CustomerLayout>
     );
