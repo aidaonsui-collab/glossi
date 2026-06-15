@@ -1,0 +1,8 @@
+PLACEHOLDER — replace with the contents Apple gives you.
+
+When you add glossi.cc under your Sign in with Apple Services ID
+(Identifiers → Services ID → Configure → Domains and Subdomains),
+Apple provides an apple-developer-domain-association.txt file to download.
+Paste its exact contents into this file (replacing everything here) and
+redeploy. It will be served at:
+https://glossi.cc/.well-known/apple-developer-domain-association.txt
