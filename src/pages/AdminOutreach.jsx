@@ -25,26 +25,37 @@ function firstNameOf(prospect) {
   return (prospect.full_name || '').split(/[\s|—,·]/).map(s => s.trim()).filter(Boolean)[0] || '';
 }
 
+// Honest pricing line: $0/month + 5% only on a won booking. Matches the /pros
+// honesty rewrite — do NOT reintroduce "lifetime $0" / "no commission" claims.
+const SIGNUP_LINK = 'glossi.cc/signup?role=salon';
+
+function cityOf(prospect, lang) {
+  return prospect.city_guess || (lang === 'es' ? 'el Valle' : 'the Valley');
+}
+
 // Pre-rendered IG DM. Longer, more visual context — IG DMs allow that.
 function renderDM(prospect) {
   const lang = prospect.language_guess === 'es' ? 'es' : 'en';
   const firstName = firstNameOf(prospect);
   const primaryService = (prospect.service_guess || '').split('|')[0];
   const svc = SERVICE_LABEL[lang][primaryService];
+  const city = cityOf(prospect, lang);
 
   if (lang === 'es') {
     return [
       firstName ? `Hola ${firstName}, ` : 'Hola, ',
       svc ? `vi tu trabajo de ${svc} y quedé enamorado` : 'vi tu trabajo y quedé enamorado',
-      ' — felicidades. Estoy lanzando Glossi, una app gratis que te manda clientas del Valle con el servicio, la fecha y el presupuesto ya puestos. Sin mensualidad, sin comisión tipo Booksy.',
-      ' Las primeras 100 del Valle entran gratis de por vida. ¿Te apunto como estilista fundadora? Son 90 segundos: glossi.cc/pros',
+      ` — felicidades. Estoy lanzando Glossi, una forma gratis para que las clientas de ${city} te encuentren: publican el servicio, la fecha y el presupuesto, y tú envías una oferta rápida.`,
+      ' Sin mensualidad, sin pagar por "leads" — solo pagas 5% cuando realmente reservas a la clienta.',
+      ` Estamos sumando un primer grupo de salones del Valle — ¿te apunto? Son ~2 min: ${SIGNUP_LINK}`,
     ].join('');
   }
   return [
     firstName ? `Hey ${firstName}, ` : 'Hey, ',
     svc ? `saw your ${svc} work` : 'saw your work',
-    ' — it\'s gorgeous. I\'m launching Glossi, a free app that sends Valley clients to local stylists with the service, date, and budget already filled in. No monthly fee, no Booksy-style commission.',
-    ' First 100 in the Valley lock lifetime $0. Want me to set you up as a founding pro? Takes 90 seconds: glossi.cc/pros',
+    ` — it's gorgeous. I'm launching Glossi, a free way for ${city} clients to find local pros: they post the service, date, and budget, and you send a quick bid.`,
+    ' No monthly fee, no lead fees — you only pay 5% when you actually book the client.',
+    ` We're onboarding a first group of RGV salons now — want me to set you up? Takes ~2 min: ${SIGNUP_LINK}`,
   ].join('');
 }
 
@@ -54,10 +65,11 @@ function renderDM(prospect) {
 function renderSMS(prospect) {
   const lang = prospect.language_guess === 'es' ? 'es' : 'en';
   const firstName = firstNameOf(prospect);
+  const city = cityOf(prospect, lang);
   if (lang === 'es') {
-    return `Hola ${firstName || 'amiga'} — soy del equipo de Glossi, una app gratis para estilistas del Valle. Las clientas publican lo que buscan, tú mandas tu precio, sin mensualidad ni comisión. Primeras 100 entran gratis de por vida: glossi.cc/pros — pregúntame lo que sea 💛`;
+    return `Hola ${firstName || 'amiga'} — soy del equipo de Glossi, una forma gratis para que las clientas de ${city} encuentren estilistas. Publican lo que buscan, tú mandas tu oferta. Sin mensualidad — solo pagas 5% cuando reservas: ${SIGNUP_LINK} — pregúntame lo que sea 💛`;
   }
-  return `Hey ${firstName || 'there'} — I'm with Glossi, a free app for Valley stylists. Clients post what they want, you send a price, no monthly fees. First 100 lock lifetime $0: glossi.cc/pros — happy to answer any qs 💛`;
+  return `Hey ${firstName || 'there'} — I'm with Glossi, a free way for ${city} clients to find stylists. They post what they want, you send a bid. No monthly fee — you only pay 5% when you book: ${SIGNUP_LINK} — happy to answer any qs 💛`;
 }
 
 export default function AdminOutreach() {
