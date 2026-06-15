@@ -288,7 +288,7 @@ export default function Marketing() {
               {t('Post a request', 'Publicar solicitud')}
               <span style={{ fontSize: 16 }}>→</span>
             </button>
-            <button onClick={() => navigate('/editorial')} style={{ background: 'rgba(250,247,242,0.7)', color: p.ink, border: `1px solid ${p.line}`, padding: isPhone ? '14px 22px' : '17px 24px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 500, cursor: 'pointer', backdropFilter: 'blur(8px)' }}>
+            <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' })} style={{ background: 'rgba(250,247,242,0.7)', color: p.ink, border: `1px solid ${p.line}`, padding: isPhone ? '14px 22px' : '17px 24px', borderRadius: 99, fontSize: isPhone ? 14 : 15, fontWeight: 500, cursor: 'pointer', backdropFilter: 'blur(8px)' }}>
               {t('How it works', 'Cómo funciona')}
             </button>
           </div>
@@ -399,7 +399,7 @@ export default function Marketing() {
 
   // ── Compare table (Old way vs Glossi) ──
   const Compare = () => (
-    <section style={{ padding: isPhone ? '48px 18px' : '96px 64px' }}>
+    <section id="how-it-works" style={{ scrollMarginTop: 24, padding: isPhone ? '48px 18px' : '96px 64px' }}>
       <SectionHead
         kicker={t('Old way vs. Glossi', 'El método viejo vs. Glossi')}
         title={t('Stop hunting. Start choosing.', 'Deja de buscar. Empieza a elegir.')}
