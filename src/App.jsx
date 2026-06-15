@@ -127,8 +127,9 @@ export default function App() {
         <Route path="/inbox/:id" element={<ConversationPage /> } />
         <Route path="/checkout/:id" element={<CheckoutPage />} />
         <Route path="/pay/:bidId" element={<PaymentPage />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/saved" element={<Saved />} />
+        {/* Browse surface hidden pre-launch (mock catalog) — quote-first only. */}
+        <Route path="/explore" element={<Navigate to="/quotes" replace />} />
+        <Route path="/saved" element={<Navigate to="/quotes" replace />} />
         <Route path="/editorial" element={<Editorial />} />
         <Route path="/editorial/:id" element={<Article />} />
         <Route path="/salon/bids" element={<SalonBids />} />
